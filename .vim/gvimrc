@@ -1,0 +1,126 @@
+" if &diff
+"    winpos  326 0
+"    set lines=54 columns=180
+" else
+"    set lines=54 columns=88
+" endif
+
+set lines=52 columns=79
+
+"http://www.lowing.org/fonts/
+"set guifont=Monospace\ 9
+set guifont=DejaVu\ Sans\ Mono\ for\ Powerline\ 12
+" set antialias
+" set guioptions-=m           " Remove the toolbar
+set guioptions-=T           " Remove the toolbar
+set guioptions-=r  "remove right-hand scroll bar
+set guioptions-=L  "remove left-hand scroll bar
+
+set t_Co=256
+
+let s:pattern = '^\(.* \)\([1-9][0-9]*\)$'
+let s:minfontsize = 6
+let s:maxfontsize = 16
+function! AdjustFontSize(amount)
+  if has("gui_gtk2") && has("gui_running")
+    let fontname = substitute(&guifont, s:pattern, '\1', '')
+    let cursize = substitute(&guifont, s:pattern, '\2', '')
+    let newsize = cursize + a:amount
+    if (newsize >= s:minfontsize) && (newsize <= s:maxfontsize)
+      let newfont = fontname . newsize
+      let &guifont = newfont
+    endif
+  else
+    echoerr "You need to run the GTK2 version of Vim to use this function."
+  endif
+endfunction
+
+function! LargerFont()
+  call AdjustFontSize(1)
+endfunction
+command! LargerFont call LargerFont()
+
+function! SmallerFont()
+  call AdjustFontSize(-1)
+endfunction
+command! SmallerFont call SmallerFont()
+
+nmap ,- :SmallerFont<CR>
+nmap ,= :LargerFont<CR>
+
+nnoremap ,0 :set guifont=DejaVu\ Sans\ Mono\ for\ Powerline\ 12<CR>
+nnoremap ,_ :set guifont=DejaVu\ Sans\ Mono\ for\ Powerline\ 4<CR>
+
+noremap <silent> <c-left>  :vertical resize -1<cr>
+noremap <silent> <c-up>    :resize   +1<cr>
+noremap <silent> <c-down>  :resize   -1<cr>
+noremap <silent> <c-right> :vertical resize +1<cr>
+
+
+"set showtabline=2 " always show tabs in gvim, but not vim
+"" set up tab labels with tab number, buffer name, number of windows
+"function! GuiTabLabel()
+"  let label = ''
+"  let bufnrlist = tabpagebuflist(v:lnum)
+"  " Add '+' if one of the buffers in the tab page is modified
+"  for bufnr in bufnrlist
+"    if getbufvar(bufnr, "&modified")
+"      let label = '+'
+"      break
+"    endif
+"  endfor
+"  " Append the tab number
+"  let label .= v:lnum.': '
+"  " Append the buffer name
+"  let name = bufname(bufnrlist[tabpagewinnr(v:lnum) - 1])
+"  if name == ''
+"    " give a name to no-name documents
+"    if &buftype=='quickfix'
+"      let name = '[Quickfix List]'
+"    else
+"      let name = '[No Name]'
+"    endif
+"  else
+"    " get only the file name
+"    let name = fnamemodify(name,":t")
+"  endif
+"  let label .= name
+"  " Append the number of windows in the tab page
+"  let wincount = tabpagewinnr(v:lnum, '$')
+"  return label . '  [' . wincount . ']'
+"endfunction
+"set guitablabel=%{GuiTabLabel()}
+"
+"" set up tab tooltips with every buffer name
+"function! GuiTabToolTip()
+"  let tip = ''
+"  let bufnrlist = tabpagebuflist(v:lnum)
+"  for bufnr in bufnrlist
+"    " separate buffer entries
+"    if tip!=''
+"      let tip .= " \n "
+"    endif
+"    " Add name of buffer
+"    let name=bufname(bufnr)
+"    if name == ''
+"      " give a name to no name documents
+"      if getbufvar(bufnr,'&buftype')=='quickfix'
+"        let name = '[Quickfix List]'
+"      else
+"        let name = '[No Name]'
+"      endif
+"    endif
+"    let tip.=name
+"    " add modified/modifiable flags
+"    if getbufvar(bufnr, "&modified")
+"      let tip .= ' [+]'
+"    endif
+"    if getbufvar(bufnr, "&modifiable")==0
+"      let tip .= ' [-]'
+"    endif
+"  endfor
+"  return tip
+"endfunction
+"set guitabtooltip=%{GuiTabToolTip()}
+"
+
