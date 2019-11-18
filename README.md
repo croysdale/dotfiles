@@ -82,6 +82,15 @@ Install additional packages required for vim
 ```
 vim
 :PlugInstall
+:q
+```
+
+Install additional tmux plugins
+```
+tmux
+Install additional packages required for vim
+```
+~/.tmux/plugins/tpm/scripts/install_plugins.sh
 ```
 
 
