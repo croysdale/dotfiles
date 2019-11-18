@@ -1,0 +1,61 @@
+# Modules Header {
+# vim: set sw=4 ts=4 sts=4 et tw=78 foldmarker={,} foldlevel=0 foldmethod=marker spell:
+# }
+
+# Module FvwmIdent {
+DestroyModuleConfig FvwmIdent: *
+*FvwmIdent: Colorset 9
+# }
+
+# Module FvwmBacker {
+DestroyModuleConfig FvwmBacker: *
+*FvwmBacker: Command (Desk 0) -solid $[S_base01]
+*FvwmBacker: Command (Desk 1) -solid $[S_base01]
+*FvwmBacker: Command (Desk 2) -solid $[S_base01]
+*FvwmBacker: Command (Desk 3) -solid $[S_base01]
+*FvwmBacker: Command (Desk 4) -solid $[S_base00]
+*FvwmBacker: Command (Desk 5) -solid $[S_base00]
+*FvwmBacker: Command (Desk 6) -solid $[S_base00]
+*FvwmBacker: Command (Desk 7) -solid $[S_base00]
+# }
+
+# Module FvwmAnimate {
+# Animations are controlled by this module
+# You could also use Frame, Lines, Flip, Turn, Twist, Random and None.
+DestroyModuleConfig FvwmAnimate: *
+*FvwmAnimate: Effect None
+*FvwmAnimate: Delay 1
+*FvwmAnimate: Iterations 10
+# }
+
+# Module FvwmProxy {
+# Hit Alt+Esc to toggle FvwmProxy, which allows you to see all windows on your
+# desktop, even if they've been obscured..really cool.
+DestroyModuleConfig FvwmProxy: *
+*FvwmProxy: ProxyMove false
+# }
+
+# Module FvwmTaskBar {
+Style "FvwmTaskBar" NoTitle, !Handles, !Borders, Sticky, WindowListSkip, \
+  CirculateSkip, StaysOnBottom, FixedPosition, FixedSize, !Iconifiable
+DestroyModuleConfig FvwmTaskBar: *
+*FvwmTaskBar: Geometry +0-0
+*FvwmTaskBar: Rows 1
+*FvwmTaskBar: Colorset 17
+*FvwmTaskBar: FocusColorset 18
+*FvwmTaskBar: IconColorset 19
+*FvwmTaskBar: TipsColorset 16
+*FvwmTaskBar: UseSkipList
+*FvwmTaskBar: UseIconNames
+*FvwmTaskBar: UpdateInterval 9999
+*FvwmTaskBar: MailCheck 0
+*FvwmTaskBar: NoDefaultStartButton
+*FvwmTaskBar: DeskOnly
+*FvwmTaskBar: PageOnly
+*FvwmTaskBar: ButtonWidth 300
+#*FvwmTaskBar: Button None, Icon mini.xterm.xpm,       Action (Mouse 1) FvwmXTerm
+#*FvwmTaskBar: Button None,                            Action None 
+*FvwmTaskBar: Action Click1 DeiconifyRaiseAndFocus
+*FvwmTaskBar: Action Click2 Thumbnail
+*FvwmTaskBar: Action Click3 Lower
+# }

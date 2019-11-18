@@ -1,0 +1,31 @@
+head	1.1;
+access;
+symbols;
+locks
+	croysdal:1.1; strict;
+comment	@# @;
+
+
+1.1
+date	2013.12.03.17.15.29;	author croysdal;	state Exp;
+branches;
+next	;
+
+
+desc
+@@
+
+
+1.1
+log
+@Initial revision
+@
+text
+@Style FvwmIdent	EWMHMiniIconOverride, \
+		Icon $[fvwm_icon]/64x64/apps/gnome-help.png, \
+		MiniIcon $[fvwm_icon]/16x16/apps/gnome-help.png
+
+DestroyModuleConfig FvwmIdent: *
+*FvwmIdent: Colorset 21
+#*FvwmIdent: Font "Shadow=1 1 >:xft:Monospace:Bold:pixelsize=12"
+@

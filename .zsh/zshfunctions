@@ -1,0 +1,363 @@
+# Create a /overview/ of all available function()'s; the description for
+# each funtion() *must* be the first line above the string `function'!
+# Otherwise it wont work.
+
+# Display all function()'s with her descriptions
+function funlist() {
+	echo "List of functions in: $HOME/.zsh/zshfunctions:"
+	grep -B 1 "^function" $HOME/.zsh/zshfunctions | \
+	grep -v "^\-\-$" | \
+	awk '{ if(/^#/) { gsub(/^#[:space:]*/, ""); ht=$0 }; getline; gsub(/ ?\(\)/, ":"); printf("-> %-20s %s\n", $2, ht); }' | \
+	sort -u -k 3
+	echo "\nList of Fuzzy functions in: $HOME/.zsh/fzf_funcs:"
+	grep -B 1 "^function" $HOME/.zsh/fzf_funcs | \
+	grep -v "^\-\-$" | \
+	awk '{ if(/^#/) { gsub(/^#[:space:]*/, ""); ht=$0 }; getline; gsub(/ ?\(\)/, ":"); printf("-> %-20s %s\n", $2, ht); }' | \
+	sort -u -k 3
+}
+
+# precmd to keep persistent shell history
+export ZSH_LOGS=${HOME}/.zsh_logs
+mkdir -p ${ZSH_LOGS}
+
+function precmd() {
+    if [ "$(id -u)" -ne 0 ]; then
+        #  TODO  : Don't copy lines that start with space to history
+        #          Can this be done?
+        hist=`\history -1` 
+        if [[ -z "$TMUX_PANE" ]]; then
+            TMUX_WIN_PANE="Not in tmux"
+        else
+            ## TMUX_WIN_PANE could be set by ~/bin/iheavy in a TMUX
+            if [[ -z "$TMUX_WIN_PANE" ]]; then
+                TMUX_WIN_PANE=$(tmux display-message -p '#S-#W')
+            fi
+        fi
+        FULL_CMD_LOG="$ZSH_LOGS/zsh-history-$(date "+%Y-%m-%d").log"
+        echo "$(date) `hostname` : ${TMUX_WIN_PANE} `pwd` $hist" >>! ${FULL_CMD_LOG}
+    fi
+## Needed for kevin3 theme to clear "CMD" on right. 
+## Should try to pend to existing precmd
+    RPROMPT=""
+}
+
+# show directory stack and ask for a dir to switch to
+function dstack() {
+  emulate -L zsh
+  autoload -U colors
+  local color=$fg_bold[blue]
+  integer i=0
+  dirs -p | while read dir
+  do
+	  local num="${$(printf "%-4d " $i)/ /.}"
+	  printf " %s  $color%s$reset_color\n" $num $dir
+	  (( i++ ))
+  done
+  integer dir=-1
+  read -r 'dir?Jump to directory: ' || return
+  (( dir == -1 )) && return
+  if (( dir < 0 || dir >= i ))
+  then
+	  echo d: no such directory stack entry: $dir
+	  return 1
+  fi
+  cd ~$dir
+}
+
+# Capture entire tmux pane to a variable to use for command completion
+function _tmux_pane_words() {
+  local expl
+  local -a w
+  if [[ -z "$TMUX_PANE" ]]; then
+    _message "not running inside tmux!"
+    return 1
+  fi
+  w=( ${(u)=$(tmux capture-pane \; show-buffer \; delete-buffer)} )
+    _message "running"
+  _wanted values expl 'words from current tmux pane' compadd -a w
+}
+
+# grep(1)'ing $HISTFILE
+histgrep () { fc -fl -m "*(#i)$1*" 1 | grep -i --color $1 }
+
+# Interactive perl interpreter
+iperl () { perl -ne 'BEGIN { print ">> " }; print eval "$_"; print "\n>> "' }
+
+# other version for "ls"
+# zls () {
+#   zmodload zsh/stat
+#   local -a st
+#   local name dev inode mode nlink uid gid rdev
+#   local size atmim mtime ctme blksize blocks link
+#   [[ $# -eq 0 ]] && set -- *
+#   zstat -nsLA st "$@"
+#   for name dev inode mode nlink uid gid rdev size atmim mtime ctme blksize blocks link in "$st[@]"
+#   do print -r -- "$mode $nlink ${(r:8:)uid} ${(r:8:)gid} ${(l:9:)size} $name"
+#   done
+# }
+
+function sp {
+    which -am \*$1\*
+}
+
+# Create a directory like "year-month-day" (i. e. 2007-07-16)
+function mdate()
+{
+	mkdir `date +%F`
+	cd `date +%F`
+}
+
+# PROG: Search for the argument in the system libraries
+function lcheck() { nm -go /usr/lib/lib*.a 2>/dev/null | grep ":[[:xdigit:]]\{8\} . .*$1"":[[:xdigit:]]\{8\} . .*$1" }
+
+# FIXME: It's really .. reclaimable
+# MISC: clean directory
+function purge()
+{
+	FILES=(*~(N) .*~(N) \#*\#(N) *.o(N) a.out(N) *.core(N) *.cmo(N) *.cmi(N) .*.swp(N))
+	NBFILES=${#FILES}
+	if [[ $NBFILES > 0 ]]; then
+		print $FILES
+		local ans
+		echo -n "Remove this files? [y/n] "
+		read -q ans
+		if [[ $ans == "y" ]]
+		then
+			command rm ${FILES}
+			echo ">> $PWD purged, $NBFILES files removed"
+		else
+			echo "Ok. .. than not.."
+		fi
+	fi
+}
+
+# PERL: List all locations of perl libraries
+function showINC () { perl -e 'for (@INC) { printf "%d %s\n", $i++, $_ }' }
+
+# HELP: /Quick read/ help-files of Vim
+function vimhelp () { vim -c "help $1" -c on -c "au! VimEnter *" }
+
+# Found in the mailinglistarchive from Zsh (IIRC ~1996)
+# MISC: Search in the $HISTFILE and select result to execute
+function selhist()
+{
+	emulate -L zsh
+	local TAB=$'\t';
+	(( $# < 1 )) && {
+		echo "Usage: $0 command"
+		return 1
+	};
+	cmd=(${(f)"$(grep -w $1 $HISTFILE | sort | uniq | pr -tn)"})
+	print -l $cmd | less -F
+	echo -n "enter number of desired command [1 - $(( ${#cmd[@]} - 1 ))]: "
+	local answer
+	read answer
+	print -z "${cmd[$answer]#*$TAB}"
+}
+
+# DIFF: create a diff (-udrP)
+function mdiff() { diff -udrP "$1" "$2" > diff.`date "+%Y-%m-%d"`."$1" }
+
+# PROG: aDisplay the size of all dirs at $PWD
+function dirsize()
+{
+	if [ -z $1 ]; then
+		dir="."
+	else
+		dir=$1
+	fi
+	find $dir -type d -maxdepth 1 -mindepth 1 -exec du -sh '{}' \; 2>/dev/null \
+	| perl -pe "s/\t.*\/(.*)$/\t$(echo '\033[01;32m')\1$(echo '\033[0m')/gi" 
+	echo
+	echo "Total: " $(du -sh $dir 2>/dev/null | awk '{print $1}')
+}
+
+# MISC: mkdir && cd
+function mcd()
+{
+	test -z "$1" && echo mkcd: no path given && return
+	test -d "$1" && print "mkcd: Directory $1 already exists"
+	mkdir -p -- "$1"
+	cd -- "$1"
+}
+
+# $ ls -l =ls
+# $ -r-xr-xr-x    1 root     bin        167936 Oct  4  2002 /bin/ls
+# $ pls ls
+# $ -r-xr-xr-x    1 root     bin        167936 Oct  4  2002 /bin/ls 
+# SEARCH: A /replacement/ for `ls -l =command'
+function pls() { ls -l =$1 }
+
+# MISC: cd && ls
+function cl() { cd $1 && ls -a }
+
+# MISC: Use vim to convert plaintext to HTML
+function 2html() { vim -u NONE -n -c ':syntax on' -c ':so $VIMRUNTIME/syntax/2html.vim' -c ':wqa' $1 > /dev/null 2> /dev/null }
+
+# Display all combinations of colors
+function _cols()
+{
+        esc="\033["
+        echo -e "\t 40\t 41\t 42\t 43\t 44\t 45\t 46\t 47"
+        for fore in 30 31 32 33 34 35 36 37; do
+                line1="$fore  "
+                line2="    "
+                for back in 40 41 42 43 44 45 46 47; do
+                        line1="${line1}${esc}${back};${fore}m Normal  ${esc}0m"
+                        line2="${line2}${esc}${back};${fore};1m Bold    ${esc}0m"
+                done
+                echo -e "$line1\n$line2"
+        done
+}
+
+if [ ! -x $(which unp) >/dev/null 2>&1 ]; then
+# ARCHIVE: extracts archived files (maybe)
+function simple-extract ()
+{
+        if [[ -f "$1" ]]
+        then
+                case "$1" in
+                        *.tar.bz2)  bzip2 -v -d "$1" ;;
+                        *.tar.gz)   tar -xvzf "$1"   ;;
+                        *.ace)      unace e "$1"     ;;
+                        *.rar)      unrar x "$1"     ;;
+                        *.deb)      ar -x "$1"       ;;
+                        *.bz2)      bzip2 -d "$1"    ;;
+                        *.lzh)      lha x "$1"       ;;
+                        *.gz)       gunzip -d "$1"   ;;
+                        *.tar)      tar -xvf "$1"    ;;
+                        *.tgz)      gunzip -d "$1"   ;;
+                        *.tbz2)     tar -jxvf "$1"   ;;
+                        *.zip)      unzip "$1"       ;;
+                        *.Z)        uncompress "$1"  ;;
+                        *.shar)     sh "$1"          ;;
+                        *)          echo "'"$1"' Error. Please go away" ;;
+                esac
+        else
+                echo "'"$1"' is not a valid file"
+        fi
+}
+fi
+
+# grep(1)'ing $HISTFILE
+histgrep () { fc -fl -m "*(#i)$1*" 1 | grep -i --color $1 }
+
+# Interactive perl interpreter
+iperl () { perl -ne 'BEGIN { print ">> " }; print eval "$_"; print "\n>> "' }
+
+function colorscheme() { 
+    source ${HOME}/.colorschemes/$1
+}
+
+# SEARCH: Show the path from a symlink to its ultimate source.
+function folsym() {
+if [[ -e $1 || -h $1 ]]; then
+	file=$1
+else
+	file=`which $1`
+fi
+if
+	if [[ -e $file || -L $file ]]; then
+		if [[ -L $file ]]; then
+			echo `ls -ld $file | perl -ane 'print $F[7]'` '->'
+			folsym `perl -le '$file = $ARGV[0];
+			$dest = readlink $file;
+			if ($dest !~ m{^/}) {
+				$file =~ s{(/?)[^/]*$}{$1$dest};
+			} else {
+			$file = $dest;
+		}
+		$file =~ s{/{2,}}{/}g;
+		while ($file =~ s{[^/]+/\.\./}{}) {
+			;
+		}
+		$file =~ s{^(/\.\.)+}{};
+		print $file' $file`
+	else
+		ls -d $file
+	fi
+else
+	echo $file
+fi
+}
+
+# SEARCH: search for README file in dir and display them 
+function readme()
+{
+	local files
+        files=(./(#i)*(read*me|lue*m(in|)ut)*(ND))
+	if (($#files))
+	then
+		$PAGER $files
+	else
+		print 'No README files. Please lart \$MAINTAINER!'
+	fi
+}
+
+# SYS: csh compatibility
+function setenv() { typeset -x "${1}${1:+=}${(@)argv[2,$#]}" }
+
+# SYS: Reload functions.
+function refunc()
+{
+        for func in $argv
+        do
+                unfunction $func
+                autoload $func
+        done
+}
+
+# Find (and print) all symbolic links without a target within the
+# current directorytree (i. e. ll symlinks that dont point to files,
+# directories, sockets, devices, or named pipes).
+# Note: all three functions works but the last is nicer
+# function brlinks() { for i in **/*(D@); [[ -f $i || -d $i ]] || echo $i }
+# function brlinks() { print -l **/*(@-^./=%p) }
+# SYS: Display all brokem symlinks
+# function brlinks() { print -l **/*(-@) }
+
+man() {
+    env \
+    LESS_TERMCAP_mb=$(printf "\e[1;31m") \
+    LESS_TERMCAP_md=$(printf "\e[1;31m") \
+    LESS_TERMCAP_me=$(printf "\e[0m") \
+    LESS_TERMCAP_se=$(printf "\e[0m") \
+    LESS_TERMCAP_so=$(printf "\e[1;44;33m") \
+    LESS_TERMCAP_ue=$(printf "\e[0m") \
+    LESS_TERMCAP_us=$(printf "\e[1;32m") \
+    man "$@"
+}
+
+## Potentional fix for zsh hanging on directory complete
+## ls /u/<TAB> will hang the shell with Ctrl-C provided this message:
+#     Killed by signal in  after 95s
+# http://superuser.com/questions/585545/how-to-disable-zsh-tab-completion-for-nfs-dirs
+# function restricted-expand-or-complete() {
+#
+#    # split into shell words also at "=", if IFS is unset use the default (blank, \t, \n, \0)
+#    local IFS="${IFS:- \n\t\0}="
+#
+#    # this word is completed
+#    local complt
+#
+#    # if the cursor is following a blank, you are completing in CWD
+#    # the condition would be much nicer, if it's based on IFS
+#    if [[ $LBUFFER[-1] = " " || $LBUFFER[-1] = "=" ]]; then
+#       complt="$PWD"
+#    else
+#       # otherwise take the last word of LBUFFER
+#       complt=${${=LBUFFER}[-1]}
+#    fi
+#
+#    # determine the physical path, if $complt is not an option (i.e. beginning with "-")
+#    [[ $complt[1] = "-" ]] || complt=${complt:A}/
+#
+#    # activate completion only if the file is on a local filesystem, otherwise produce a beep
+#    if [[ ! $complt = /u/* && ! $complt = /another/nfs-mount/* ]]; then    
+#       zle expand-or-complete
+#    else    
+#       echo -en "\007"
+#    fi
+# }
+# zle -N restricted-expand-or-complete
+# bindkey "^I" restricted-expand-or-complete

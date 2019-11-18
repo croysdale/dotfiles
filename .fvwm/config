@@ -1,0 +1,120 @@
+# Fvwm main {
+# vim: set sw=4 ts=4 sts=4 et tw=78 foldmarker={,} foldlevel=0 foldmethod=marker spell:
+#########
+#  ____________________________
+# (   _________________________)
+#  ) (__  _  _  _    _  
+# (   __)( \/ )( \/\/ )/\/\
+#  ) (    \  /  \    //    \
+# (___)    \/    \/\/(_/\/\_) 2.6.2 
+#
+# fvwm2rc resource file
+#
+# }
+
+# Set Environment variables {
+SetEnv fvwm_home             $[HOME]/.fvwm
+SetEnv fvwm_img              $[fvwm_home]/images
+SetEnv fvwm_icon             /usr/share/icons/hicolor
+SetEnv fvwm_tmp              $[fvwm_home]/tmp
+SetEnv fvwm_pixmaps          /usr/share/pixmaps 
+SetEnv fvwm_scrpt            $[fvwm_home]/scripts
+SetEnv fvwm_wallpapers       $[fvwm_img]/wallpaper
+SetEnv fvwm_icon_size        96
+SetEnv fvwm_image_magic      /global/freeware/SunOS/5.10_x86/ImageMagick-6.4.3/bin/
+#SetEnv fvwm_font             "xft:Bitstream Vera Sans Mono"
+#SetEnv fvwm_font              "-adobe-helvetica-bold-r-normal--14-100-100-100-p-82-iso8859-1"
+SetEnv fvwm_font            "-adobe-helvetica-bold-r-normal--11-80-100-100-p-60-iso8859-1"
+SetEnv fvwm_font17          "-adobe-helvetica-medium-r-normal--17-120-100-100-p-88-iso8859-1"
+SetEnv fvwm_font18          "-adobe-helvetica-bold-o-normal--18-180-75-75-p-104-iso8859-1"
+SetEnv fvwm_font20          "-adobe-helvetica-bold-o-normal--20-140-100-100-p-103-iso8859-1"
+
+# Available themes: arctic, smokey, solarized
+SetEnv  fvwm_theme      solarized
+SetEnv  fvwm_theme_img    $[fvwm_home]/deco/$[fvwm_theme].30px
+
+SetEnv  fvwm_browser    "firefox"
+SetEnv  fvwm_editor     gvim
+SetEnv  fvwm_term       /usr/X/bin/xterm
+
+SetEnv  fvwm_display    $[HOST]:$[DISPLAY]
+
+SetEnv S_base03        #002b36
+SetEnv S_base02        #073642
+SetEnv S_base01        #586e75
+SetEnv S_base00        #657b83
+# }
+
+
+# Set the image path
+ImagePath $[fvwm_icon]/32x32/apps:$[fvwm_icon]/32x32/apps;.png:$[fvwm_home]/images/mini:$[fvwm_home]/images/icons:$[fvwm_home]/icons:$[fvwm_pixmaps]:
+ImagePath $[fvwm_icon];.png:+
+
+# Shell commands 
+Test (f /bin/bash) ExecUseShell /bin/bash
+
+# Virtual Desktops{
+DesktopSize                  1x1
+# }
+
+
+## xmodmap -e "add Mod2 = Num_Lock"
+## xmodmap -e "clear Num_Lock"
+## xmodmap -e "add Mod5 = Scroll_Lock"
+## At Synopsys, you need to run this:
+## xmodmap -e "clear mod3"
+
+IgnoreModifiers  
+
+# This puts the resize/geometry super-mini-window-things in the middle
+#  of the screen rather than the upper-left corner.
+# Emulate    Mwm
+# Useful for placement manipulation (set it under comment)
+HideGeometryWindow Never
+OpaqueMoveSize  unlimited
+SetAnimation    10  -.01 0 .01 .03 .08 .18 .3 .45 .6 .75 .85 .90 .94 .97 .99 1.0
+ColormapFocus  FollowsFocus
+OpaqueMoveSize  -1
+BugOpts         FlickeringMoveWorkAround On
+XorValue        55555
+#####
+# Mouse and Focus Behavior
+###########
+ClickTime                    350
+MoveThreshold                3
+
+## Don't let maximize grow windows over the bottom tasker or right pager
+#--------------------------- Left Right Top Bot
+EwmhBaseStruts               0 0 0 0
+
+Read  $[fvwm_home]/deco/$[fvwm_theme].fvwm2rc
+
+Read  $[fvwm_home]/conf/style.fvwm2rc 
+
+setEnv defaultMonitor "Monitor3800x1200"
+
+Read  $[fvwm_home]/conf/monitors.fvwm2rc
+
+Read  $[fvwm_home]/conf/functions.fvwm2rc
+
+Read  $[fvwm_home]/conf/fullmaximize.fvwm2rc
+
+Read  $[fvwm_home]/conf/packwindows.fvwm2rc
+
+Read  $[fvwm_home]/conf/mousebindings.fvwm2rc
+
+Read  $[fvwm_home]/conf/keybindings.fvwm2rc
+
+Read  $[fvwm_home]/conf/menu.fvwm2rc
+
+Read  $[fvwm_home]/conf/modules.fvwm2rc
+
+Read  $[fvwm_home]/conf/pager.fvwm2rc
+
+#Read	$[fvwm_home]/conf/topbar.fvwm2rc
+
+#####
+# Local config overrides
+###########
+Read	$[fvwm_home]/local_config
+

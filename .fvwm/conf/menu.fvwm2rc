@@ -1,0 +1,176 @@
+# Menu Header {{
+# vim: set sw=4 ts=4 sts=4 et tw=78 foldmarker={{,}} foldlevel=0 foldmethod=marker spell:
+# }}
+
+# Menu Global MenuStyle {{
+MenuStyle *		BorderWidth 3, HilightBack, ActiveFore
+MenuStyle *		MenuColorset 60, ActiveColorset 0
+MenuStyle *		Hilight3DThickness 1, Animation
+MenuStyle *		PopupDelay 300, PopdownImmediately, PopupOffset 0 100
+MenuStyle *		TitleUnderlines1, TrianglesSolid
+MenuStyle *		ItemFormat "%s%|%5.i%5.5l%5.5r%.5>%|"
+MenuStyle *		VerticalItemSpacing 0, VerticalTitleSpacing 0
+MenuStyle *		Font "-adobe-helvetica-bold-r-normal--14-100-100-100-p-82-iso8859-1"
+# "}}"
+
+# Menu WindowList MenuStyle  {{
+MenuStyle WindowList	HilightBack, ActiveFore
+MenuStyle WindowList	MenuColorset 60, ActiveColorset 0
+MenuStyle WindowList	Hilight3DThickness 1, Animation
+MenuStyle WindowList	PopupDelay 200, PopdownImmediately, PopupOffset 0 100
+MenuStyle WindowList    ItemFormat "%.9s%.9|%.9i%.5l%.5l%.5r%.5i%2.3>%1|"
+MenuStyle WindowList		Font "-adobe-helvetica-bold-r-normal--14-100-100-100-p-82-iso8859-1"
+# }}
+
+# All MenuFvwmWindowOps menus {{
+
+# Menu MenuFvwmWindowOps {{
+DestroyMenu	MenuFvwmWindowOps
+AddToMenu	MenuFvwmWindowOps
++ "Move"		Move
++ "Resize"		Resize
++ "MoveToDesk"		Popup MenuFvwmMoveToDesk
++ "MoveToPage"		Popup MenuFvwmMoveToPage
++ "(De)Iconify"		Thumbnail
++ "(Un)Maximize"	Maximize
++ "Maximize horz"	Maximize True grow 0
++ "Maximize vert"	Maximize True 0 grow
++ "Maximize left monitor <CM> m"     FvwmMaximizeLeftMonitor	
++ "Maximize right monitor <SCM> ->"	FvwmMaximizeRightMonitor
++ "(Un)Shade"		WindowShade
++ "(Un)Stick"		Stick
++ "" Nop
++ "Close"		Close
++ "Delete"		Delete
++ "Destroy"		Destroy
++ "" Nop
++ "StaysOnTop"		Pick (CirculateHit) Layer 0 6
++ "StaysPut"		Pick (CirculateHit) Layer 0 4
++ "StaysOnBottom"	Pick (CirculateHit) Layer 0 2
++ "" Nop
++ "Window Screenshot"	Pick (CirculateHit) FvwmWindowScreenshot
++ "Screenshot"		FvwmDesktopScreenshot 5
++ "" Nop
++ "Identify"		Module FvwmIdent
+#}}
+
+# Menu MenuFvwmMoveToPage {{
+DestroyMenu	MenuFvwmMoveToPage
+AddToMenu	MenuFvwmMoveToPage
++ "Page 1"		MoveToPage 0 0
++ "Page 2"		MoveToPage 0 1
++ "Page 3"		MoveToPage 1 0
++ "Page 4"		MoveToPage 1 1
+# }}
+
+# Menu MenuFvwmMoveToDesk {{
+DestroyMenu	MenuFvwmMoveToDesk
+AddToMenu	MenuFvwmMoveToDesk
++ "Desk &1"		MoveToDesk 0 0 0 3
++ "Desk &2"		MoveToDesk 0 1 0 3
++ "Desk &3"		MoveToDesk 0 2 0 3
++ "Desk &4"		MoveToDesk 0 3 0 3
++ "Desk &5"		MoveToDesk 0 4 0 3
++ "Desk &6"		MoveToDesk 0 5 0 3
++ "Desk &7"		MoveToDesk 0 6 0 3
++ "Desk &8"		MoveToDesk 0 7 0 3
+# }}
+
+#}}
+
+
+# Menu FuncFvwmMenuDirectory {{
+DestroyFunc FuncFvwmMenuDirectory 
+AddToFunc   FuncFvwmMenuDirectory 
++ I PipeRead 'fvwm-menu-directory -d "$0" --check-subdir --links'
+
+# For testing of new functions
+DestroyMenu "FvwmMenuFilePopup"
+AddToMenu   "FvwmMenuFilePopup" 
++ MissingSubMenuFunction FuncFvwmMenuDirectory
++ "/" Popup /
++ "/etc" Popup /etc
++ "Home Directory" Popup $[HOME]
+# }}
+
+# All MenuFvwmRoot menues {{
+
+# Menu MenuFvwmRoot {{
+DestroyMenu	MenuFvwmRoot
+AddToMenu	"MenuFvwmRoot"
+
+## Using qrsh even though it randomly crashes so that I can use uxterm
++ "Xterm"            popup MenuXterm
++ "TMUX"             popup MenuTMUX
++ "Edit FVWM Config" Exec exec /depot/vim-7.3/bin/gvim $[fvwm_home]/local_config
++ "Edit Desktops"    Exec exec /depot/vim-7.3/bin/gvim $[fvwm_home]/desktops
++ "Help"             popup MenuHelp
++ "WindowLists"      popup WindowLists
+# + "Arrange"          popup ArrangeWindows
++ "Monitor"          popup Monitor
++ "Update DISPLAY"   Exec exec echo "setenv DISPLAY $[HOSTNAME]$[DISPLAY]" >> ~/.display
+#+ "Dirs"             popup FvwmMenuFilePopup
++ "Quitter"          popup MenuQuit-Verify
+# }}
+
+
+# MenuXterm  {{
+DestroyMenu     MenuXterm
+AddToMenu       MenuXterm
++ "Local    %mini.term.xpm%"  Exec exec xterm -sl 1000  -fn "-misc-fixed-medium-r-normal--15-120-100-100-c-90-iso8859-1"
+# }}
+
+# MenuTMUX {{
+DestroyMenu     MenuTMUX
+AddToMenu       MenuTMUX
++ "Restore tmux   %mini.term.xpm%"  Exec exec ~/bin/restore_all_tmux
++ "Start   tmux   %mini.term.xpm%"  Exec exec ~/bin/start_all_tmux
+# }}
+
+# MenuHelp {{
+DestroyMenu     MenuHelp
+AddToMenu       MenuHelp
++ "Fvwm"        Exec exec /depot/vim-7.3/bin/gvim /global/berryweb/doc/FVWM.wiki
++ "VIM"         Exec exec /depot/vim-7.3/bin/gvim /global/berryweb/doc/VIM.wiki
++ "UGE"         Exec exec /depot/vim-7.3/bin/gvim /global/berryweb/doc/UGE.wiki
++ "TMUX"        Exec exec /depot/vim-7.3/bin/gvim /global/berryweb/doc/TMUX.wiki
+# }}
+
+# MenuMonitor {{
+DestroyMenu     Monitor
+AddToMenu       Monitor
++ "3800x1200 "  Monitor3800x1200
++ "1900x1200 "  Monitor1900x1200
++ "1900x1080 "  Monitor1900x1080
++ "2500x1600 "  Monitor2500x1600
++ "1440x900 "  Monitor1440x900
+# }}
+
+# MenuQuit-Verify {{
+DestroyMenu     MenuQuit-Verify
+AddToMenu       MenuQuit-Verify
++ "--= Session =--" Title
++ "Restart" Restart
++ "Disconnect DSA" Exec exec /opt/CTXSmf/bin/ctxdisconnect
+#+ "Quit" Quit
+# }}
+
+# Menu ArrangeWindows {{
+DestroyMenu     ArrangeWindows
+AddToMenu       ArrangeWindows
++ "Tile 3 row"        FvwmTile -mn 3 -resize 0 0 95 98
++ "Tile 3 row nosize" FvwmTile -mn 3 0 0 95 98
++ "Tile 2 row"        FvwmTile -mn 2 -resize 0 0 95 98
++ "Cascade"           FvwmCascade
+# }}
+
+# Menu Windowlists {{
+DestroyMenu     Windowlists
+AddToMenu       Windowlists
++ "ICC Layout"         WindowList (*Layout*), NoCurrentDeskTitle, NoGeometry, IconifiedAtEnd, UseIconName, NoNumInDeskTitle, NoDeskNum
++ "Gvim"               WindowList (*vim*),    NoCurrentDeskTitle, NoGeometry, IconifiedAtEnd, UseIconName, NoNumInDeskTitle, NoDeskNum
++ "Xterms"             WindowList (*xterm*),  NoCurrentDeskTitle, NoGeometry, IconifiedAtEnd, UseIconName, NoNumInDeskTitle, NoDeskNum
+# }}
+
+
+#}}

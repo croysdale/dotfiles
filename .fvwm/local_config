@@ -1,0 +1,163 @@
+# FVWM Local Config file{
+# vim: set sw=4 ts=4 sts=4 et tw=78 foldmarker={,} foldlevel=0 foldmethod=marker spell:
+#
+# }
+
+
+# desk0 should not be used. Skipped to make desk names consistent
+SetEnv desk0   "0 Empty  "
+
+# Read all desktop names from ~/.fvwm/desktops
+Read  $[fvwm_home]/desktops
+
+# Defined the number of virtual Desktops{
+# <number of desk> x <number of pages>
+#DesktopSize                  1x1
+# }
+
+# Define editor to be used {
+#SetEnv  fvwm_editor     gvim
+# }
+
+# Define Styles {
+# More in ~/.fvwm/conf/style.fvwm2rc 
+# http://fvwm.org/doc/unstable/commands/Style.html
+# Style  *  SnapAttraction 20 All Screen
+# Style  *  SnapGrid 1 1
+# Style  * FPFocusByProgram, FPFocusByFunction, FPFocusByFunctionWarpPointer, FPEnterToFocus, 
+# Style  * MouseFocus, MouseFocusClickRaisesOff
+# Put new terminal windows on left side
+# Style "*term"  PositionPlacement +0+0
+## Put new Gvim windows in right side
+# Style "*vim"   PositionPlacement $[RightWinX] 0p
+# }
+
+# { Define colors of Desktops
+*FvwmBacker: Command (Desk 0) -solid $[S_base01]
+*FvwmBacker: Command (Desk 1) -solid $[S_base01]
+*FvwmBacker: Command (Desk 2) -solid $[S_base01]
+*FvwmBacker: Command (Desk 3) -solid $[S_base01]
+*FvwmBacker: Command (Desk 4) -solid $[S_base00]
+*FvwmBacker: Command (Desk 5) -solid $[S_base00]
+*FvwmBacker: Command (Desk 6) -solid $[S_base00] 
+*FvwmBacker: Command (Desk 7) -solid $[S_base00]
+*FvwmBacker: Command (Desk 8) -solid $[S_base00]
+# }
+
+# { Assign names to Desktops
+# $[desk#] are defined in ~/.fvwm/desktops
+DesktopSize                  1x1
+DesktopName                  0    $[desk0]
+DesktopName                  1    $[desk1]
+DesktopName                  2    $[desk2]
+DesktopName                  3    $[desk3]
+DesktopName                  4    $[desk4]
+DesktopName                  5    $[desk5]
+DesktopName                  6    $[desk6]
+DesktopName                  7    $[desk7]
+DesktopName                  8    $[desk8]
+# }
+
+# { Assign name to Desktop menus
+# $[desk#] are defined in ~/.fvwm/desktops
+DestroyMenu	MenuFvwmMoveToDesk
+AddToMenu	MenuFvwmMoveToDesk
++ "Desk &0 $[desk0]"	MoveToDesk 0 0 0 3
++ "Desk &1 $[desk1]"	MoveToDesk 0 1 0 3
++ "Desk &2 $[desk2]"	MoveToDesk 0 2 0 3
++ "Desk &3 $[desk3]"	MoveToDesk 0 3 0 3
++ "Desk &4 $[desk4]"	MoveToDesk 0 4 0 3
++ "Desk &5 $[desk5]"	MoveToDesk 0 5 0 3
++ "Desk &6 $[desk6]"	MoveToDesk 0 6 0 3
++ "Desk &7 $[desk7]"    MoveToDesk 0 7 0 3
++ "Desk &8 $[desk8]"	MoveToDesk 0 8 0 3
+# }
+
+# { Move cursor to left/right window
+# Key Left     A       M  WindowLeft
+# Key Right    A       M  WindowRight
+# Key H        A       M  WindowLeft
+# Key L        A       M  WindowRight
+# }
+
+# Try to force ICC pop-up to be on top of parent
+Style * RaiseTransient
+
+# Vim Mouse Scroll to change font {
+Mouse (*Gvim*) 4 W C FakeKeypress press comma press minus
+Mouse (*Gvim*) 5 W C FakeKeypress press comma press equal
+# }
+
+# Add to Menu Windowlists {
+AddToMenu       Windowlists
++ "tmux"               WindowList (*tmux*),   NoCurrentDeskTitle, NoGeometry, IconifiedAtEnd, UseIconName, NoNumInDeskTitle, NoDeskNum
++ "UGE"                WindowList (*JOB*),    NoCurrentDeskTitle, NoGeometry, IconifiedAtEnd, UseIconName, NoNumInDeskTitle, NoDeskNum
+# }
+
+## Goto Left/Right of screen
+Key Left     A     CS   WindowLeft
+Key Right    A     CS   WindowRight
+Key h        A     CS   WindowLeft
+Key l        A     CS   WindowRight
+
+## Chagne Help menu to allow editing
+DestroyMenu     Help
+AddToMenu       Help
++ "Fvwm"        Exec exec gvim $[fvwm_home]/help.txt
++ "VIM"         Exec exec gvim /global/berryweb/doc/VIM.md
++ "UGE"         Exec exec gvim /global/berryweb/doc/UGE.md
++ "TMUX"        Exec exec gvim /global/berryweb/doc/TMUX.md
+# }}
+
+setEnv defaultMonitor "Monitor1900x1080"
+
+# MenuMonitor {
+DestroyMenu     Monitor
+AddToMenu       Monitor
++ "3800x1200 <SCM> D"  Monitor3800x1200
++ "1900x1080 <SCM> L"  Monitor1900x1080
++ "1500x1100 <SCM> L"  Monitor1500x1100
+# }
+
+Style "*D1.0*" StartsOnDesk 1
+Style "*D2.0*" StartsOnDesk 2
+Style "*D3.0*" StartsOnDesk 3
+Style "*D4.0*" StartsOnDesk 4
+Style "*D5.0*" StartsOnDesk 5
+Style "*D6.0*" StartsOnDesk 6
+Style "*D7.0*" StartsOnDesk 7
+Style "*D8.0*" StartsOnDesk 8
+
+Style "TMUX1" StartsOnDesk 1
+Style "TMUX2" StartsOnDesk 2
+Style "TMUX3" StartsOnDesk 3
+Style "TMUX4" StartsOnDesk 4
+Style "TMUX5" StartsOnDesk 5
+Style "TMUX6" StartsOnDesk 6
+Style "TMUX7" StartsOnDesk 7
+Style "TMUX8" StartsOnDesk 8
+
+# {{ Monitor1500x1100
+DestroyFunc Monitor1500x1100
+AddToFunc   Monitor1500x1100
++ I SetEnv RightWinX        600p
++ I SetEnv TopWinY             0
++ I SetEnv MidWinY          368p
++ I SetEnv BotWinY          738p
++ I SetEnv MaxHeight        -15p
++ I SetEnv LeftWidth        590p
++ I SetEnv RightWidth       812p
++ I SetEnv Monitor         Monitor1500x1100
++ I SetEnv RightMonWidth   1490p
++ I SetEnv RightMonHeight  1100p
++ I SetEnv RightMonWinX       0p
++ I SetEnv RightMonHeight   -15p
++ I EwmhBaseStruts   0     0  0   0
++ I Read $[fvwm_home]/conf/menu.fvwm2rc
++ I *FvwmPager: Geometry 100x800+1400+5
++ I Style  *  IconBox 1000 615 1420 -1, IconGrid 2 3, IconFill top right
++ I KillModule FvwmPager 
++ I Module FvwmPager 1 8
+# }}
+
+

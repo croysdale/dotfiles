@@ -1,0 +1,165 @@
+# Setup new style completion system. To see examples of the old style (compctl
+# based) programmable completion, check Misc/compctl-examples in the zsh
+# distribution.
+#
+# Resources
+# https://mads-hartmann.com/2017/08/06/writing-zsh-completion-scripts.html
+
+# :completion:function:completer:command:argument:tag
+ 
+# :completion::complete:dvips:option-o-1:files
+# says that normal completion was attempted as the first argument to the option -o of the command dvips:
+ 	
+# Auto completion of command line switches for aliases
+setopt completealiases
+
+# Only complete commands/aliases at start of line
+# Removes parameters from matching
+zstyle ':completion:*:-command-:*' tag-order '!parameters'
+
+# Cache
+zstyle ':completion:*' use-cache on
+zstyle ':completion:*' cache-path ~/.zsh/cache
+
+# list of completers to use
+#zstyle ':completion:*::::' completer _expand _complete _ignored _approximate
+# http://stackoverflow.com/questions/24045044/oh-my-zsh-aliases-do-not-autocomplete
+# Breaks tmux_complete_words
+# zstyle ':completion:*::::' completer _expand _complete _ignored _approximate _expand_alias 
+
+# allow one error for every three characters typed in approximate completer
+zstyle -e ':completion:*:approximate:*' max-errors \
+    'reply=( $(( ($#PREFIX+$#SUFFIX)/3 )) numeric )'
+
+# insert all expansions for expand completer
+zstyle ':completion:*:expand:*' tag-order all-expansions
+
+# formatting and messages
+zstyle ':completion:*' verbose yes
+zstyle ':completion:*:descriptions' format '%B%d%b'
+zstyle ':completion:*:messages' format '%d'
+zstyle ':completion:*:warnings' format 'No matches for: %d'
+zstyle ':completion:*:corrections' format '%B%d (errors: %e)%b'
+zstyle ':completion:*' group-name ''
+
+# Completing process IDs with menu selection
+zstyle ':completion:*:*:kill:*' menu yes select
+zstyle ':completion:*:kill:*'   force-list always
+
+# match uppercase from lowercase
+# 2015/06/13 14:45 Appears to cause a hang
+# zstyle ':completion:*' matcher-list 'm:{a-z}={A-Z}'
+
+# Only match some users
+zstyle ':completion:*' users croysdal 
+
+# offer indexes before parameters in subscripts
+zstyle ':completion:*:*:-subscript-:*' tag-order indexes parameters
+
+# command for process lists, the local web server details and host completion
+zstyle ':completion:*:processes' command 'ps -o pid,s,nice,stime,args'
+
+# telnet, rlogin
+zstyle -e ':completion:*:(telnet|rl|rlogin|ssh):*' hosts 'reply=(
+  ${=${(f)"$(ypcat hosts 2>/dev/null)"}%%\#*}
+        )'
+
+# Filename suffixes to ignore during completion (except after rm command)
+zstyle ':completion:*:*:(^rm):*:*files' ignored-patterns '*?.o' '*?.c~'
+# the same for old style completion
+#fignore=(.o .c~ .old .pro)
+
+# ignore completion functions (until the _ignored completer)
+zstyle ':completion:*:functions' ignored-patterns '_*'
+
+zstyle ':completion:*' squeeze-slashes true
+
+zstyle ':completion:*:cd:*' ignore-parents parent pwd tag-order
+
+# Make completion 
+compile=(install clean remove uninstall deinstall)
+compctl -k compile make
+
+# some (useful) completions
+compctl -j -P '%' fg jobs disown
+compctl -g '*.(gz|z|Z|t[agp]z|tarZ|tz)' + -g '*(-/)' gunzip gzcat zcat
+compctl -g '*.tar.Z *.tar.gz *.tgz *.zip *.ZIP *.tar.bz2 *.tar' + -g '*'  show-archive simple-extract
+compctl -g '*(-/)' + -g '.*(/)' cd chdir dirs pushd rmdir dircmp cl tree 
+compctl -g '[^.]*(-/) *.(c|C|cc|c++|cxx|cpp)' + -f cc CC c++ gcc g++
+compctl -g '[^.]*(-/) *(*)' + -f strip ldd gdb
+
+# 'compctl' with regex
+compctl -s '$(ls -1 ~/.colorschemes)' colorscheme
+
+# kill takes signal names as the first argument after -, but job names after %
+compctl -j -P % -x 's[-] p[1]' -k signals -- kill
+# gzip files, but gzip -d only gzipped or compressed files
+compctl -x 'R[-*[dt],^*]' -g '*.(gz|z|Z|t[agp]z|tarZ|tz)(D)' + -g '*(-/D)' + -f -  's[]' -g '^*(.(tz|gz|t[agp]z|tarZ|zip|ZIP|jpg|JPG|gif|GIF|[zZ])|[~#])' + -f -- gzip
+# read '/etc/shells' to complete 'chsh -s'
+compctl -u -x 'c[-1,-s]' -s '$(</etc/shells)' -- chsh
+# For rcs users, co and rlog from the RCS directory.  We don't want to see
+# the RCS and ,v though.
+compctl -g 'RCS/*(D:s@RCS/@@:s/,v//)' + -g '*(-/D)' co rlog rcs{,diff,merge} revdiff logs mymerge cil
+#  Argument to finger and talk is username@hostname 
+compctl -x 'N[-1,@]' -k hosts - 's[]' -u -S '' -- finger talk
+# Fnord!  
+compctl -f -x \
+           'p[1]' -k '(cvf czvf cjvf tvf tzvf tjvf xvf xzvf xjvf)' \
+         - 'p[2] W[1,*z*f*],p[2] W[1,*f*z*]' -g '[^.]*(-/) *.(tar.(gz|z|Z)|taz|tgz)' \
+         - 'p[2] W[1,*I*f*],p[2] W[1,*f*I*]' -g '[^.]*(-/) *.tar.bz2' \
+         - 'p[2] W[1,*f*]' -g '[^.]*(-/) *.tar' + -f -- tar gtar
+
+# ... unless we really want to.
+zstyle '*' single-ignored show
+
+# Remove duplicate entries in my $HISTFILE 
+zstyle ':completion:*:history-words' stop yes
+zstyle ':completion:*:history-words' remove-all-dups yes
+zstyle ':completion:*:history-words' list false
+zstyle ':completion:*:history-words'  yes
+
+#--------------------------------------------------
+# setopt SH_WORD_SPLIT function man_var () {
+#    man_pages=( $^manpath/man*/*(N:t:r:r) )
+#       compctl -k man_pages man
+#          reply=( $man_pages )
+#  }
+#  compctl -K man_var vman pinfo; man_pages=()
+#-------------------------------------------------- 
+
+#https://gist.github.com/blueyed/6856354
+
+## TODO : Add a similar function that searches ~/.zsh_logs/
+_tmux_pane_words() {
+  local expl
+  local -a w
+  if [[ -z "$TMUX_PANE" ]]; then
+    _message "not running inside tmux!"
+    return 1
+  fi
+  # capture current pane first
+  w=( ${(u)=$(tmux capture-pane -J -p)} )
+  for i in $(tmux list-panes -F '#P'); do
+    # skip current pane (handled above)
+    [[ "$TMUX_PANE" = "$i" ]] && continue
+    w+=( ${(u)=$(tmux capture-pane -J -p -t $i)} )
+  done
+  _wanted values expl 'words from current tmux pane' compadd -a w
+}
+ 
+zle -C tmux-pane-words-prefix   complete-word _generic
+zle -C tmux-pane-words-anywhere complete-word _generic
+bindkey '^Xt' tmux-pane-words-prefix
+bindkey '^X^X' tmux-pane-words-anywhere
+
+zstyle ':completion:tmux-pane-words-(prefix|anywhere):*' completer _tmux_pane_words
+zstyle ':completion:tmux-pane-words-(prefix|anywhere):*' ignore-line current
+# display the (interactive) menu on first execution of the hotkey
+zstyle ':completion:tmux-pane-words-(prefix|anywhere):*' menu yes select interactive
+zstyle ':completion:tmux-pane-words-anywhere:*' matcher-list 'b:=* m:{A-Za-z}={a-zA-Z}'
+# }}}
+
+
+compdef _gnu_generic xtermcontrol
+compdef _gnu_generic ack
+

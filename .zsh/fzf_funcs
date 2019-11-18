@@ -1,0 +1,336 @@
+# https://github.com/junegunn/fzf/wiki/examples
+
+## TODO:
+#    Add a Fqdel function to kill UGE jobs
+#    Add as a controller for an icc_shell process
+#    Search for all RDT commands and help
+#    Search all RDT code
+#        Jump to line in file in gvim?
+#        Populate quick list with matches?
+#    fbind : Search all tmux/zsh bindings
+#    Quick search of ICC logfile ... paste into ICC pane
+#       Activate with >icc_Shell   sh fzf_search_icc_log
+#    Search all docs    
+#    fzf ypcat passwd/group
+#
+#
+# if [ -n "$TMUX_PANE" -a ${FZF_TMUX:-1} -ne 0 -a ${LINES:-40} -gt 15 ]; then
+#   _fzf-file-widget() {
+#     local height
+#     height=${FZF_TMUX_HEIGHT:-40%}
+#     if [[ $height =~ %$ ]]; then
+#       height="-p ${height%\%}"
+#     else
+#       height="-l $height"
+#     fi
+#     tmux split-window $height "zsh -c 'source ~/.fzf.zsh; tmux send-keys -t $TMUX_PANE \"\$(__fsel)\"'"
+#   }
+# else
+#   _fzf-file-widget() {
+#     LBUFFER="${LBUFFER}$(__fsel)"
+#     zle redisplay
+#   }
+# fi
+# zle     -N   _fzf-file-widget
+# bindkey '^T^T' _fzf-file-widget
+
+## Removed 2017/02/24 09:23
+# ALT-C - cd into the selected directory
+# _fzf-cd-widget() {
+#   cd "${$(set -o nonomatch; command find * -path '*/\.*' -prune \
+#           -o -type d -print 2> /dev/null | fzf):-.}"
+#   zle reset-prompt
+# }
+# zle     -N    _fzf-cd-widget
+# bindkey '\ec' _fzf-cd-widget
+
+_fzf-history-widget() {
+  # LBUFFER=$(fc -l 1 | fzf +s +m -n..,1,2.. | sed "s/ *[0-9*]* *//")
+  LBUFFER=$(fc -f -l 1 | fzf -e +s | sed "s/^ *[0-9*]* *[0-9/]* *[0-9:]* *//")
+  zle redisplay
+}
+zle     -N   _fzf-history-widget
+# bindkey '^R' fzf-history-widget
+bindkey '^r^l' _fzf-history-widget
+
+
+# grep all docs
+function fzf_docs() {
+    echo $(grep_docs "$1" | fzf )
+}
+
+# grep zsh aliases
+function fzf_alias() {
+    echo $(grep_alias "$1" | fzf )
+}
+
+# grep zsh functions
+function fzf_funcs() {
+    echo $(funlist | fzf )
+}
+
+# Search list of RDT commands (output of ack_rdt)
+function fzf_rdt() {
+    echo $(ack_rdt --no-color "$1" | fzf -e +s)
+}
+
+# Search all zsh bindkeys
+function fzf_bindkey() {
+  echo $( bindkey | sed -re 's/\^\[/<ESC>/' | sed -re 's/\^/<CTRL>/g' | fzf +s )
+}
+
+# Search all tmux keys
+function fzf_tmuxkeys() {
+  echo $( tmux list-keys | fzf +s )
+}
+
+function fzf_uge_jobs() {
+  uge_job_id=$( uge_jobs.pl | fzf +s -m | awk '{print $6}')
+  uge_jobs -j $uge_job_id
+}
+
+# Search cd stack
+function fzf_dirs() {
+  dir=$( dirs -p -v | sort -rn | fzf +s +m)
+  cd `echo $dir | awk '{print $2}'`
+}
+
+function _fzf-qdel-widget() {
+  LBUFFER=$( uge_jobs.pl | fzf -m +s | awk '{print $6}')
+  LBUFFER="qdel $LBUFFER"
+  zle redisplay
+}
+zle -N _fzf-qdel-widget
+alias fzf_qdel=_fzf-qdel-widget
+bindkey '^f^q' _fzf-qdel-widget 
+
+
+function _fzf-dirs-widget () {
+  echo $ZLE_STATE
+  LBUFFER=$( dirs -p -v | sort -rn | sed -e 's/\t/:  /' | fzf +s +m | awk '{print $2}')
+  LBUFFER="cd $LBUFFER"
+  zle redisplay
+}
+zle -N _fzf-dirs-widget 
+bindkey '^t' _fzf-dirs-widget 
+
+# fe [FUZZY PATTERN] - Open the selected file with the default editor
+#   - Bypass fuzzy finder if there's only one match (--select-1)
+#   - Exit if there's no match (--exit-0)
+
+# Find file with fzf and edit with gvim_tab
+function fe() {
+  local file
+  file=$(fzf --query="$1" --select-1 --exit-0)
+  # [ -n "$file" ] && ${EDITOR:-vim} "$file"
+  [ -n "$file" ] && source ~croysdal/bin/zsh_scripts/gvim_tab "$file"
+}
+
+# # Find file with fzf and edit with vim
+# function fvim() {
+#   local file
+#   file=$(fzf --query="$1" --select-1 --exit-0)
+#   [ -n "$file" ] && ${EDITOR:-vim} "$file"
+# }
+#
+# # cd to selected directory (fzf)
+# function fd() {
+#   local dir
+#   dir=$(find ${1:-*} -path '*/\.*' -y
+# }
+
+# fe [FUZZY PATTERN] - Open the selected file with the default editor
+#   - Bypass fuzzy finder if there's only one match (--select-1)
+#   - Exit if there's no match (--exit-0)
+
+# Find file with fzf and edit with gvim_tab
+function fe() {
+  local file
+  file=$(fzf --query="$1" --select-1 --exit-0)
+  # [ -n "$file" ] && ${EDITOR:-vim} "$file"
+  [ -n "$file" ] && source ~croysdal/bin/zsh_scripts/gvim_tab "$file"
+}
+
+# Find file with fzf and edit with vim
+function fvim() {
+  local file
+  file=$(fzf --query="$1" --select-1 --exit-0)
+  [ -n "$file" ] && ${EDITOR:-vim} "$file"
+}
+
+# cd to selected directory (fzf)
+function fd() {
+  local dir
+  dir=$(find ${1:-*} -path '*/\.*' -prune \
+                  -o -type d -print 2> /dev/null | fzf +m) &&
+  cd "$dir"
+}
+
+# TODO : Simplify to the old code now that this works
+# Find ICC docs (Need ICC on MANPATH)
+# function fzf_icc() {
+#   local icc
+#   fzf --query="$1" < ~/.vim/syntax/build/icc/icc.dict >! /tmp/fzf.result 
+#   icc=$(</tmp/fzf.result)
+#   Man $icc
+# }
+
+# Find ICC2 docs 
+function fzf_icc2() {
+  local icc
+  cat ${HOME}/.icc2_man | fzf --query="$1" >! /tmp/fzf.result 
+  icc=$(</tmp/fzf.result)
+  Man $icc
+}
+
+v() {
+  local files
+  files=$(grep '^>' ~/.viminfo | cut -c3- |
+          while read line; do
+            [ -f "${line/\~/$HOME}" ] && echo "$line"
+          done | fzf -d -m -q "$*" -1) && source ~croysdal/bin/zsh_scripts/gvim_tab ${files//\~/$HOME}
+}
+
+## Disable correction for commands
+alias fe="nocorrect fe"
+
+# repeat history
+function fzf_hist() {
+  echo $(([ -n "$ZSH_NAME" ] && fc -l 1 || history) | sed 's/.*[0-9]* *//'| fzf +s )
+}
+
+# repeat full history from today (all shells)
+function fzf_hist_today() {
+  echo $( cat ${HOME}/.zsh_logs/*(om[1]) | sed -re 's/.* [0-9]+ //' | fzf +s )
+}
+
+# repeat full history from week (all shells)
+function fzf_hist_week() {
+  echo $(([ -n "$ZSH_NAME" ] && cat ${HOME}/.zsh_logs/*(om[1,7]) ) | sed -re 's/.* [0-9]+ //'| fzf +s )
+}
+
+# repeat full history from month (all shells)
+function fzf_hist_month() {
+  echo $(([ -n "$ZSH_NAME" ] && cat ${HOME}/.zsh_logs/*(om[1,31]) ) | sed -re 's/.* [0-9]+ //'| fzf +s )
+}
+
+# repeat full history (all shells)
+function fzf_hist_full() {
+  echo $(([ -n "$ZSH_NAME" ] && cat ${HOME}/.zsh_logs/* ) | sed -re 's/.* [0-9]+ //'| fzf +s )
+}
+
+# <CTRL>R t bindkey
+function _fzf-history-full-today-widget() {
+    echo $ZLE_STATE
+  LBUFFER=$( cat ${HOME}/.zsh_logs/*(om[1])  | sed -re 's/.* [0-9]+ //'| fzf +s +m -n..,1,2.. )
+  zle redisplay
+}
+zle -N _fzf-history-full-today-widget
+bindkey '^F^t' _fzf-history-full-today-widget
+
+# <CTRL>R w bindkey
+function _fzf-history-full-week-widget() {
+    echo $ZLE_STATE
+  LBUFFER=$( cat ${HOME}/.zsh_logs/*(om[1,7])  | sed -re 's/.* [0-9]+ //'| fzf +s +m -n..,1,2.. )
+  zle redisplay
+}
+zle -N _fzf-history-full-week-widget
+bindkey '^F^w' _fzf-history-full-week-widget
+
+# <CTRL>R m bindkey
+function _fzf-history-full-month-widget() {
+    echo $ZLE_STATE
+  LBUFFER=$( cat ${HOME}/.zsh_logs/*(om[1,31])  | sed -re 's/.* [0-9]+ //'| fzf +s +m -n..,1,2.. )
+  zle redisplay
+}
+zle -N _fzf-history-full-month-widget
+bindkey '^F^m' _fzf-history-full-month-widget
+
+# <CTRL>R f bindkey
+function _fzf-history-full-full-widget() {
+    echo $ZLE_STATE
+  LBUFFER=$( cat ${HOME}/.zsh_logs/*(om)  | sed -re 's/.* [0-9]+ //'| fzf +s +m -n..,1,2.. )
+  zle redisplay
+}
+zle -N _fzf-history-full-full-widget
+bindkey '^F^h' _fzf-history-full-full-widget
+
+
+# kill process (fzf)
+function fkill() {
+  ps -ef | sed 1d | fzf -m | awk '{print $2}' | xargs kill -${1:-9}
+} 
+
+# kill UGE job (fzf)
+# TODO How do I get this to require a confirm prompt?
+function fqdel() {
+    qdel $(uge_jobs.pl | fzf | sed -re 's/.* ([0-9]+)/\1/')
+}
+
+# This is a helper function that splits the current pane to start the given
+# command ($1) and sends its output back to the original pane with any number of
+# optional keys (shift; $*).
+
+# function fzf_tmux_helper() {
+#   [ -n "$TMUX_PANE" ] || return
+#   local cmd=$1
+#   shift
+#   tmux split-window -p 40 \
+#     "zsh -c \"\$(tmux send-keys -t $TMUX_PANE \"\$(source ~/.fzf.zsh; $cmd)\" $*)\""
+# }
+
+# This is the function we are going to run in the split pane.
+# - "find" to list the directories
+# - "sed" will escape spaces in the paths.
+# - "paste" will join the selected paths into a single line
+
+# function fzf_tmux_dir() {
+#   fzf_tmux_helper \
+#     'find * -path "*/\.*" -prune -o -type d -print 2> /dev/null |
+#      fzf --multi |
+#      sed "s/ /\\\\ /g" |
+#      paste -sd" " -' Space
+# }
+
+# Switch to another tmux window tmux select-window -t 
+function fw() {
+  local window
+  window=$(tmux list-windows -F "#{window_index} #{window_name}" | \
+    fzf --query="$1" --select-1 --exit-0 | \
+    sed -re 's/ *[0-9]+ //' ) &&
+  tmux select-window -t "$window"
+}
+
+# Attach to a tmux session 
+function fa() {
+  local session
+  session=$(tmux list-sessions | \
+    fzf --query="$1" --select-1 --exit-0) &&
+  tmux attach-session -t "$session"
+}
+
+# Switch to another tmux session 
+function fs() {
+  local session
+  session=$(tmux list-sessions -F "#{session_name}" | \
+    fzf --query="$1" --select-1 --exit-0) &&
+  tmux switch-client -t "$session"
+}
+
+## Don't store these in history
+alias fa " fa"
+alias fw " fw"
+alias fs " fs"
+
+unalias z 2> /dev/null
+# z History of visited directories
+function z() {
+  if [[ -z "$*" ]]; then
+    cd "$(_z -l 2>&1 | sed -n 's/^[ 0-9.,]*//p' | fzf -x)"
+  else
+    _z "$@"
+  fi
+}
+
+# Bind CTRL-X-CTRL-D to fzf_tmux_dir
+# bindkey '"\C-x\C-d": "$(fzf_tmux_dir)\e\C-e"'

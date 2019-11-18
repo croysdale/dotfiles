@@ -1,0 +1,207 @@
+# Key Bindings Header {
+# vim: set sw=4 ts=4 sts=4 et tw=78 foldmarker={,} foldmethod=marker spell:
+# Examples::::
+# http://zensites.net/fvwm/guide/bindings.html
+# http://www.xteddy.org/~n6tadam/fvwm-ckb.txt
+# }
+
+# Legend {
+# Alt                      Move window
+# Ctrl-Shift               Go   to Desk/Page
+# Ctrl-Shift-Alt           Move to Desk/Page
+# Ctrl-     -Alt           Maximize
+# Ctrl-Shift-Alt           Maximize vertical only
+# }
+
+# Misc Hot Keys {
+Key r          R       A   Restart
+Key r          A       M   Restart
+Key semicolon  A       M   FvwmConsole
+Key L          A      SCM  Monitor1900x1080  # laptop
+Key D          A      SCM  Monitor3800x1200  # desktop
+Key 8          WTSF   CM   Resize 80c w+0
+Key i          WTSF   SCM  FvwmIdent
+# }
+
+# Go to Pages / Desks {
+
+# Ctrl-Shift     Arrow     Goto Pages and Desks with arrow keys {
+Key Left     A     CS   GotoPage  -1p  0p
+Key Right    A     CS   GotoPage  +1p  0p
+Key Up       A     CS   GotoDesk  -1 1 8
+Key Down     A     CS   GotoDesk   1 1 8
+Key p        WTSF   CM  Pick (CirculateHit) FvwmWindowScreenshot
+# }
+
+# Ctrl-Shift     vim-keys     Goto Pages and Desks with arrow keys {
+Key h        A     CS   GotoPage  -1p  0p
+Key l        A     CS   GotoPage  +1p  0p
+Key k        A     CS   GotoDesk  -1 1 8
+Key j        A     CS   GotoDesk   1 1 8
+# }
+
+# Ctrl-Shift-Num           Goto Desk # {
+Key 0          A CS GoToDesk 0 0
+Key 1          A CS GoToDesk 0 1
+Key 2          A CS GoToDesk 0 2
+Key 3          A CS GoToDesk 0 3
+Key 4          A CS GoToDesk 0 4
+Key 5          A CS GoToDesk 0 5
+Key 6          A CS GoToDesk 0 6
+Key 7          A CS GoToDesk 0 7
+Key 8          A CS GoToDesk 0 8
+Key 9          A CS GoToDesk 0 9
+Key KP_0       A CS GoToDesk 0 0
+Key KP_1       A CS GoToDesk 0 1
+Key KP_2       A CS GoToDesk 0 2
+Key KP_3       A CS GoToDesk 0 3
+Key KP_4       A CS GoToDesk 0 4
+Key KP_5       A CS GoToDesk 0 5
+Key KP_6       A CS GoToDesk 0 6
+Key KP_7       A CS GoToDesk 0 7
+Key KP_8       A CS GoToDesk 0 8
+Key KP_9       A CS GoToDesk 0 9
+Key KP_End     A CS GoToDesk 0 1
+Key KP_Down    A CS GoToDesk 0 2
+Key KP_Next    A CS GoToDesk 0 3
+Key KP_Left    A CS GoToDesk 0 4
+Key Begin      A CS GoToDesk 0 5
+Key KP_Right   A CS GoToDesk 0 6
+Key KP_Home    A CS GoToDesk 0 7
+Key KP_Up      A CS GoToDesk 0 8
+Key KP_Prior   A CS GoToDesk 0 9
+# }
+
+# }
+
+# Move Windows to Pages / Desks {
+
+# Ctrl-Shift-Alt-Arrow      Move windows to Pages and Desks with arrow keys {
+# Key Left     WFST     CSM   MoveAndGotoPage -1p 0p
+# Key Right    WFST     CSM   MoveAndGotoPage +1p 0p
+Key Up       WFST     CSM   MoveAndGotoDesk  -1 1 8
+Key Down     WFST     CSM   MoveAndGotoDesk   1 1 8
+# }
+
+# Ctrl-Shift-Alt vim keys   Move windows to Pages and Desks with arrow keys {
+# Key  h       WFST     CSM   MoveAndGotoPage -1p 0p
+# Key  l       WFST     CSM   MoveAndGotoPage +1p 0p
+Key  k       WFST     CSM   MoveAndGotoDesk  -1
+Key  j       WFST     CSM   MoveAndGotoDesk   1
+# }
+
+# Ctrl-Shift-Alt-Num        Move to Desk # {
+## MoveAndGotoDesk 0 #  -- 0 means 2nd number aosolute
+Key 0        WFST     CSM   MoveAndGotoDesk 0  0
+Key 1        WFST     CSM   MoveAndGotoDesk 0  1
+Key 2        WFST     CSM   MoveAndGotoDesk 0  2
+Key 3        WFST     CSM   MoveAndGotoDesk 0  3
+Key 4        WFST     CSM   MoveAndGotoDesk 0  4
+Key 5        WFST     CSM   MoveAndGotoDesk 0  5
+Key 6        WFST     CSM   MoveAndGotoDesk 0  6
+Key 7        WFST     CSM   MoveAndGotoDesk 0  7
+Key 8        WFST     CSM   MoveAndGotoDesk 0  8
+Key 9        WFST     CSM   MoveAndGotoDesk 0  9
+# }
+
+# }
+
+# Move Windows within Page { 
+# Alt-Arrow               
+#Key Left     WTSF       M  PackWrapperLeft
+#Key Right    WTSF       M  PackWrapperRight
+#Key Up       WTSF       M  PackWrapperUp
+#Key Down     WTSF       M  PackWrapperDown
+# }
+
+# Grow/Shrink windows down/right by single character { 
+# Shift-Alt-Arrow                
+Key Up         WFST SM Resize keep w-1c
+Key Down       WFST SM Resize keep w+1c
+Key Left       WFST SM Resize w-1c keep
+Key Right      WFST SM Resize w+1c keep
+Key k          WFST SM Resize keep w-1c
+Key j          WFST SM Resize keep w+1c
+Key h          WFST SM Resize w-1c keep
+Key l          WFST SM Resize w+1c keep
+# }
+
+# Ctrl-Alt-Arrow                Place window on page {
+Key Up         WFST CM  Raise
+Key Down       WFST CM  Lower
+Key Left       WFST CM  FvwmMaximizeLeft
+Key Right      WFST CM  FvwmMaximizeRight
+Key Right      WFST SCM FvwmMaximizeRightMonitor
+Key comma      WFST CM  FvwmMaximizeLeft
+Key period     WFST CM  FvwmMaximizeRight
+#}
+
+# Ctrl-Alt-hjkl             Place window on page {
+Key h          WFST CM FvwmMaximizeLeft
+Key l          WFST CM  FvwmMaximizeRight
+# Used for laptop monitor mode
+#Key l          WFST SCM FvwmMaximizeRightMonitor
+Key k          WFST CM  Raise
+Key j          WFST CM  Lower
+#}
+
+# Ctrl-Alt-M/G/I            Maximize / Iconify  {
+Key m          WTSF CM   FvwmMaximizeLeftMonitor
+Key m          WTSF SCM  Maximize 100 100
+Key g          WTSF CM   Maximize grow grow
+Key i          WTSF CM   Thumbnail    # Minimize, Iconify
+# }
+
+# Alt-NumKey               Place window on page {
+Key KP_7       WFST M FvwmGridMove $[LeftWinX]   $[TopWinY]
+Key KP_8       WFST M FvwmGridMove $[CenterWinX] $[TopWinY]
+Key KP_9       WFST M FvwmGridMove $[RightWinX]  $[TopWinY]
+Key KP_4       WFST M FvwmGridMove $[LeftWinX]   $[MidWinY]
+Key KP_5       WFST M FvwmGridMove $[CenterWinX] $[MidWinY]
+Key KP_6       WFST M FvwmGridMove $[RightWinX]  $[MidWinY]
+Key KP_1       WFST M FvwmGridMove $[LeftWinX]   $[BotWinY]
+Key KP_2       WFST M FvwmGridMove $[CenterWinX] $[BotWinY]
+Key KP_3       WFST M FvwmGridMove $[RightWinX]  $[BotWinY]
+Key KP_Home    WFST M FvwmGridMove $[LeftWinX]   $[TopWinY]
+Key KP_Up      WFST M FvwmGridMove $[CenterWinX] $[TopWinY]
+Key KP_Prior   WFST M FvwmGridMove $[RightWinX]  $[TopWinY]
+Key KP_Left    WFST M FvwmGridMove $[LeftWinX]   $[MidWinY]
+#Key KP_Begin   WFST M FvwmGridMove $[CenterWinX] $[MidWinY]
+Key Begin      WFST M FvwmGridMove $[CenterWinX] $[MidWinY]
+Key KP_Right   WFST M FvwmGridMove $[RightWinX]  $[MidWinY]
+Key KP_End     WFST M FvwmGridMove $[LeftWinX]   $[BotWinY]
+Key KP_Down    WFST M FvwmGridMove $[CenterWinX] $[BotWinY]
+Key KP_Next    WFST M FvwmGridMove $[RightWinX]  $[BotWinY]
+# }
+
+# Ctrl-Alt-NumKey          Place windows and grow window on page {
+Key KP_7      WFST CM FvwmGridMoveGrow $[LeftWinX]   $[TopWinY]
+Key KP_8      WFST CM FvwmGridMoveGrow $[CenterWinX] $[TopWinY]
+Key KP_9      WFST CM FvwmGridMoveGrow $[RightWinX]  $[TopWinY]
+Key KP_4      WFST CM FvwmGridMoveGrow $[LeftWinX]   $[MidWinY]
+Key KP_5      WFST CM FvwmGridMoveGrow $[CenterWinX] $[MidWinY]
+Key KP_6      WFST CM FvwmGridMoveGrow $[RightWinX]  $[MidWinY]
+Key KP_1      WFST CM FvwmGridMoveGrow $[LeftWinX]   $[BotWinY]
+Key KP_2      WFST CM FvwmGridMoveGrow $[CenterWinX] $[BotWinY]
+Key KP_3      WFST CM FvwmGridMoveGrow $[RightWinX]  $[BotWinY]
+Key KP_Home   WFST CM FvwmGridMoveGrow $[LeftWinX]   $[TopWinY]
+Key KP_Up     WFST CM FvwmGridMoveGrow $[CenterWinX] $[TopWinY]
+Key KP_Prior  WFST CM FvwmGridMoveGrow $[RightWinX]  $[TopWinY]
+Key KP_Left   WFST CM FvwmGridMoveGrow $[LeftWinX]   $[MidWinY]
+#Key KP_Begin  WFST CM FvwmGridMoveGrow $[CenterWinX] $[MidWinY]
+Key Begin     WFST CM FvwmGridMoveGrow $[CenterWinX] $[MidWinY]
+Key KP_Right  WFST CM FvwmGridMoveGrow $[RightWinX]  $[MidWinY]
+Key KP_End    WFST CM FvwmGridMoveGrow $[LeftWinX]   $[BotWinY]
+Key KP_Down   WFST CM FvwmGridMoveGrow $[CenterWinX] $[BotWinY]
+Key KP_Next   WFST CM FvwmGridMoveGrow $[RightWinX]  $[BotWinY]
+# }
+
+# Alt-NumKeyPlusMinus      Cycle Windows on current desk {
+Key KP_Add A      CM Next (AcceptsFocus, CurrentDesk, !Iconic) Focus
+Key KP_Subtract A CM Prev (AcceptsFocus, CurrentDesk, !Iconic) Focus
+# }
+
+# Alt-PageUpDown           Goto previous Desk and Page {
+Key Page_Down A CM GotoDeskAndPage prev
+Key Page_Up   A CM GotoDeskAndPage prev 
+# }

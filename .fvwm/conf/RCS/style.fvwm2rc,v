@@ -1,0 +1,243 @@
+head	1.6;
+access;
+symbols;
+locks
+	croysdal:1.6; strict;
+comment	@# @;
+
+
+1.6
+date	2015.06.07.00.21.32;	author croysdal;	state Exp;
+branches;
+next	1.5;
+
+1.5
+date	2015.02.03.21.12.33;	author croysdal;	state Exp;
+branches;
+next	1.4;
+
+1.4
+date	2015.02.03.21.11.46;	author croysdal;	state Exp;
+branches;
+next	1.3;
+
+1.3
+date	2015.01.29.22.32.02;	author croysdal;	state Exp;
+branches;
+next	1.2;
+
+1.2
+date	2014.04.25.16.06.56;	author croysdal;	state Exp;
+branches;
+next	1.1;
+
+1.1
+date	2013.12.03.17.15.29;	author croysdal;	state Exp;
+branches;
+next	;
+
+
+desc
+@@
+
+
+1.6
+log
+@Minor cleanup
+@
+text
+@# Style Header {
+# vim: set sw=4 ts=4 sts=4 et tw=78 foldmarker={,} foldmethod=marker spell:
+# }
+
+BugOpts ExplainWindowPlacement true
+# Global Style {
+#Style  *  TileCascadePlacement 
+#Style  *  !MinOverlapPlacement 
+Style  *  SmartPlacement, CleverPlacement
+#Style  *  !UsePPosition, ResizeOpaque
+Style  *  ResizeOpaque
+Style  *  DecorateTransient, DontRaiseTransient
+Style  * RaiseTransient
+Style  *  DontLowerTransient, StackTransientParent
+
+## Prevent ICC from placing ICC sub-windows in wrong location
+Style  *  NoPPosition, !UseTransientPPosition, !UseTransientUSPosition
+Style  *  WindowShadeSteps 20, WindowShadeScrolls, SlipperyIcon
+Style  *  MwmDecor, MWMButtons
+Style  *  HintOverride, MWMFunctions, MWMBorder
+Style  *  NoIconTitle
+Style  *  SnapAttraction 20 All Screen
+Style  *  SnapGrid 1 1
+Style  *  Font $[fvwm_font17]
+Style  * FPFocusByProgram, FPFocusByFunction, FPFocusByFunctionWarpPointer, FPEnterToFocus
+Style  * MouseFocus, MouseFocusClickRaisesOff
+#EdgeScroll                   100  100
+EdgeThickness                 0
+#EdgeResistance               100 100
+#Style * EdgeMoveDelay        1500
+#Style * EdgeMoveResistance   1500
+# }
+
+# Mouse cursor style {
+CursorStyle root  left_ptr
+CursorStyle default  left_ptr 
+CursorStyle position  left_ptr
+CursorStyle sys    left_ptr 
+CursorStyle menu  left_ptr
+CursorStyle title  left_ptr
+CursorStyle resize  fleur
+CursorStyle stroke  cross
+CursorStyle select  draped_box
+# }
+
+# Program Styles {
+Style "*"       Icon programs.xpm
+Style "*"       MiniIcon programs.xpm
+Style "*term*"  MiniIcon mini.xterm.xpm
+Style "URxvt"   MiniIcon mini.xterm.xpm
+Style "Firefox" Icon firefox.png, EWMHMiniIconOverride
+
+## TODO -- Add style for ICC Main   - Open Iconized
+
+## Put new terminal windows on left side
+Style "*term"        PositionPlacement 0 0
+
+## Put new xv windows on left side
+Style "*xv*"         PositionPlacement 0 0
+
+Style "*icc_shell*"   PositionPlacement m+0 m+0
+Style "*FvwmIdent*"   PositionPlacement m+0 m+0, !UsePPosition
+Style "Layout Window" PositionPlacement 1900p 0p
+
+## Put new Gvim windows in right side
+Style "*vim"   PositionPlacement $[RightWinX] 0p
+Style DeskControl NoTitle, NeverFocus, CirculateSkip, WindowListSkip, Sticky, StaysOnBottom, FixedSize, NoHandles
+Style FvwmBar NoTitle, WindowListSkip, CirculateSkip, Sticky, NeverFocus, StaysOnBottom, NoHandles
+# }
+@
+
+
+1.5
+log
+@Added style for Fvwmident to open under cursor
+@
+text
+@d24 2
+a25 2
+Style  *  Font $[fvwm_font]
+Style  * FPFocusByProgram, FPFocusByFunction, FPFocusByFunctionWarpPointer, FPEnterToFocus, 
+d47 4
+a50 6
+Style "*" Icon programs.xpm
+Style "*" MiniIcon programs.xpm
+Style "*term*" MiniIcon mini.xterm.xpm
+Style "*term*" MiniIcon 14
+Style "*vim*" MiniIcon 14
+Style "URxvt" Icon rterm2.xpm, MiniIcon mini.xterm.xpm
+a52 1
+## TODO -- Add style for ICC Layout - fullscreen right monitor
+a60 2
+## Not working ;(
+Style *               !UseUSPosition 
+d62 1
+a62 1
+Style "*Fvwmident*"   PositionPlacement m+0 m+0
+d64 1
+a64 1
+# Style "Layout Window" EWMHPlacementIgnoreWorkingArea 
+@
+
+
+1.4
+log
+@*** empty log message ***
+@
+text
+@d67 1
+a67 1
+# Style "*Fvwmident*"   PositionPlacement m+0 m+0
+d69 1
+a69 1
+Style "Layout Window" EWMHPlacementIgnoreWorkingArea 
+@
+
+
+1.3
+log
+@Multiple updates
+Fixed placement of ICC windows
+Improved xterm placement
+@
+text
+@d8 1
+a8 2
+#Style  *  MinOverlapPlacement 
+# Style  *  SmartPlacement, CleverPlacement
+d10 1
+a10 1
+#Style  *  NoUsePPosition, ResizeOpaque
+a11 2
+#Style  *  BackingStore
+#Style  *  SaveUnder 
+d60 2
+d65 3
+a67 2
+Style *              !UseUSPosition 
+Style "*icc_shell*"  PositionPlacement m+0 m+0
+d69 1
+@
+
+
+1.2
+log
+@*** empty log message ***
+@
+text
+@d2 1
+a2 1
+# vim: set sw=4 ts=4 sts=4 et tw=78 foldmarker={,} foldlevel=0 foldmethod=marker spell:
+d5 1
+d9 1
+d13 2
+a14 2
+Style  *  BackingStore
+Style  *  SaveUnder 
+d16 1
+d18 3
+a24 1
+Style  *  IconBox -800 -330 -1 -1, IconGrid 2 3, IconFill top right
+d31 1
+a31 1
+EdgeThickness                0
+d51 4
+a54 1
+Style "xterm" Icon xterm-blank.xpm, MiniIcon mini.xterm.xpm
+d58 3
+d62 7
+a68 1
+Style "*term"  PositionPlacement +0+0
+d70 1
+a70 1
+Style "*vim"   PositionPlacement 991p 0p
+@
+
+
+1.1
+log
+@Initial revision
+@
+text
+@d15 1
+a15 1
+Style  *  WindowShadeSteps 50, WindowShadeScrolls, SlipperyIcon
+d23 2
+a24 1
+Style  * FPFocusByProgram, FPFocusByFunction, FPFocusByFunctionWarpPointer, FPEnterToFocus, MouseFocus, MouseFocusClickRaisesOff
+d50 2
+d53 1
+a53 3
+Style "Gvim"   PositionPlacement -0 
+## Put new Gvim windows on left side
+Style "*term"  PositionPlacement +0
+@

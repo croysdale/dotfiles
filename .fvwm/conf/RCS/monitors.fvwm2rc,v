@@ -1,0 +1,227 @@
+head	1.3;
+access;
+symbols;
+locks
+	croysdal:1.3; strict;
+comment	@# @;
+
+
+1.3
+date	2015.08.13.18.34.57;	author croysdal;	state Exp;
+branches;
+next	1.2;
+
+1.2
+date	2015.02.23.16.52.38;	author croysdal;	state Exp;
+branches;
+next	1.1;
+
+1.1
+date	2014.09.15.15.13.11;	author croysdal;	state Exp;
+branches;
+next	;
+
+
+desc
+@@
+
+
+1.3
+log
+@Changed MaxHieght to -40p so that it does not overlap taskbar
+@
+text
+@# Menu Header {{
+# vim: set sw=4 ts=4 sts=4 et tw=78 foldmarker={{,}} foldlevel=0 foldmethod=marker spell:
+# }}
+
+## TODO : Caculate coordinates instead of hardcoding them
+
+# {{ Monitor3800x1200
+DestroyFunc Monitor3800x1200
+AddToFunc   Monitor3800x1200
++ I SetEnv Monitor Monitor3800x1200
++ I SetEnv RightWinX        990p
++ I SetEnv RightMonWinX    1920p
++ I SetEnv TopWinY             0
++ I SetEnv MidWinY          368p
++ I SetEnv BotWinY          738p
++ I SetEnv MaxHeight        -40p
++ I SetEnv LeftWidth        990p
++ I SetEnv RightWidth       812p
++ I SetEnv LeftMonWidth    1804p
++ I SetEnv RightMonWidth   1890p
++ I SetEnv RightMonHeight  1200p
++ I EwmhBaseStruts   0     0  0   0
++ I Read $[fvwm_home]/conf/menu.fvwm2rc
++ I *FvwmPager: Geometry 100x600+1812+5
++ I Style  *  IconBox 1600 615 1920 -1, IconGrid 2 3, IconFill top right
++ I KillModule FvwmPager 
++ I Module FvwmPager 1 8
+# }}
+
+# {{ Monitor1900x1200
+DestroyFunc Monitor1900x1200
+AddToFunc   Monitor1900x1200
++ I SetEnv RightWinX    990p
++ I SetEnv TopWinY       0
++ I SetEnv MidWinY      368p
++ I SetEnv BotWinY      738p
++ I SetEnv MaxHeight    -15p
++ I SetEnv LeftWidth        990p
++ I SetEnv RightWidth   812p
++ I SetEnv Monitor      Monitor1900x1200
++ I SetEnv RightMonWidth   1890p
++ I SetEnv RightMonHeight  1200p
++ I SetEnv RightMonWinX    0p
++ I SetEnv RightMonHeight   -15p
++ I EwmhBaseStruts   0     0  0   0
++ I Read $[fvwm_home]/conf/menu.fvwm2rc
++ I *FvwmPager: Geometry 100x600+1812+5
++ I Style  *  IconBox 1600 615 1920 -1, IconGrid 2 3, IconFill top right
++ I KillModule FvwmPager 
++ I Module FvwmPager 1 8
+# }}
+
+# {{ Monitor1900x1080
+DestroyFunc Monitor1900x1080
+AddToFunc   Monitor1900x1080
++ I SetEnv Monitor      Monitor1900x1080
+## Width of left/right monitors. 
++ I SetEnv LeftMonWidth    1804p
++ I SetEnv RightMonWidth   1910p
+## Height of left/right monitors. 
++ I SetEnv RightMonHeight  1080p
++ I SetEnv MaxHeight       1062p
+## Left edge for window on right side of left monitor
++ I SetEnv RightWinX        990p
+## Left edge for window on right side of left monitor
++ I SetEnv RightMonWinX    1900p
+## Top edge when placing in grid (Alt - Num Keys)
++ I SetEnv TopWinY             0
++ I SetEnv MidWinY          368p
++ I SetEnv BotWinY          738p
+## Top edge when placing in grid (Alt - Num Keys)
++ I SetEnv LeftWidth    990p
++ I SetEnv RightWidth       812p
+## Region that windows cannnot be placed
+ + I EwmhBaseStruts   0     0  0   0
+# + I EwmhBaseStruts   0     1900  0   80
+## Location of Pager (right side of left monitor)
++ I *FvwmPager: Geometry 100x600+1812+5
+## Location for Icons (under the Pager)
++ I Style  *  IconBox 1600 615 1920 -1, IconGrid 2 3, IconFill top right
+## Reload menus for new Monitor settings
++ I Read $[fvwm_home]/conf/menu.fvwm2rc
+## Re-start Pager with new location
++ I KillModule FvwmPager 
++ I Module FvwmPager 1 8
+# }}
+
+# {{ Monitor2500x1600
+DestroyFunc Monitor2500x1600
+AddToFunc   Monitor2500x1600
++ I SetEnv Monitor      Monitor2500x1600
++ I SetEnv RightWinX    990p
++ I SetEnv TopWinY       0
++ I SetEnv MidWinY      368p
++ I SetEnv BotWinY      738p
++ I SetEnv MaxHeight    -35p
++ I SetEnv LeftWidth    981p
++ I SetEnv RightWidth   812p
++ I SetEnv RightMonWinX    0p
++ I SetEnv RightMonWidth   1910p
++ I SetEnv RightMonHeight  1148p
++ I EwmhBaseStruts   0     0  0   0
++ I Read $[fvwm_home]/conf/menu.fvwm2rc
++ I *FvwmPager: Geometry 100x600+2412+5
++ I Style  *  IconBox 2200 615 2520 -1, IconGrid 2 3, IconFill top right
++ I KillModule FvwmPager 
++ I Module FvwmPager 1 8
+# }}
+@
+
+
+1.2
+log
+@Many fixes
+@
+text
+@d16 1
+a16 1
++ I SetEnv MaxHeight        -20p
+@
+
+
+1.1
+log
+@*** empty log message ***
+@
+text
+@d1 7
+a7 1
+# { Monitor3800x1200
+d16 2
+a17 3
+#+ I SetEnv MaxHeight         99
++ I SetEnv MaxHeight       1109p
++ I SetEnv LeftWidth        981p
+d20 3
+a22 2
++ I SetEnv RightMonWidth   1910p
++ I SetEnv RightMonHeight  1113p
+d24 5
+a28 1
+# }
+d30 1
+a30 1
+# { Monitor1900x1200
+a33 1
++ I SetEnv RightMonWinX 1920p
+d37 2
+a38 2
++ I SetEnv MaxHeight     99
++ I SetEnv LeftWidth    981p
+d41 5
+d47 5
+a51 1
+# }
+d53 1
+a53 1
+# { Monitor1900x1080
+d57 7
+d65 1
+d67 1
+d71 2
+a72 2
++ I SetEnv MaxHeight       1062p
++ I SetEnv LeftWidth        981p
+d74 8
+a81 3
++ I SetEnv LeftMonWidth    1804p
++ I SetEnv RightMonWidth   1910p
++ I SetEnv RightMonHeight  1062p
+d83 4
+a86 1
+# }
+d88 4
+a91 3
+# { Monitor1440x900
+DestroyFunc Monitor1440x900
+AddToFunc   Monitor1440x900
+a92 1
++ I SetEnv RightMonWinX 1440p
+d94 9
+a102 6
++ I SetEnv MidWinY      33
++ I SetEnv BotWinY      34
++ I SetEnv MaxHeight    90
++ I SetEnv LeftWidth    40
++ I SetEnv RightWidth   40
++ I SetEnv Monitor      Monitor1440x900
+d104 5
+a108 3
+# }
+
+
+@

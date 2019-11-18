@@ -1,0 +1,23 @@
+Style FvwmPager	    Sticky, NoTitle, WindowListSkip, CirculateSkipIcon, CirculateSkip, \
+		    StaysOnBottom, NoHandles, BorderWidth 4, \
+		    FixedSize, !Iconifiable
+
+
+## Set IconBox here. Place directly under the Pager window
+
+DestroyModuleConfig FvwmPager: *
+*FvwmPager: Colorset	    *  14
+*FvwmPager: HilightColorset *  15
+*FvwmPager: BalloonColorset *  16
+*FvwmPager: WindowColorsets 40 41
+*FvwmPager: Balloons	    All
+*FvwmPager: BallonYOffset   +2
+*FvwmPager: BorderWidth	    1
+*FvwmPager: WindowBorderWidth 1
+*FvwmPager: WindowLabelFormat ""
+*FvwmPager: NoMiniIcons
+*FvwmPager: UseSkipList
+*FvwmPager: Rows 8
+*FvwmPager: SolidSeparators
+*FvwmPager: Font $[fvwm_font17]
+#*FvwmPager: SloppyFocus 

@@ -1,0 +1,393 @@
+# A nice GNU Screen fork: tscreen!
+  #[[ -x `which tscreen` ]] && alias screen="tscreen"
+
+# Wrapper for rm(1)
+# Nice but cannot remove directories :/
+#--------------------------------------------------
+#   [[ -x `which shred` ]] && alias rm='shred -u -v'
+#-------------------------------------------------- 
+
+# get top 10 shell commands:
+alias top10='print -l ? ${(o)history%% *} | uniq -c | sort -nr | head -n 10'
+
+# frontend for generic colouriser grcat(1)
+# if [[ -x `which grc` ]]; then
+# 	alias grc='grc --colour=auto'
+# 	alias ping='grc ping'
+# 	alias last='grc last'
+# 	alias netstat='grc netstat'
+# 	alias traceroute='grc traceroute'
+# 	alias diff='grc diff'
+# 	alias gcc='grc gcc'
+# 	alias configure='grc configure'
+# 	alias cvs='grc cvs'
+# fi
+
+alias mv='nocorrect mv -i'       # no spelling correction on mv
+alias cp='nocorrect cp -i'       # no spelling correction on cp
+alias mkdir='nocorrect mkdir' # no spelling correction on mkdir
+alias rm="nocorrect rm -i"
+alias run-help="nocorrect run-help"
+
+alias j=jobs
+alias pu=pushd
+alias po=popd
+alias d='dirs -v'
+alias h='fc -l -E -30'
+alias load_hist='fc -RI'
+# alias history_long=perl -lne 'm#: (\d+):\d+;(.+)# && printf "%s :: %s\n",scalar localtime $1,$2' $HISTFILE
+alias ll='ls -l'
+alias la='ls -a'
+
+# List only file beginning with "."
+alias lsa='ls -ld .*'
+alias ls_small='ls -l *(.Lk-500)'
+
+# Glob tips
+# http://reasoniamhere.com/2014/01/11/outrageously-useful-tips-to-master-your-z-shell/
+# Small file *(.LM-10)
+# New dir     *(/m-5h)
+
+# Remove small logs (<500kb) that have not been modified in 2 days (glob)
+alias rm_small_logs='rm -f *.log(.Lk-500md+2)'
+
+function snapshots ()  {ls -l .snapshot/**/$*}
+
+# Lits only readable files
+ls_readable() { [[ -r $REPLY ]] }
+alias lsr='ls *(+readable)'
+
+alias cpr='cp -R '
+
+# /quick-stat/
+# alias atime="stat -c '%X - %x - %n'"
+# alias mtime="stat -c '%Y - %y - %n'"
+# alias owner="stat -c '%U - %u - %n'"
+# alias group="stat -c '%G - %g - %n'"
+
+#  VIM related aliases ;o) btw. ``$SHELL:t'' is a modifiers from the Z
+#  Shell. In other shells you can use ``${SHELL##*/}'' instead. Valid
+#  Modifiers can be found in ``info -f zsh -n Modifiers''.
+alias :{w,q,wq,qa,wqa,x}{,!}='echo "This is $SHELL:t and not Vi(m)"'
+alias vi="${EDITOR}"
+alias view="${EDITOR} -R"
+alias ex="${EDITOR} -e"
+alias pltags="${VIMRUNTIME}/tools/pltags.pl"
+
+# grep wrapper with search highlighting (<http://www.acme.com/software/hgrep/>)
+# Only for non-linux systems needed (see below)
+#-------------------------------------------------- 
+export GREP_COLOR='0;31'
+# *DO* *NOT* *USE* *--color=always*! ;-)
+alias hgrep='grep --color=auto $*'
+# use perl regular expression (it's evil. isn't it?)
+if [ 0 -eq `echo $SHELL|grep --perl-regexp sh &>/dev/null; echo $?` ]; then
+	 GRP='--perl-regexp'
+else
+	 GRP='--extended-regexp'
+fi
+
+alias clean_warning="perl -i -ne'print unless /^Warning/;'"
+alias clean_error="perl -i -ne'print unless /^Error/;'"
+
+# Quick chmod ;-)
+alias rw-='chmod 600'
+alias rwx='chmod 700'
+alias r--='chmod 644'
+alias x='chmod +x'
+alias r-x='chmod 755'
+
+# ls aliases
+alias 1t='ls -1htr'
+alias ll='ls -lh'
+alias lad='ls -d -- .*(/)'                                           # only show dot-directories
+alias lsa='ls -a -- .*(.)'                                           # only show dot-files
+alias lsd='ls -d -- *(/)'                                            # only show directories
+alias lse='ls -ld -- *(/^F)'                                         # only show empty directories
+alias lsen='ls -d *(/om[1])'                                         # newest directory
+alias lsnew='=ls -rtlh -- *(.) | tail $@ 2&>/dev/null'               # only the newest files
+alias lsold="=ls -rtl -- *(.) | head $@ 2&>/dev/null"                # display the oldest files
+alias lssmall="=ls -Shl -- *(.) | tail $@ 2&>/dev/null"              # display the smallest files
+alias lsx='ls -l -- *(*) | head $@ 2&>/dev/null'                     # only show executables
+alias lssuid='ls -l -- *(s,S) | head $@ 2&>/dev/null'                # only show suid-files
+alias lsbig="ls -lSh -- *(.) | grep -v total | head $@ 2&>/dev/null" # display the biggest files
+
+# List by time
+alias llt="ls -ltrh"
+alias lt="ls -ltrh"
+# List by size
+alias lls="ls --sort=size -lrh"
+# Only croysdal owned
+alias lltc="ls -dltrh *(U:croysdal:)"
+# Only directories
+alias lltd="ls -dltrh *(/)"
+# Only files
+alias lltf="ls -dltrh *(.)"
+
+
+# show sorted directory sizes for all directories
+alias dua='du -s *(/DN) | sort -nr | cut -f 2- | while read a; do du -sh "$a"; done'
+# show sorted directory sizes for visible directories only
+alias duv='du -s *(/N) | sort -nr | cut -f 2- | while read a; do du -sh "$a"; done'
+# show sorted directory sizes for hidden directories only
+alias duh='du -s .*(/N) | sort -nr | cut -f 2- | while read a; do du -sh "$a"; done'
+
+# check out/in RCS revisions
+alias lci='ci -l'
+alias lco='co -zLT'
+# convert from UPPER to lower (or back)
+alias UP2low='for i in *(.); mv $i ${i:l}'
+alias low2UP='for i in *(.); mv $i ${i:u}'
+# ctags are *very* useful
+alias mktags='for i in **/*(/); do (cd $i; eval '\''ctags-exuberant *'\''); done; ctags-exuberant --file-scope=no -R'
+# zmv -- see ``less ${^fpath}/zmv(N)'' for more details.
+alias zcp='zmv -C'
+alias zln='zmv -L'
+# simple replacement for nmap (anywise .. :>)
+alias pscan="nc -vz $1 1-1024"
+
+alias les=less
+
+# suffix aliases (needs Zsh >= 4.*).  Suffix aliases allow the shell
+# to run a command on a file by suffix, e.g 'alias -s ps=gv' makes
+# 'foo.ps' execute 'gv foo.ps'.
+#if [[ $ZSH_VERSION == 4.<->* ]]; then
+if [[ $ZSH_VERSION == 5.<->* ]]; then
+	# some global aliases for redirection
+	alias -g N="&>/dev/null"
+	alias -g 1N="1>/dev/null"
+	alias -g 2N="2>/dev/null"
+	alias -g DN="/dev/null"
+	alias -g PI="|"
+	# Paging with less / head / tail
+	alias -g LS='| less -S'
+	alias -g EL='|& less'
+	alias -g ELS='|& less -S'
+	alias -g TRIM='| cut -c 1-$COLUMNS'
+	alias -g TAB='| column -t'
+	alias -g H='| head'
+	alias -g HL='| head -n $(( +LINES ? LINES - 4 : 20 ))'
+	alias -g EH='|& head'
+	alias -g EHL='|& head -n $(( +LINES ? LINES - 4 : 20 ))'
+	alias -g TL='| tail -n $(( +LINES ? LINES - 4 : 20 ))'
+	alias -g ET='|& tail'
+	alias -g ETL='|& tail -n $(( +LINES ? LINES - 4 : 20 ))'
+	# Sorting / counting
+	alias -g C='| wc -l'
+	alias -g SS='| sort'
+	alias -g Su='| sort -u'
+	alias -g Sn='| sort -n'
+	alias -g Sh='| sort --human'
+	alias -g Shr='| sort --human -r'
+	alias -g Snr='| sort -nr'
+	# grep(1)'ing
+	for switches in {,i}{,l,L}{,r}{,v}; do
+		eval "alias -g  GG$switches='| egrep ${switches:+-$switches}'"
+		eval "alias -g EG$switches='|& egrep ${switches:+-$switches}'"
+		eval "alias -g XG$switches='| xargs egrep ${switches:+-$switches}'"
+		eval "alias -g X0G$switches='| xargs -0 egrep ${switches:+-$switches}'"
+	done
+	# awk
+	alias -g A1="| awk '{print \$1}'"
+	alias -g A2="| awk '{print \$2}'"
+	alias -g A3="| awk '{print \$3}'"
+	alias -g A4="| awk '{print \$4}'"
+	alias -g A5="| awk '{print \$5}'"
+	alias -g A6="| awk '{print \$6}'"
+	alias -g A7="| awk '{print \$7}'"
+	alias -g A8="| awk '{print \$8}'"
+	alias -g A9="| awk '{print \$9}'"
+	alias -g EA='|& awk '
+	alias -g EA1="|& awk '{print \$1}'"
+	alias -g EA2="|& awk '{print \$2}'"
+	alias -g EA3="|& awk '{print \$3}'"
+	alias -g EA4="|& awk '{print \$4}'"
+	alias -g EA5="|& awk '{print \$5}'"
+	alias -g EA6="|& awk '{print \$6}'"
+	alias -g EA7="|& awk '{print \$7}'"
+	alias -g EA8="|& awk '{print \$8}'"
+	alias -g EA9="|& awk '{print \$9}'"
+fi
+
+
+# grep aliases
+function grep_alias () {grep -h --color "$*" ~/.zsh/zshaliases; }
+function grep_fvwm ()  {grep -A 2 -i -h --color "$*" ~/.fvwm/conf/*bindings.fvwm2rc ~/.fvwm/conf/menu.fvwm2rc ~/.fvwm/conf/strokes.fvwm2rc }
+function grep_tmux ()  {grep -A 2 -h --color "$*" ~intel_ac/doc/TMUX.wiki  }
+function grep_zsh  ()  {grep -A 2 -h --color "$*" ~intel_ac/doc/ZSH*.wiki  }
+function grep_docs ()  {grep -A 2 -h --color "$*" ~intel_ac/doc/*wiki }
+function psg ()        {ps -aef | grep "$*" | grep -v grep}
+
+#
+alias vim_zsh='vim ~/doc/ZSH.md'
+
+#TODO
+# Per directory history    (auto generate from dir)
+# Per tmux history         (auto generate from tmux) 
+# Per tmux window history  (auto generate from tmux)
+function grep_hist_full         ()  {grep -h --color "$*" ~/.zsh_logs/* }
+function grep_hist_tmux_session ()  {grep -h -e $(tmux display-message -p '#S') ~/.zsh_logs/* | grep --color "$*" }
+function grep_hist_tmux_window  ()  {grep -h -e $(tmux display-message -p '#W')  ~/.zsh_logs/* | grep --color "$*" }
+function grep_hist_current_dir  ()  {grep -h -e $PWD  ~/.zsh_logs/* | grep --color "$*" }
+alias g_history='g ~/.zsh_logs/*(om[1])'
+
+# If  you  find  that you want more control over when commands get
+# imported,   you   may   wish   to   turn   SHARE_HISTORY    off,
+# INC_APPEND_HISTORY  on,  and then manually import commands when-
+# ever you need them using `fc -RI'.
+alias load_hist='fc -RI'
+
+# Aliases for aliases
+alias ga=' grep_alias'
+alias ea=' vim ~/.zsh/zshaliases'
+alias sa=' source ~/.zsh/zshaliases'
+
+# Misc aliases
+alias sz=' source ~/.zshrc'
+alias sz_all='pkill -usr1 -u $USER zsh'
+alias c=' clear'
+alias du='du --apparent-size'
+alias psg='ps -aef | grep \!* | grep -v grep'
+
+alias rl="rlogin"
+compdef rl=rlogin
+
+## Needs manpage plugin for vim
+function Man () { gvim -c "ViewDocMan $*" -c "silent! only" }
+## Open in existing gvim .. needs fix
+#function gman () { gvim -c "ViewDocMan $*" -c "silent! only" --servername $gvim_server }
+function vman () { vim -c "ViewDocMan $*" -c "silent! only" }
+## Use man completion for Man, vman, and gman
+alias gman=Man
+
+if [[ `uname -s` == "Linux" ]] ; then
+    ## These fail in Solaris 
+    compdef Man=man
+    compdef vman=man
+    compdef gman=man
+fi
+
+alias gpg='/berry/nonrunda/bin/gpg'
+
+## Find all gpg files that have matching .tar.gz
+## TODO : Works when pasted into shell but not as alias
+alias lsgpg="ls -lh **/*.gpg(e_'[[ -e $REPLY:r ]]'_)"
+
+alias all_users='w | awk ''{print $1}'' | sort -u'
+
+## stty aliases
+alias sane=' echo -e "\\033c";tput is2;stty sane line 1' 
+alias erase=" stty erase "
+
+## Update to use new xtermcontrol binary
+alias st=settitle
+alias cf=change_font_size
+
+# tmux
+alias tmux='tmux -2 -u'
+alias tma='tmux -2 -u attach -d -t'
+alias tmn='tmux -2 -u  new -s $(basename $(pwd))'
+alias tml='tmux list-sessions'
+
+## Vim aliases
+alias g="source ~/bin/gvim_tab"
+alias vi="vim"
+alias g-="gvim -p "
+alias gd="source ~/.display ; gvim -name GVIMDIFF -geometry 180x55+0+0 -d "
+# function gl () { gvim `ls -1tr $*/* | tail -n 1 ` }
+#
+# VimTip 121: Using vim as a syntax-highlighting pager
+# <http://vim.sourceforge.net/tip_view.php?tip_id=>
+  if [ -e ~/.vim/vimrc.more ] && [ -x $(which vim) ]; then
+      function vmore () { vim -u ~/.vim/vimrc.more "$*" }
+  fi
+alias vw="vi \`which \!*\`"
+
+# Edit commands with vim
+function vw () { vim `which $*` }
+function gw () { vim -g `which $*` }
+
+alias sp=" nocorrect which -a"
+alias d256=' eval `dircolors --sh ~/.dir_colors.256`'
+
+alias PATH='echo -e ${PATH//:/\\n}'
+alias MANPATH='echo -e ${MANPATH//:/\\n}'
+
+## Requires the PATH.pl command which is disabled
+# alias man_remove='eval `MANPATH -remove \!*`'
+# alias man_fix='eval `MANPATH -fix`'
+# alias remove='eval `PATH -remove \!*`'
+# alias append='eval `PATH -append \!*`'
+# alias prepend='eval `PATH -prepend \!*`'
+# alias fix='eval `PATH -fix`'
+
+alias fix_paths='typeset -gU path cdpath manpath fpath'
+
+# YP grep
+function ypg () { ypcat passwd | grep $* }
+
+## Perl alias
+alias pd="perl -d"
+
+#####################
+### bindkey       ###
+#####################
+
+#bindkey "^[." insert-last-word
+#bindkey "" i-search-back
+#bindkey "^xp" i-search-back
+#bindkey "^xn" i-search-fwd
+#bindkey "^v" copy-prev-word
+
+
+alias light="~croysdal/bin/colorscheme solarized_light"
+alias dark="~croysdal/bin/colorscheme solarized_dark"
+
+alias realpath="readlink -f \$PWD"
+
+## Solarized colors
+export yellow="#b58900"
+export orange="#cb4b16"
+export red="#dc322f"
+export magenta="#d33682"
+export violet="#6c71c4"
+export blue="#268bd2"
+export cyan="#2aa198"
+export green="#859900"
+export base03="#002b36"
+export base02="#073642"
+export base01="#586e75"
+export base00="#657b83"
+export base0="#839496"
+export base1="#93a1a1"
+export base2="#eee8d5"
+export base3="#fdf6e3"
+# export   base03="#1c1c1c"
+# export   base02="#262626"
+# export   base01="#4e4e4e"
+# export   base00="#585858"
+# export   base0="#808080"
+# export   base1="#8a8a8a"
+# export   base2="#d7d7af"
+# export   base3="#ffffd7"
+# export   yellow="#af8700"
+# export   orange="#d75f00"
+# export   red="#d70000"
+# export   magenta="#af005f"
+# export   violet="#5f5faf"
+# export   blue="#0087ff"
+# export   cyan="#00afaf"
+# export   green="#5f8700"
+
+zman() {
+  PAGER="less -g -s '+/^       "$1"'" man zshall
+}
+
+
+# http://minimul.com/increased-developer-productivity-with-tmux-part-5.html
+function ts {
+  args=$@
+  tmux send-keys -t right "$args" C-m
+}
+
+alias unsetenv=unset

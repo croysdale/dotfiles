@@ -1,0 +1,124 @@
+! Solarized color scheme for the X Window System
+!
+! http://ethanschoonover.com/solarized
+
+
+! Dark
+
+
+! To only apply colors to your terminal, for example, prefix
+! the color assignment statement with its name. Example:
+*background:              #002b36
+*foreground:              #839496
+*fadeColor:               #002b36
+*cursorColor:             #2aa198
+*pointerColorBackground:  #586e75
+*pointerColorForeground:  #859900
+
+xterm*color0:                  #073642
+xterm*color1:                  #dc322f
+xterm*color2:                  #859900
+xterm*color3:                  #b58900
+xterm*color4:                  #268bd2
+xterm*color5:                  #d33682
+xterm*color6:                  #2aa198
+xterm*color7:                  #eee8d5
+xterm*color8:                  #002b36
+xterm*color9:                  #cb4b16
+xterm*color10:                 #586e75
+xterm*color11:                 #657b83
+xterm*color12:                 #657b83
+xterm*color13:                 #6c71c4
+xterm*color14:                 #93a1a1
+xterm*color15:                 #fdf6e3
+
+xterm*utf8: 1
+xterm*termName: xterm-256color
+
+
+!Font: "-*-fixed-medium-r-semicondensed-*-13-*-*-*-*-*-*-*,-*-fixed-medium-r-normal-*-14-*-*-*-*-*-*-*,-*-*-medium-r-normal-*-16-*-*-*-*-*-*-*"
+!Font: "xft:Bitstream Vera Sans Mono:pixelsize=14,-*-fixed-medium-r-semicondensed-*-18-*-*-*-*-*-*-*,-misc-fixed-medium-r-normal--15-120-100-100-c-90-iso8859-1"
+Font: "xft:DejaVu Sans Mono for Powerline:pixelsize=14,-*-fixed-medium-r-semicondensed-*-18-*-*-*-*-*-*-*,-misc-fixed-medium-r-normal--15-120-100-100-c-90-iso8859-1"
+
+xterm*VT100.allowWindowOps: true
+xterm*VT100.allowTitleOps: true
+xterm*VT100.allowFontOps: true
+
+xterm*saveLines:            8192
+xterm*jumpScroll:               true
+xterm*multiScroll:              false
+xterm*fastScroll:               false
+xterm*scrollBar:        off
+xterm*scrollKey:        true
+xterm*scrollTtyOutput:        false
+xterm*eightBitInput: true
+
+xterm*fontMenu.Label:  VT Fonts
+xterm*fontMenu*fontdefault*Label:	Default
+xterm*fontMenu*font1*Label: Size12	
+xterm*VT100*font1:		xft:DejaVu Sans Mono for Powerline:pixelsize=12
+xterm*fontMenu*font2*Label:	Size14
+xterm*VT100*font2:		xft:DejaVu Sans Mono for Powerline:pixelsize=14
+xterm*fontMenu*font3*Label:	Size16
+xterm*VT100*font3:		xft:DejaVu Sans Mono for Powerline:pixelsize=16
+xterm*fontMenu*font4*Label:	Size18
+xterm*VT100*font4:		xft:DejaVu Sans Mono for Powerline:pixelsize=18
+xterm*fontMenu*font5*Label:	Size20
+xterm*VT100*font5:		xft:DejaVu Sans Mono for Powerline:pixelsize=20
+xterm*fontMenu*font6*Label:	Size24
+xterm*VT100*font6:		xft:DejaVu Sans Mono for Powerline:pixelsize=24
+
+xterm*VT100.cutNewLine: false
+xterm*VT100.cutToBeginningOfLine: false
+! Which characters are considered to build a _single_ word for Cut&Paste?
+! Every ascii-value gets mapped to another (arbitrary), already 'valid'
+! character  with a colon.
+! Here ascii 48 ("0") is the reference. See the manpage.
+!
+xterm.VT100.charClass: 33:48,35-37:48,43:48,45-47:48,58:48,64:48,126:48
+
+*VT100.Translations: #override \
+   Alt<KeyPress>Shift_L,Alt<KeyPress>: string(0x01B) insert() \n\
+   Alt<KeyPress>Shift_R,Alt<KeyPress>: string(0x01B) insert() \n\
+   Alt Ctrl <KeyPress>: string(0x01B) insert() \n\
+   Alt      <KeyPress>: string(0x01B) insert() \n\
+   Shift<Btn4Down>,<Btn4Up>:scroll-back(1,line)\n\
+   Shift<Btn5Down>,<Btn5Up>:scroll-forw(1,line)\n\
+   Ctrl <Btn4Down>,<Btn4Up>:smaller-vt-font()\n\
+   Ctrl <Btn5Down>,<Btn5Up>:larger-vt-font()\n\
+   <Btn4Down>,<Btn4Up>:string(0x002)\n\
+   <Btn5Down>,<Btn5Up>:string(0x006)\n\
+   None<Key>Prior:             string(0x002) \n\
+   None<Key>Next:              scroll-forw(1,page) \n\
+   Meta<Key>Prior:             scroll-back(1) \n\
+   Meta<Key>Next:              scroll-forw(1) \n\
+   Shift<Key>Prior:    scroll-back(3) \n\
+   Shift<Key>Next:             scroll-forw(3) \n\
+   None<Key>Home:        scroll-back(99 , page) \n\
+   None<Key>End:        scroll-forw(99 , page) \n
+   <Key>Pause:   string("\033[P") \n\
+   <Key>DRemove: ignore()
+
+!fontescape and fontsel overridden by application
+*wmStartupCommand: fvwm
+*waitWmTimeout: 2
+*faceName: DejaVu Sans Mono for Powerline
+*faceSize: 14
+
+! Use a nice truetype font and size by default... 
+xterm*faceName: DejaVu Sans Mono for Powerline
+! Set faceSize to 10 which means 12
+xterm*faceSize: 10
+xterm*ScrollTtyKeypress: true
+
+! Set true for FVWM but breaks escape keys for xterm 
+! Set false for xterm to handle escape codes
+! XTerm*allowSendEvents:  true
+
+!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!! gvim !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+Vim*geometry:	80x35
+Vim*menuBackground: background
+Vim*menuForeground: S_basee0
+Vim*scrollBackground: background
+Vim*scrollForeground: #839496
+

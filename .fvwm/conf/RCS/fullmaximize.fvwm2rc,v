@@ -1,0 +1,32 @@
+head	1.1;
+access;
+symbols;
+locks
+	croysdal:1.1; strict;
+comment	@# @;
+
+
+1.1
+date	2013.12.03.17.15.29;	author croysdal;	state Exp;
+branches;
+next	;
+
+
+desc
+@@
+
+
+1.1
+log
+@Initial revision
+@
+text
+@DestroyFunc FuncFvwmMaximize
+AddToFunc FuncFvwmMaximize
++ I ThisWindow (Maximized) DestroyWindowStyle
++ I TestRc (NoMatch) WindowStyle !Title, !Handles, !Borders, ResizeHintOverride, !Iconifiable, FixedPosition, FixedSize
++ I UpdateStyles
++ I ThisWindow (Maximized) Maximize
++ I TestRc (NoMatch) Maximize ewmhiwa 100 100
+
+@

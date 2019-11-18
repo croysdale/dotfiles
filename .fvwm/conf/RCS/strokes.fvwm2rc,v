@@ -1,0 +1,45 @@
+head	1.1;
+access;
+symbols;
+locks
+	croysdal:1.1; strict;
+comment	@# @;
+
+
+1.1
+date	2013.12.03.17.15.29;	author croysdal;	state Exp;
+branches;
+next	;
+
+
+desc
+@@
+
+
+1.1
+log
+@Initial revision
+@
+text
+@# ============== Strokes ==============
+#
+# ####
+# # Mouse Gestures.
+# #
+# # Syntax reminder:
+# #
+# #   1   2   3
+# #
+# #   4   5   6
+# #
+# #   7   8   9
+#
+## Examples
+##  https://github.com/zy/zy-fvwm/blob/master/zy-strokes.fvwm2rc
+#
+# # close window
+# Mouse 1 R N StrokeFunc DrawMotion 
+#
+# Stroke        14789        0        A        A        Pick Close
+#
+@

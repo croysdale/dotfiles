@@ -1,0 +1,793 @@
+head	1.7;
+access;
+symbols;
+locks
+	croysdal:1.7; strict;
+comment	@# @;
+
+
+1.7
+date	2015.06.07.00.15.44;	author croysdal;	state Exp;
+branches;
+next	1.6;
+
+1.6
+date	2015.01.29.22.32.36;	author croysdal;	state Exp;
+branches;
+next	1.5;
+
+1.5
+date	2014.09.15.15.12.55;	author croysdal;	state Exp;
+branches;
+next	1.4;
+
+1.4
+date	2014.09.14.20.12.07;	author croysdal;	state Exp;
+branches;
+next	1.3;
+
+1.3
+date	2014.07.17.20.42.39;	author croysdal;	state Exp;
+branches;
+next	1.2;
+
+1.2
+date	2014.04.25.16.06.56;	author croysdal;	state Exp;
+branches;
+next	1.1;
+
+1.1
+date	2013.12.03.17.15.29;	author croysdal;	state Exp;
+branches;
+next	;
+
+
+desc
+@@
+
+
+1.7
+log
+@Fix max left/right
+@
+text
+@# Functions Header {
+# vim: set sw=4 ts=4 sts=4 et tw=78 foldmarker={,} foldmethod=marker spell: 
+# }
+
+# { Startup Functions
+
+# { StartFunction
+DestroyFunc StartFunction
+AddToFunc   StartFunction
+#+ I Module FvwmTaskBar
++ I Module FvwmAnimate
+#+ I Module FvwmProxy
++ I Module FvwmBacker
+#+ I Module FvwmTabs
+#+ I Module FvwmButtons MyButtons
+#+ I Module FvwmWinList
+#+ I Module FvwmScript
++ I Module FvwmCommandS 
++ I *FvwmPager: Geometry 100x600+1812+5
++ I Module FvwmPager 1 8
+# }
+
+# { InitFunction
+DestroyFunc InitFunction
+AddToFunc   InitFunction
++ I Exec mkdir -p $[fvwm_tmp]
++ I Exec mkdir -p $[fvwm_home]/screenshot
++ I Exec xrdb -load $[HOME]/.Xdefaults
++ I Exec xmodmap -e "clear mod3"
++ I SetEnv LeftWinX     -5
++ I EwmhBaseStruts   0     0  0   0
++ I GotoDesk   0 1
++ I $[defaultMonitor]
+# }
+
+# { RestartFunction
+DestroyFunc RestartFunction
+AddToFunc   RestartFunction
++ I $[Monitor]
++ I Read	$[fvwm_home]/local_config
+# }
+
+# }
+
+# { FvwmDeleteOrDestroy
+DestroyFunc FvwmDeleteOrDestroy
+AddToFunc   FvwmDeleteOrDestroy
++ H Nop
++ M Nop
++ C Delete
++ D Destroy
+# }
+
+# { FvwmIconifyOrShade
+DestroyFunc FvwmIconifyOrShade
+AddToFunc   FvwmIconifyOrShade
++ C Iconify
++ D WindowShade
+# }
+
+# { FvwmMaximize
+DestroyFunc FvwmMaximize
+AddToFunc   FvwmMaximize
++ H Nop
++ M Nop
++ C Maximize $0 $1
+# }
+
+# { FvwmMoveOrRaise
+DestroyFunc FvwmMoveOrRaise
+AddToFunc   FvwmMoveOrRaise
++ M Move
++ D Maximize 100 100
++ D Raise
++ C Raise
+# }
+
+# { WindowLeft
+DestroyFunc 	WindowLeft
+AddToFunc 		WindowLeft
++ I ScanForWindow West North (CurrentPage, !Iconic, Raised, AcceptsFocus) Focus
++ I WarpToWindow 50 50
+# }
+
+# { WindowRight
+DestroyFunc 	WindowRight
+AddToFunc 		WindowRight
++ I ScanForWindow East North (CurrentPage, !Iconic, Raised, AcceptsFocus) Focus
++ I WarpToWindow 50 50
+# }
+
+# { FvwmMoveOrIconify
+DestroyFunc FvwmMoveOrIconify
+AddToFunc   FvwmMoveOrIconify
++ M Move
++ D Thumbnail
+# }
+
+# { FvwmIconify
+DestroyFunc FvwmIconify
+AddToFunc   FvwmIconify
++ C Thumbnail
++ D Thumbnail
++ M Move
+# }
+
+# { FvwmWindowShade
+DestroyFunc FvwmWindowShade
+AddToFunc   FvwmWindowShade
++ D WindowShade $0
+# }
+
+# { FvwmMaximizeLeft
+DestroyFunc FvwmMaximizeLeft
+AddToFunc   FvwmMaximizeLeft
++ I ResizeMove   $[LeftWidth] $[MaxHeight] $[LeftWinX]  0 Warp
+# Does nothing :(
++ I Focus
+# }
+
+# { FvwmMaximizeRight
+DestroyFunc FvwmMaximizeRight
+AddToFunc   FvwmMaximizeRight
++ I ResizeMove   $[RightWidth] $[MaxHeight] $[RightWinX] 0 Warp
++ I Focus
+# }
+
+# { FvwmMaximizeLeftMonitor
+DestroyFunc FvwmMaximizeLeftMonitor
+AddToFunc   FvwmMaximizeLeftMonitor
++ I Maximize   $[LeftMonWidth] $[MaxHeight]
++ I Move 0 0 Warp
++ I Raise
++ I Focus
++ I WarpToWindow 50 50
+# }
+
+# { FvwmMaximizeRightMonitor
+DestroyFunc FvwmMaximizeRightMonitor
+AddToFunc   FvwmMaximizeRightMonitor
+## Does not work. Not sure why
+# + I Resize   $[RighMonWidth] $[RightMonHeight]
++ I Resize   1890p 1160p
++ I Move $[RightMonWinX] 0 Warp
++ I Raise
++ I Focus
++ I WarpToWindow 50 50
+# }
+
+# { FvwmGridMove
+DestroyFunc FvwmGridMove
+AddToFunc   FvwmGridMove
++ I Focus
++ I Resize 20 348p
++ I Move $0 $1 Warp
++ I Raise
++ I Focus
++ I WarpToWindow 50 50
+# }
+
+# { FvwmGridMoveGrow
+DestroyFunc FvwmGridMoveGrow
+AddToFunc   FvwmGridMoveGrow
++ I Focus
++ I Resize 50p 50p
++ I Move $0 $1 Warp
++ I WarpToWindow 50 50
++ I Raise
++ I Maximize grow grow
++ I WarpToWindow 50 50
++ I Resize w+1c w+1c
++ I Resize w-1c w-1c
+# }
+
+# { FvwmArrangeICCPage
+DestroyFunc FvwmArrangeICCPage
+AddToFunc   FvwmArrangeICCPage
++ I Next ("*LayoutWindow*", CurrentPage, ) FvwmMaximizeMiddleRight
++ I Next ("*Gvim*", CurrentPage, ) FvwmGridMove  64 0 
++ I Next ("*Gvim*", CurrentPage, ) FvwmGridMove  64 32
++ I Next ("*urxvt*", CurrentPage, ) FvwmGridMove  0 32
++ I Next ("*urxvt*", CurrentPage, ) FvwmGridMove  0 64
+
+# }
+
+# { DeiconifyRaiseAndFocus
+DestroyFunc DeiconifyRaiseAndFocus
+AddToFunc DeiconifyRaiseAndFocus
++ I DeThumbnail
++ I Raise
++ I Focus
+# }
+
+# { MoveAndGotoDesk
+DestroyFunc MoveAndGotoDesk
+AddToFunc MoveAndGotoDesk
++ I MoveToDesk $*
++ I GotoDesk $*
+# }
+
+# { MoveAndGotoPage
+DestroyFunc MoveAndGotoPage
+AddToFunc MoveAndGotoPage
++ I MoveToPage $*
++ I GotoPage $*
+# }
+
+# { Program Launching Functions
+DestroyFunc FvwmGvim
+AddToFunc   FvwmGvim
++ I Exec exec gvim
+# }
+
+# { FvwmUrxvt
+DestroyFunc FvwmUrxvt
+AddToFunc   FvwmUrxvt
++ I Exec exec urxvt -e tabbed
+# }
+
+# { FvwmXTerm
+DestroyFunc FvwmXTerm
+AddToFunc   FvwmXTerm
++ I Exec exec xterm -ls -sb -sl 5000 -geometry 150x50
+# }
+
+# { FvwmFireFox
+DestroyFunc FvwmFireFox
+AddToFunc   FvwmFireFox
++ I Exec exec firefox
+# }
+
+# { FvwmExpand
+DestroyFunc FvwmExpand
+AddToFunc   FvwmExpand
++ M Resize
++ C Raise
++ D Maximize True $0 $1
+# }
+
+# { Thumbnail
+SetEnv fvwm_icon_size  96
+DestroyFunc  Thumbnail
+AddToFunc  Thumbnail
++ I Raise
++ I SetEnv Icon-$[w.id] $[w.IconFile]
++ I ThisWindow (!Shaded, Iconifiable, !Iconic) PipeRead \
+    "xwd -frame -id $[w.id] | $[fvwm_image_magic]/convert -scale $[fvwm_icon_size] -quality 0 \
+    -mattecolor black -frame 1x1 -quality 0 \
+    xwd:- png:$[fvwm_tmp]/icon.tmp.$[w.id].png; \
+    echo WindowStyle IconOverride, Icon $[fvwm_tmp]/icon.tmp.$[w.id].png"
++ I Iconify
+# }
+
+# { Screenshot 
+# uses ImageMagick
+DestroyFunc FvwmWindowScreenshot
+AddToFunc   FvwmWindowScreenshot
++ I ThisWindow (!Shaded !Iconic Iconifiable) \
+  Exec $[fvwm_image_magic]/import -window $[w.id] -quality 100 -silent \
+  "$[fvwm_home]/screenshot/screenshot-`date +%F[%R]`.$[w.id].jpg"
+# }
+
+# { FvwmDesktopScreenshot
+DestroyFunc FvwmDesktopScreenshot
+AddToFunc   FvwmDesktopScreenshot
++ I Exec sleep $0; $[fvwm_image_magic]/import -window root -quality 100 -silent \
+  "$[fvwm_home]/screenshot/screenshot-`date +%F[%R]`.jpg"
+# }
+
+# { DeThumbnail
+DestroyFunc DeThumbnail
+AddToFunc DeThumbnail
++ I PipeRead "echo WindowStyle Icon \\$\\[Icon-$[w.id]\\]"
++ I UnsetEnv Icon-$[w.id]
++ I Exec rm -f $[fvwm_tmp]/icon.tmp.$[w.id].png
+# }
+
+# { WindowListFunc
+DestroyFunc WindowListFunc
+AddToFunc WindowListFunc
++ I Iconify off
++ I FlipFocus
++ I Raise
++ I WarpToWindow 50p 50p
+# }
+
+# { DeiconifyAndRaise
+DestroyFunc DeiconifyAndRaise
+AddToFunc DeiconifyAndRaise
++ I Iconify off
++ I Raise
++ I Focus
+@
+
+
+1.6
+log
+@Many updates
+@
+text
+@d28 1
+a28 1
++ I Exec xrdb -load $[HOME]/.Xresources
+d30 1
+a30 1
++ I SetEnv LeftWinX     0
+d82 1
+a82 2
++ I Current Raise
++ I Current WarpToWindow 50 50
+d89 1
+a89 2
++ I Current Raise
++ I Current WarpToWindow 50 50
+d116 2
+a117 3
++ I Maximize   $[LeftWidth] $[MaxHeight]
++ I Move     $[LeftWinX]  0 Warp
++ I Raise
+a118 1
++ I WarpToWindow 50 50
+d124 1
+a124 3
++ I Resize   $[RightWidth] $[MaxHeight]
++ I Move     $[RightWinX] 0 Warp
++ I Raise
+a125 1
++ I WarpToWindow 50 50
+d141 3
+a143 1
++ I Resize   $[RighMonWidth] $[RightMonHeight]
+@
+
+
+1.5
+log
+@*** empty log message ***
+@
+text
+@d18 1
+a18 1
++ I Module FvwmCommandS
+d31 3
+a33 2
++ I EwmhBaseStruts   1     1  1   8
++ I Monitor1900x1080
+a38 1
++ I EwmhBaseStruts   1     1  1   8
+d40 1
+d118 1
+a118 1
++ I Resize   $[LeftWidth] $[MaxHeight]
+a129 1
+#+ I Maximize 67 grow
+d138 1
+a138 1
++ I Resize   $[LeftMonWidth] $[MaxHeight]
+d158 1
+d163 1
+d170 1
+a170 1
++ I Resize $[CenterWinX] 5c
+d174 4
+a177 1
++ I Maximize 0 grow
+@
+
+
+1.4
+log
+@Fixed laptop monitor settings
+@
+text
+@a2 3
+# Examples::::
+# http://zensites.net/fvwm/guide/bindings.html
+# http://www.xteddy.org/~n6tadam/fvwm-ckb.txt
+a43 67
+# { Monitor3800x1200
+DestroyFunc Monitor3800x1200
+AddToFunc   Monitor3800x1200
++ I SetEnv Monitor Monitor3800x1200
++ I SetEnv RightWinX        990p
++ I SetEnv RightMonWinX    1920p
++ I SetEnv TopWinY             0
++ I SetEnv MidWinY          368p
++ I SetEnv BotWinY          738p
+#+ I SetEnv MaxHeight         99
++ I SetEnv MaxHeight       1109p
++ I SetEnv LeftWidth        981p
++ I SetEnv RightWidth       812p
++ I SetEnv LeftMonWidth    1804p
++ I SetEnv RightMonWidth   1910p
++ I SetEnv RightMonHeight  1113p
++ I Read $[fvwm_home]/conf/menu.fvwm2rc
+# }
+
+# { Monitor1900x1200
+DestroyFunc Monitor1900x1200
+AddToFunc   Monitor1900x1200
++ I SetEnv RightWinX    990p
++ I SetEnv RightMonWinX 1920p
++ I SetEnv TopWinY       0
++ I SetEnv MidWinY      368p
++ I SetEnv BotWinY      738p
++ I SetEnv MaxHeight     99
++ I SetEnv LeftWidth    981p
++ I SetEnv RightWidth   812p
++ I SetEnv Monitor      Monitor1900x1200
++ I Read $[fvwm_home]/conf/menu.fvwm2rc
+# }
+
+# { Monitor1900x1080
+DestroyFunc Monitor1900x1080
+AddToFunc   Monitor1900x1080
++ I SetEnv Monitor      Monitor1900x1080
++ I SetEnv RightWinX        990p
++ I SetEnv RightMonWinX    1900p
++ I SetEnv TopWinY             0
++ I SetEnv MidWinY          368p
++ I SetEnv BotWinY          738p
++ I SetEnv MaxHeight       1062p
++ I SetEnv LeftWidth        981p
++ I SetEnv RightWidth       812p
++ I SetEnv LeftMonWidth    1804p
++ I SetEnv RightMonWidth   1910p
++ I SetEnv RightMonHeight  1062p
++ I Read $[fvwm_home]/conf/menu.fvwm2rc
+# }
+
+# { Monitor1440x900
+DestroyFunc Monitor1440x900
+AddToFunc   Monitor1440x900
++ I SetEnv RightWinX    990p
++ I SetEnv RightMonWinX 1440p
++ I SetEnv TopWinY       0
++ I SetEnv MidWinY      33
++ I SetEnv BotWinY      34
++ I SetEnv MaxHeight    90
++ I SetEnv LeftWidth    40
++ I SetEnv RightWidth   40
++ I SetEnv Monitor      Monitor1440x900
++ I Read $[fvwm_home]/conf/menu.fvwm2rc
+# }
+
+@
+
+
+1.3
+log
+@*** empty log message ***
+@
+text
+@d2 1
+a2 1
+# vim: set sw=4 ts=4 sts=4 et tw=78 foldmarker={,} foldlevel=0 foldmethod=marker spell:
+a6 1
+# }
+d21 2
+a22 1
++ I *FvwmPager: Geometry 100x800+1810+0
+d33 3
+a35 1
++ I LaptopMonitor
+d41 1
+d47 24
+a70 6
+# { DualMonitor
+DestroyFunc DualMonitor
+AddToFunc   DualMonitor
++ I EwmhBaseStruts   1     1  1   8
++ I SetEnv CenterWinX   990p
++ I SetEnv RightWinX    1900p
+d74 4
+a77 2
++ I SetEnv Monitor      DualMonitor
++ I SetEnv MaxHeight    96
+d81 15
+a95 11
+# { SingleMonitor
+DestroyFunc SingleMonitor
+AddToFunc   SingleMonitor
++ I EwmhBaseStruts   1     1995  1   8
++ I SetEnv CenterWinX   990p
++ I SetEnv RightWinX    1900p
++ I SetEnv TopWinY       0
++ I SetEnv MidWinY      368p
++ I SetEnv BotWinY      738p
++ I SetEnv MaxHeight    96
++ I SetEnv Monitor      SingleMonitor
+d99 5
+a103 6
+# { LaptopMonitor
+DestroyFunc LaptopMonitor
+AddToFunc   LaptopMonitor
++ I EwmhBaseStruts   1     1995  1   50
++ I SetEnv CenterWinX   990p
++ I SetEnv RightWinX    1900p
+d105 2
+a106 2
++ I SetEnv MidWinY      368p
++ I SetEnv BotWinY      738p
+d108 3
+a110 1
++ I SetEnv Monitor      LaptopMonitor
+d130 1
+a130 1
+# { 38wmMaximize
+d187 2
+a188 3
++ I Move  $[LeftWinX]  0
++ I Resize   981p $[MaxHeight]
++ I Maximize 0 grow
+d194 6
+a199 6
+# { FvwmMaximizeMiddle
+DestroyFunc FvwmMaximizeMiddle
+AddToFunc   FvwmMaximizeMiddle
++ I Move $[CenterWinX] 0
++ I Resize   812p $[MaxHeight]
+#+ I Maximize 0 grow
+d205 5
+a209 6
+# { FvwmMaximizeRight
+DestroyFunc FvwmMaximizeRight
+AddToFunc   FvwmMaximizeRight
++ I Move $[RightWinX] 0
++ I Resize   45 90
+#+ I Maximize grow grow
+d215 5
+a219 5
+# { FvwmMaximizeMiddleRight
+DestroyFunc FvwmMaximizeMiddleRight
+AddToFunc   FvwmMaximizeMiddleRight
++ I Move $[RightWinX] 0
++ I Maximize 67 grow
+d222 1
+@
+
+
+1.2
+log
+@*** empty log message ***
+@
+text
+@d14 1
+a14 1
++ I Module FvwmTaskBar
+d22 2
+a23 2
++ I *FvwmPager: Geometry 100x700+1810+0
++ I Module FvwmPager 0 7
+d47 1
+a47 3
++ I EwmhBaseStruts   1     95  1   8
++ I *FvwmPager: Geometry 100x700+1810+0
++ I Module FvwmPager 0 7
+a61 2
++ I *FvwmPager: Geometry 100x700+1810+0
++ I Module FvwmPager 0 7
+d75 1
+a75 3
++ I EwmhBaseStruts   1     1995  1   128
++ I *FvwmPager: Geometry 100x700+1810+0
++ I Module FvwmPager 0 7
+d81 1
+a81 1
++ I SetEnv MaxHeight    86
+d122 1
+a122 1
++ I ScanForWindow West North (CurrentPage, !Iconic, AcceptsFocus) Focus
+d130 1
+a130 1
++ I ScanForWindow East North (CurrentPage, !Iconic, AcceptsFocus) Focus
+@
+
+
+1.1
+log
+@Initial revision
+@
+text
+@d1 11
+a11 3
+#####
+# Startup Functions
+###########
+a14 1
++ I Module FvwmPager 0 7
+d22 3
+d26 1
+d31 4
+a34 8
++ I SetEnv LeftWinX      0
++ I SetEnv CenterWinX   23
++ I SetEnv RightWinX    50
++ I SetEnv TopWinY       0
++ I SetEnv MidWinY      33
++ I SetEnv BotWinY      66
++ I Nop
++ I Nop
+d36 1
+d39 4
+a42 2
++ I Nop
++ I Nop
+d44 1
+a44 1
+###########
+d48 1
+d50 7
+a56 4
++ I SetEnv MonitorType Dual
++ I SetEnv LeftWinX      0
++ I SetEnv CenterWinX   23
++ I SetEnv RightWinX    50
+d58 1
+d60 1
+d64 1
+d66 7
+a72 4
++ I SetEnv MonitorType Single
++ I SetEnv LeftWinX      0
++ I SetEnv CenterWinX   23
++ I SetEnv RightWinX    50
+d74 1
+d76 1
+d80 1
+d82 7
+a88 4
++ I SetEnv MonitorType Laptop
++ I SetEnv LeftWinX      0
++ I SetEnv CenterWinX   23
++ I SetEnv RightWinX    50
+d90 1
+d92 1
+a92 1
+###########
+d99 1
+d101 1
+d106 1
+d108 1
+d114 1
+d116 1
+d123 17
+d141 1
+d146 1
+d148 1
+d154 1
+d156 1
+d160 1
+d162 1
+d165 5
+a169 2
++ I Maximize True $[CenterWinX] grow
++ I AnimatedMove  $[LeftWinX]  0  
+d171 1
+a171 1
++ I Raise
+d173 1
+d176 5
+a180 2
++ I Maximize True $[CenterWinX] grow
++ I AnimatedMove $[CenterWinX] 0 
+d182 1
+a182 1
++ I Raise
+d184 1
+d187 5
+a191 2
++ I Maximize True $[CenterWinX] grow
++ I AnimatedMove $[RightWinX] 0 
+d193 1
+a193 1
++ I Raise
+d195 1
+d198 2
+a199 3
++ I Maximize True 67 grow
++ I AnimatedMove $[RightWinX] 0 
++ I WarpToWindow 50 50
+d201 2
+d204 1
+d207 2
+a208 4
++ I Focus
++ I Resize $[CenterWinX] $[MidWinY]
++ I AnimatedMove $0 $1 
++ I WarpToWindow 50 50
+d211 1
+d213 1
+d217 2
+a218 2
++ I Resize $[CenterWinX] $[MidWinY]
++ I AnimatedMove $0 $1 
+d222 1
+a222 1
++ I Focus
+d224 1
+d233 1
+d235 1
+d241 1
+d243 1
+d248 1
+d250 1
+d255 1
+d257 1
+a257 3
+#####
+# Program Launching Functions
+###########
+d261 1
+d263 1
+d267 1
+d269 1
+d273 1
+d275 1
+d279 1
+d281 1
+d287 1
+d289 1
+a289 3
+#####
+# Thumbnails function
+###########
+d301 1
+d303 2
+a304 3
+#####
+# Screenshot Functions (uses ImageMagick)
+###########
+d310 1
+d312 1
+d317 1
+d319 1
+d325 1
+d327 1
+d334 1
+d336 1
+@

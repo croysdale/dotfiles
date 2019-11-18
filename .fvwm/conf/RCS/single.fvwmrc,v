@@ -1,0 +1,105 @@
+head	1.1;
+access;
+symbols;
+locks
+	croysdal:1.1; strict;
+comment	@# @;
+
+
+1.1
+date	2013.12.03.17.15.29;	author croysdal;	state Exp;
+branches;
+next	;
+
+
+desc
+@@
+
+
+1.1
+log
+@Initial revision
+@
+text
+@*FvwmPager: Geometry 100x700+1810+0
+KillModule FvwmPager
+Module FvwmPager 0 7
+
+DestroyFunc FvwmMaximizeLeft
+AddToFunc   FvwmMaximizeLeft
++ I Maximize True 33 grow
++ I AnimatedMove  0  0  
++ I WarpToWindow 50 50
++ I Raise
+
+DestroyFunc FvwmMaximizeMiddle
+AddToFunc   FvwmMaximizeMiddle
++ I Maximize True 33 grow
++ I AnimatedMove 15 0 
++ I WarpToWindow 50 50
++ I Raise
+
+DestroyFunc FvwmMaximizeRight
+AddToFunc   FvwmMaximizeRight
++ I Maximize True 33 grow
++ I AnimatedMove 30 0 
++ I WarpToWindow 50 50
++ I Raise
+
+DestroyFunc FvwmMaximizeMiddleRight
+AddToFunc   FvwmMaximizeMiddleRight
++ I Maximize True 30 grow
++ I AnimatedMove 30 0 
++ I WarpToWindow 50 50
++ I Raise
+
+DestroyFunc FvwmGridMove
+AddToFunc   FvwmGridMove
++ I Focus
++ I Resize 16 30
++ I AnimatedMove $0 $1 
++ I WarpToWindow 50 50
++ I Raise
++ I Focus
+
+DestroyFunc FvwmArrangeICCPage
+AddToFunc   FvwmArrangeICCPage
++ I Next ("*LayoutWindow*", CurrentPage, ) FvwmMaximizeMiddleRight
++ I Next ("*Gvim*", CurrentPage, ) FvwmGridMove  64 0 
++ I Next ("*Gvim*", CurrentPage, ) FvwmGridMove  64 32
++ I Next ("*term*", CurrentPage, ) FvwmGridMove  0 32
++ I Next ("*term*", CurrentPage, ) FvwmGridMove  0 64
+
+DestroyFunc FvwmGridMoveGrow
+AddToFunc   FvwmGridMoveGrow
++ I Focus
++ I Resize 15 15
++ I AnimatedMove $0 $1 
++ I WarpToWindow 50 50
++ I Raise
++ I Maximize grow grow
++ I Focus
+     
+
+# Alt-NumKey  -- Place window on page {
+Key KP_7  A  M  FvwmGridMove  0 0 
+Key KP_8  A  M  FvwmGridMove 16 0 
+Key KP_9  A  M  FvwmGridMove 30 0 
+Key KP_4  A  M  FvwmGridMove  0 33
+Key KP_5  A  M  FvwmGridMove 16 33 
+Key KP_6  A  M  FvwmGridMove 30 33
+Key KP_1  A  M  FvwmGridMove  0 66
+Key KP_2  A  M  FvwmGridMove 16 66
+Key KP_3  A  M  FvwmGridMove 30 66
+Key KP_Home     A   M   FvwmGridMove  0 0 
+Key KP_Up       A   M   FvwmGridMove 16 0 
+Key KP_Prior    A   M   FvwmGridMove 30 0 
+Key KP_Left     A   M   FvwmGridMove  0 32
+Key KP_Begin    A   M   FvwmGridMove 16 32 
+Key KP_Right    A   M   FvwmGridMove 30 32
+Key KP_End      A   M   FvwmGridMove  0 64
+Key KP_Down     A   M   FvwmGridMove 16 64
+Key KP_Next     A   M   FvwmGridMove 30 64
+# }
+
+@

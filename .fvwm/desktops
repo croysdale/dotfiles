@@ -1,0 +1,17 @@
+#  Define names of Desktops
+# After changing names, re-start FVWM (Alt-R)
+#
+# Length limit |<--------->|
+SetEnv desk1   "1 ICF"
+SetEnv desk2   "2 Regress"
+SetEnv desk3   "3 Broxton"
+SetEnv desk4   "4 Mercer"
+# Length limit |<--------->|
+SetEnv desk5   "5 Mcore"  
+SetEnv desk6   "6 Desk6"    
+SetEnv desk7   "7 Misc"
+SetEnv desk8   "8 System"
+# Length limit |<--------->|
+
+
+## Press <Alt>R to re-start Fvwm and update Pager names

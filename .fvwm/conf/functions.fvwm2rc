@@ -1,0 +1,293 @@
+# Functions Header {
+# vim: set sw=4 ts=4 sts=4 et tw=78 foldmarker={,} foldmethod=marker spell: 
+# }
+
+# { Startup Functions
+
+# { StartFunction
+DestroyFunc StartFunction
+AddToFunc   StartFunction
+#+ I Module FvwmTaskBar
++ I Module FvwmAnimate
+#+ I Module FvwmProxy
++ I Module FvwmBacker
+#+ I Module FvwmTabs
+#+ I Module FvwmButtons MyButtons
+#+ I Module FvwmWinList
+#+ I Module FvwmScript
++ I Module FvwmCommandS 
++ I *FvwmPager: Geometry 100x600+1812+5
++ I Module FvwmPager 1 8
+# }
+
+# { InitFunction
+DestroyFunc InitFunction
+AddToFunc   InitFunction
++ I Exec mkdir -p $[fvwm_tmp]
++ I Exec mkdir -p $[fvwm_home]/screenshot
++ I Exec xrdb -load $[HOME]/.Xdefaults
++ I Exec xmodmap -e "clear mod3"
++ I EwmhBaseStruts   0     0  0   0
++ I GotoDesk   0 1
++ I $[defaultMonitor]
+# }
+
+# { RestartFunction
+DestroyFunc RestartFunction
+AddToFunc   RestartFunction
++ I $[Monitor]
++ I Read	$[fvwm_home]/local_config
++ I SetEnv LeftWinX     -5
++ I SetEnv LeftWinX     0
+# }
+
+# }
+
+# { FvwmDeleteOrDestroy
+DestroyFunc FvwmDeleteOrDestroy
+AddToFunc   FvwmDeleteOrDestroy
++ H Nop
++ M Nop
++ C Delete
++ D Destroy
+# }
+
+# { FvwmIconifyOrShade
+DestroyFunc FvwmIconifyOrShade
+AddToFunc   FvwmIconifyOrShade
++ C Iconify
++ D WindowShade
+# }
+
+# { FvwmMaximize
+DestroyFunc FvwmMaximize
+AddToFunc   FvwmMaximize
++ H Nop
++ M Nop
++ C Maximize $0 $1
+# }
+
+# { FvwmMoveOrRaise
+DestroyFunc FvwmMoveOrRaise
+AddToFunc   FvwmMoveOrRaise
++ M Move
++ D Maximize 100 100
++ D Raise
++ C Raise
+# }
+
+# { WindowLeft
+DestroyFunc 	WindowLeft
+AddToFunc 		WindowLeft
++ I ScanForWindow West North (CurrentPage, !Iconic, Raised, AcceptsFocus) Focus
++ I WarpToWindow 50 50
+# }
+
+# { WindowRight
+DestroyFunc 	WindowRight
+AddToFunc 		WindowRight
++ I ScanForWindow East North (CurrentPage, !Iconic, Raised, AcceptsFocus) Focus
++ I WarpToWindow 50 50
+# }
+
+# { FvwmMoveOrIconify
+DestroyFunc FvwmMoveOrIconify
+AddToFunc   FvwmMoveOrIconify
++ M Move
++ D Thumbnail
+# }
+
+# { FvwmIconify
+DestroyFunc FvwmIconify
+AddToFunc   FvwmIconify
++ C Thumbnail
++ D Thumbnail
++ M Move
+# }
+
+# { FvwmWindowShade
+DestroyFunc FvwmWindowShade
+AddToFunc   FvwmWindowShade
++ D WindowShade $0
+# }
+
+# { FvwmMaximizeLeft
+DestroyFunc FvwmMaximizeLeft
+AddToFunc   FvwmMaximizeLeft
++ I ResizeMove   $[LeftWidth] $[MaxHeight] $[LeftWinX]  0 Warp
+# Does nothing :(
+#+ I Focus
+# }
+
+# { FvwmMaximizeRight
+DestroyFunc FvwmMaximizeRight
+AddToFunc   FvwmMaximizeRight
++ I ResizeMove   $[RightWidth] $[MaxHeight] $[RightWinX] 0 Warp
++ I Focus
+# }
+
+# { FvwmMaximizeLeftMonitor
+DestroyFunc FvwmMaximizeLeftMonitor
+AddToFunc   FvwmMaximizeLeftMonitor
++ I Maximize   $[LeftMonWidth] $[MaxHeight]
++ I Move 0 0 Warp
++ I Raise
++ I Focus
++ I WarpToWindow 50 50
+# }
+
+# { FvwmMaximizeRightMonitor
+DestroyFunc FvwmMaximizeRightMonitor
+AddToFunc   FvwmMaximizeRightMonitor
+## Does not work. Not sure why
++ I Resize   $[RightMonWidth] $[RightMonHeight]
+# + I Resize   1890p 1160p
++ I Move $[RightMonWinX] 0 Warp
++ I Raise
++ I Focus
++ I WarpToWindow 50 50
+# }
+
+# { FvwmGridMove
+DestroyFunc FvwmGridMove
+AddToFunc   FvwmGridMove
++ I Focus
++ I Resize 20 348p
++ I Move $0 $1 Warp
++ I Raise
++ I Focus
++ I WarpToWindow 50 50
+# }
+
+# { FvwmGridMoveGrow
+DestroyFunc FvwmGridMoveGrow
+AddToFunc   FvwmGridMoveGrow
++ I Focus
++ I Resize 50p 50p
++ I Move $0 $1 Warp
++ I WarpToWindow 50 50
++ I Raise
++ I Maximize grow grow
++ I WarpToWindow 50 50
++ I Resize w+1c w+1c
++ I Resize w-1c w-1c
+# }
+
+# { FvwmArrangeICCPage
+DestroyFunc FvwmArrangeICCPage
+AddToFunc   FvwmArrangeICCPage
++ I Next ("*LayoutWindow*", CurrentPage, ) FvwmMaximizeMiddleRight
++ I Next ("*Gvim*", CurrentPage, ) FvwmGridMove  64 0 
++ I Next ("*Gvim*", CurrentPage, ) FvwmGridMove  64 32
++ I Next ("*urxvt*", CurrentPage, ) FvwmGridMove  0 32
++ I Next ("*urxvt*", CurrentPage, ) FvwmGridMove  0 64
+
+# }
+
+# { DeiconifyRaiseAndFocus
+DestroyFunc DeiconifyRaiseAndFocus
+AddToFunc DeiconifyRaiseAndFocus
++ I DeThumbnail
++ I Raise
++ I Focus
+# }
+
+# { MoveAndGotoDesk
+DestroyFunc MoveAndGotoDesk
+AddToFunc MoveAndGotoDesk
++ I MoveToDesk $*
++ I GotoDesk $*
+# }
+
+# { MoveAndGotoPage
+DestroyFunc MoveAndGotoPage
+AddToFunc MoveAndGotoPage
++ I MoveToPage $*
++ I GotoPage $*
+# }
+
+# { Program Launching Functions
+DestroyFunc FvwmGvim
+AddToFunc   FvwmGvim
++ I Exec exec gvim
+# }
+
+# { FvwmUrxvt
+DestroyFunc FvwmUrxvt
+AddToFunc   FvwmUrxvt
++ I Exec exec urxvt -e tabbed
+# }
+
+# { FvwmXTerm
+DestroyFunc FvwmXTerm
+AddToFunc   FvwmXTerm
++ I Exec exec xterm -ls -sb -sl 5000 -geometry 150x50
+# }
+
+# { FvwmFireFox
+DestroyFunc FvwmFireFox
+AddToFunc   FvwmFireFox
++ I Exec exec firefox
+# }
+
+# { FvwmExpand
+DestroyFunc FvwmExpand
+AddToFunc   FvwmExpand
++ M Resize
++ C Raise
++ D Maximize True $0 $1
+# }
+
+# { Thumbnail
+SetEnv fvwm_icon_size  96
+DestroyFunc  Thumbnail
+AddToFunc  Thumbnail
++ I Raise
++ I SetEnv Icon-$[w.id] $[w.IconFile]
++ I ThisWindow (!Shaded, Iconifiable, !Iconic) PipeRead \
+    "xwd -frame -id $[w.id] | $[fvwm_image_magic]/convert -scale $[fvwm_icon_size] -quality 0 \
+    -mattecolor black -frame 1x1 -quality 0 \
+    xwd:- png:$[fvwm_tmp]/icon.tmp.$[w.id].png; \
+    echo WindowStyle IconOverride, Icon $[fvwm_tmp]/icon.tmp.$[w.id].png"
++ I Iconify
+# }
+
+# { Screenshot 
+# uses ImageMagick
+DestroyFunc FvwmWindowScreenshot
+AddToFunc   FvwmWindowScreenshot
++ I ThisWindow (!Shaded !Iconic Iconifiable) \
+  Exec $[fvwm_image_magic]/import -window $[w.id] -quality 100 -silent \
+  "$[fvwm_home]/screenshot/screenshot-`date +%F[%R]`.$[w.id].jpg"
+# }
+
+# { FvwmDesktopScreenshot
+DestroyFunc FvwmDesktopScreenshot
+AddToFunc   FvwmDesktopScreenshot
++ I Exec sleep $0; $[fvwm_image_magic]/import -window root -quality 100 -silent \
+  "$[fvwm_home]/screenshot/screenshot-`date +%F[%R]`.jpg"
+# }
+
+# { DeThumbnail
+DestroyFunc DeThumbnail
+AddToFunc DeThumbnail
++ I PipeRead "echo WindowStyle Icon \\$\\[Icon-$[w.id]\\]"
++ I UnsetEnv Icon-$[w.id]
++ I Exec rm -f $[fvwm_tmp]/icon.tmp.$[w.id].png
+# }
+
+# { WindowListFunc
+DestroyFunc WindowListFunc
+AddToFunc WindowListFunc
++ I Iconify off
++ I FlipFocus
++ I Raise
++ I WarpToWindow 50p 50p
+# }
+
+# { DeiconifyAndRaise
+DestroyFunc DeiconifyAndRaise
+AddToFunc DeiconifyAndRaise
++ I Iconify off
++ I Raise
++ I Focus

@@ -1,0 +1,640 @@
+head	1.9;
+access;
+symbols;
+locks
+	croysdal:1.9; strict;
+comment	@# @;
+
+
+1.9
+date	2015.06.07.00.19.23;	author croysdal;	state Exp;
+branches;
+next	1.8;
+
+1.8
+date	2015.06.07.00.17.20;	author croysdal;	state Exp;
+branches;
+next	1.7;
+
+1.7
+date	2015.02.22.23.03.37;	author croysdal;	state Exp;
+branches;
+next	1.6;
+
+1.6
+date	2015.02.20.07.39.29;	author croysdal;	state Exp;
+branches;
+next	1.5;
+
+1.5
+date	2015.02.19.04.36.43;	author croysdal;	state Exp;
+branches;
+next	1.4;
+
+1.4
+date	2015.02.04.23.37.27;	author croysdal;	state Exp;
+branches;
+next	1.3;
+
+1.3
+date	2014.07.17.20.42.44;	author croysdal;	state Exp;
+branches;
+next	1.2;
+
+1.2
+date	2014.04.25.16.06.56;	author croysdal;	state Exp;
+branches;
+next	1.1;
+
+1.1
+date	2013.12.03.17.15.29;	author croysdal;	state Exp;
+branches;
+next	;
+
+
+desc
+@@
+
+
+1.9
+log
+@Fixed Edit FVWM/Desktops to use /depot/vim-7.3/bin/gvim
+@
+text
+@# Menu Header {{
+# vim: set sw=4 ts=4 sts=4 et tw=78 foldmarker={{,}} foldlevel=0 foldmethod=marker spell:
+# }}
+
+# Menu Global MenuStyle {{
+MenuStyle *		BorderWidth 3, HilightBack, ActiveFore
+MenuStyle *		MenuColorset 60, ActiveColorset 0
+MenuStyle *		Hilight3DThickness 1, Animation
+MenuStyle *		PopupDelay 300, PopdownImmediately, PopupOffset 0 100
+MenuStyle *		TitleUnderlines1, TrianglesSolid
+MenuStyle *		ItemFormat "%s%|%5.i%5.5l%5.5r%.5>%|"
+MenuStyle *		VerticalItemSpacing 0, VerticalTitleSpacing 0
+MenuStyle *		Font "-adobe-helvetica-bold-r-normal--14-100-100-100-p-82-iso8859-1"
+# "}}"
+
+# Menu WindowList MenuStyle  {{
+MenuStyle WindowList	HilightBack, ActiveFore
+MenuStyle WindowList	MenuColorset 60, ActiveColorset 0
+MenuStyle WindowList	Hilight3DThickness 1, Animation
+MenuStyle WindowList	PopupDelay 200, PopdownImmediately, PopupOffset 0 100
+MenuStyle WindowList    ItemFormat "%.9s%.9|%.9i%.5l%.5l%.5r%.5i%2.3>%1|"
+MenuStyle WindowList		Font "-adobe-helvetica-bold-r-normal--14-100-100-100-p-82-iso8859-1"
+# }}
+
+# All MenuFvwmWindowOps menus {{
+
+# Menu MenuFvwmWindowOps {{
+DestroyMenu	MenuFvwmWindowOps
+AddToMenu	MenuFvwmWindowOps
++ "Move"		Move
++ "Resize"		Resize
++ "MoveToDesk"		Popup MenuFvwmMoveToDesk
++ "MoveToPage"		Popup MenuFvwmMoveToPage
++ "(De)Iconify"		Thumbnail
++ "(Un)Maximize"	Maximize
++ "Maximize horz"	Maximize True grow 0
++ "Maximize vert"	Maximize True 0 grow
++ "(Un)Shade"		WindowShade
++ "(Un)Stick"		Stick
++ "" Nop
++ "Close"		Close
++ "Delete"		Delete
++ "Destroy"		Destroy
++ "" Nop
++ "StaysOnTop"		Pick (CirculateHit) Layer 0 6
++ "StaysPut"		Pick (CirculateHit) Layer 0 4
++ "StaysOnBottom"	Pick (CirculateHit) Layer 0 2
++ "" Nop
++ "Window Screenshot"	Pick (CirculateHit) FvwmWindowScreenshot
++ "Screenshot"		FvwmDesktopScreenshot 5
++ "" Nop
++ "Identify"		Module FvwmIdent
+#}}
+
+# Menu MenuFvwmMoveToPage {{
+DestroyMenu	MenuFvwmMoveToPage
+AddToMenu	MenuFvwmMoveToPage
++ "Page 1"		MoveToPage 0 0
++ "Page 2"		MoveToPage 0 1
++ "Page 3"		MoveToPage 1 0
++ "Page 4"		MoveToPage 1 1
+# }}
+
+# Menu MenuFvwmMoveToDesk {{
+DestroyMenu	MenuFvwmMoveToDesk
+AddToMenu	MenuFvwmMoveToDesk
++ "Desk &1"		MoveToDesk 0 0 0 3
++ "Desk &2"		MoveToDesk 0 1 0 3
++ "Desk &3"		MoveToDesk 0 2 0 3
++ "Desk &4"		MoveToDesk 0 3 0 3
++ "Desk &5"		MoveToDesk 0 4 0 3
++ "Desk &6"		MoveToDesk 0 5 0 3
++ "Desk &7"		MoveToDesk 0 6 0 3
++ "Desk &8"		MoveToDesk 0 7 0 3
+# }}
+
+#}}
+
+
+# Menu FuncFvwmMenuDirectory {{
+DestroyFunc FuncFvwmMenuDirectory 
+AddToFunc   FuncFvwmMenuDirectory 
++ I PipeRead '/u/croysdal/build/fvwm/fvwm-2.6.5/bin/fvwm-menu-directory -d "$0" --check-subdir --links'
+
+# For testing of new functions
+DestroyMenu "FvwmMenuFilePopup"
+AddToMenu   "FvwmMenuFilePopup" 
++ MissingSubMenuFunction FuncFvwmMenuDirectory
++ "/" Popup /
++ "/etc" Popup /etc
++ "Home Directory" Popup $[HOME]
+# }}
+
+# All MenuFvwmRoot menues {{
+
+# Menu MenuFvwmRoot {{
+DestroyMenu	MenuFvwmRoot
+AddToMenu	"MenuFvwmRoot"
+
+## 2015/03/17 14:22 Fonts are not working with either of these :(
++ "Xterm ilight-28 %mini.term.xpm%" Exec exec qrsh -P ilight  -q "q@@suselsf28" -V '/u/croysdal/bin/uxterm -u8 +lc'
+# + "Xterm ilight-28 %mini.term.xpm%" Exec exec qsh -P ilight -V -S /u/croysdal/bin/zsh -q "q@@suselsf28" 
++ "Xterm ilight    %mini.term.xpm%" Exec exec qsh -P ilight -S /u/croysdal/bin/zsh
++ "Xterm iperm    %mini.term.xpm%"  Exec exec qsh -P iperm  
++ "Xterm iheavy   %mini.term.xpm%"  Exec exec qsh -l qsc=j|k -P iheavy  
+# + "Clock ilight-28 %mini.term.xpm%" Exec exec qrsh -P ilight -q "q@@suselsf28" -N xterm -V '/usr/bin/xclock'
+# + "Xterm ilight   %mini.term.xpm%"  Exec exec qrsh -P ilight                  -N xterm -V '/u/croysdal/bin/uxterm -u8 +lc'
++ "Xterm(s) ilight"  popup MenuIlight  
++ "Xterm Local    %mini.term.xpm%"  Exec exec /usr/X/bin/xterm -sl 1000  -fn "-misc-fixed-medium-r-normal--15-120-100-100-c-90-iso8859-1"
+# + "MenuFoundry"      popup MenuFoundry
++ "Edit FVWM Config" Exec exec /depot/vim-7.3/bin/gvim $[fvwm_home]/local_config
++ "Edit Desktops"    Exec exec /depot/vim-7.3/bin/gvim $[fvwm_home]/desktops
++ "Help"             popup Help
++ "WindowLists"      popup WindowLists
+# + "Arrange"          popup ArrangeWindows
++ "Monitor"          popup Monitor
+#+ "Dirs"             popup FvwmMenuFilePopup
++ "Quitter"          popup MenuQuit-Verify
+# }}
+
+
+
+# MenuIlight {{
+DestroyMenu     MenuIlight
+AddToMenu       MenuIlight
++ "suselsf27 %mini.term.xpm%"  Exec exec qsh -P ilight -q "q@@suselsf27"  -S /u/croysdal/bin/zsh
++ "suselsf28 %mini.term.xpm%"  Exec exec qsh -P ilight -q "q@@suselsf28"  -S /u/croysdal/bin/zsh
++ "suselsf30 %mini.term.xpm%"  Exec exec qsh -P ilight -q "q@@suselsf30"  -S /u/croysdal/bin/zsh
++ "suselsf31 %mini.term.xpm%"  Exec exec qsh -P ilight -q "q@@suselsf31"  -S /u/croysdal/bin/zsh
+# }}
+
+DestroyMenu     MenuFoundry
+AddToMenu       MenuFoundry
++ "suselsf52(myfoundry)%mini.term.xpm%"          Exec exec rsh suselsf52 /global/freeware/Linux/2.6/firefox-16.0.1/firefox --display ${HOSTNAME}${DISPLAY} https://myfoundry.intel.com
++ "suselsf52(myfoundry) firefox8%mini.term.xpm%"          Exec exec rsh suselsf52 /opt/firefox-8.0/firefox --display ${HOSTNAME}${DISPLAY} https://myfoundry.intel.com
++ "suselsf52(myfoundry) firefox9%mini.term.xpm%"          Exec exec rsh suselsf52 /depot/firefox-9.0/firefox --display ${HOSTNAME}${DISPLAY} https://myfoundry.intel.com
+
+# MenuHelp {{
+DestroyMenu     Help
+AddToMenu       Help
++ "Fvwm"        Exec exec /usr/X/bin/xterm -e less $[fvwm_home]/help.txt
++ "VIM"         Exec exec /usr/X/bin/xterm -e less /global/berryweb/doc/VIM.md
++ "UGE"         Exec exec /usr/X/bin/xterm -e less /global/berryweb/doc/UGE.md
++ "TMUX"        Exec exec /usr/X/bin/xterm -e less /global/berryweb/doc/TMUX.md
+# }}
+
+# MenuMonitor {{
+DestroyMenu     Monitor
+AddToMenu       Monitor
++ "3800x1200 "  Monitor3800x1200
++ "1900x1200 "  Monitor1900x1200
++ "1900x1080 "  Monitor1900x1080
++ "2500x1600 "  Monitor2500x1600
++ "1440x900 "  Monitor1440x900
+# }}
+
+# MenuQuit-Verify {{
+DestroyMenu     MenuQuit-Verify
+AddToMenu       MenuQuit-Verify
++ "--= Session =--" Title
++ "Restart" Restart
++ "Disconnect DSA" Exec exec /opt/CTXSmf/bin/ctxdisconnect
+#+ "Quit" Quit
+# }}
+
+# Menu ArrangeWindows {{
+DestroyMenu     ArrangeWindows
+AddToMenu       ArrangeWindows
++ "Tile 3 row"        FvwmTile -mn 3 -resize 0 0 95 98
++ "Tile 3 row nosize" FvwmTile -mn 3 0 0 95 98
++ "Tile 2 row"        FvwmTile -mn 2 -resize 0 0 95 98
++ "Cascade"           FvwmCascade
+# }}
+
+# Menu Windowlists {{
+DestroyMenu     Windowlists
+AddToMenu       Windowlists
++ "ICC Layout"         WindowList (*Layout*), NoCurrentDeskTitle, NoGeometry, IconifiedAtEnd, UseIconName, NoNumInDeskTitle, NoDeskNum
++ "Gvim"               WindowList (*vim*),    NoCurrentDeskTitle, NoGeometry, IconifiedAtEnd, UseIconName, NoNumInDeskTitle, NoDeskNum
++ "Xterms"             WindowList (*xterm*),  NoCurrentDeskTitle, NoGeometry, IconifiedAtEnd, UseIconName, NoNumInDeskTitle, NoDeskNum
+# }}
+
+
+#}}
+@
+
+
+1.8
+log
+@Changed qrsh to qsh
+@
+text
+@d111 2
+a112 2
++ "Edit FVWM Config" Exec exec gvim $[fvwm_home]/local_config
++ "Edit Desktops"    Exec exec gvim $[fvwm_home]/desktops
+@
+
+
+1.7
+log
+@Chagned xterm ilight to use qsh
+@
+text
+@d99 7
+a105 3
++ "Xterm ilight-28 %mini.term.xpm%" Exec exec qsh -P ilight -q "q@@suselsf28"
++ "Xterm ilight    %mini.term.xpm%" Exec exec qsh -P ilight
+#  + "Xterm ilight-28 %mini.term.xpm%" Exec exec qrsh -P ilight -e ~croysdal/fvwm.xterm.err -q "q@@suselsf28" -N xterm -V '/u/croysdal/bin/uxterm -u8 +lc'
+d109 1
+a109 4
++ "XTerm suselsf33 %mini.term.xpm%"  Exec exec rsh suselsf33 /u/croysdal/bin/uxterm -u8 +lc -display ${HOSTNAME}${DISPLAY}
++ "Local Xterm    %mini.term.xpm%"  Exec exec /usr/X/bin/xterm -sl 1000  -fn "-misc-fixed-medium-r-normal--15-120-100-100-c-90-iso8859-1"
++ "Xterm iperm    %mini.term.xpm%"  Exec exec qrsh -P iperm                   -N xterm -V '/u/croysdal/bin/uxterm -u8 +lc'
++ "Xterm iheavy   %mini.term.xpm%"  Exec exec qrsh -l qsc=j|k -P iheavy  '/u/croysdal/bin/xterm -u8 +lc'
+d126 4
+a129 4
++ "suselsf27 %mini.term.xpm%"  Exec exec qrsh -P ilight -q "q@@suselsf27" -N xterm -V '/u/croysdal/bin/uxterm -u8 +lc'
++ "suselsf28 %mini.term.xpm%"  Exec exec qrsh -P ilight -q "q@@suselsf28" -N xterm -V '/u/croysdal/bin/uxterm -u8 +lc'
++ "suselsf30 %mini.term.xpm%"  Exec exec qrsh -P ilight -q "q@@suselsf30" -N xterm -V '/u/croysdal/bin/uxterm -u8 +lc'
++ "suselsf31 %mini.term.xpm%"  Exec exec qrsh -P ilight -q "q@@suselsf31" -N xterm -V '/u/croysdal/bin/uxterm -u8 +lc'
+@
+
+
+1.6
+log
+@Added suselsf33
+@
+text
+@d99 6
+d106 2
+a107 5
++ "Xterm ilight-28 %mini.term.xpm%"  Exec exec qrsh -P ilight -q "q@@suselsf28" -N xterm -V '/u/croysdal/bin/uxterm -u8 +lc'
++ "Xterm ilight-31 %mini.term.xpm%"  Exec exec qrsh -P ilight -q "q@@suselsf31" -N xterm -V '/u/croysdal/bin/uxterm -u8 +lc'
++ "Xterm ilight   %mini.term.xpm%"  Exec exec qrsh -P ilight  -N xterm -V  '/u/croysdal/bin/xterm -u8 +lc'
++ "Xterm iperm    %mini.term.xpm%"  Exec exec qrsh -P iperm   '/u/croysdal/bin/xterm -u8 +lc'
+#+ "Xterm iheavy   %mini.term.xpm%"  Exec exec qrsh -l qsc=i|j|k   -P iheavy  -N xterm -V '/u/croysdal/bin/xterm'
+a108 2
++ "Xterm(s) ilight"  popup MenuIlight  
++ "XTerm berrysts %mini.term.xpm%"  Exec exec /usr/X/bin/xterm -sl 1000  -fn "-misc-fixed-medium-r-normal--15-120-100-100-c-90-iso8859-1"
+@
+
+
+1.5
+log
+@Added ilight31
+@
+text
+@d99 1
+@
+
+
+1.4
+log
+@many fixes
+@
+text
+@d100 1
+@
+
+
+1.3
+log
+@*** empty log message ***
+@
+text
+@d71 4
+a74 4
++ "Desk &5"		MoveToDesk 0 5 0 3
++ "Desk &6"		MoveToDesk 0 6 0 3
++ "Desk &7"		MoveToDesk 0 7 0 3
++ "Desk &8"		MoveToDesk 0 8 0 3
+d79 15
+d99 42
+a140 20
++ "XTerm%mini.term2.xpm%"        Exec exec /usr/X/bin/xterm -ls -sl 1000
++ "ilight URxvt%mini.term.xpm%"  Exec exec qrsh -l qsc=g     -P ilight  -N urxvt -V '/u/croysdal/bin/urxvt'
++ "lsf7x  URxvt%mini.term.xpm%"  Exec exec qsub -l qsc='i|j' -P bnormal -N urxvt -V '/u/croysdal/bin/urxvt' -q "q@@suselsf[78]*"   -l mem_free=2G 
++ "iheavy URxvt%mini.term.xpm%"  Exec exec qrsh -l qsc='i|j' -P iheavy  -N urxvt -V '/u/croysdal/bin/urxvt' -q "q@@suselsf[678]*" 
++ "iperm  URxvt%mini.term.xpm%"  Exec exec qrsh -l qsc='j'   -P iperm   -N urxvt -V '/u/croysdal/bin/urxvt' 
++ "ilight Xterm%mini.term.xpm%"  Exec exec qrsh -l qsc=g     -P ilight  -N xterm -V '/usr/bin/X11/xterm'
++ "URXVT"          popup URXVT
++ "Gvim%vim16x16.xpm%"                 FvwmGVim
++ "Edit Config"   Exec exec /depot/vim-7.3/bin/gvim $[fvwm_home]/local_config
++ "Help"          Exec exec /usr/X/bin/xterm -e less $[fvwm_home]/help.txt
++ "WindowLists"   popup WindowLists
++ "Arrange"       popup ArrangeWindows
++ "Monitor"       popup Monitor
+#+ "UGE"          popup UGEMenu
+#+ "Man"          popup MenuFvwmHelp
+#+ "Admin"        popup AdminMenu
+#+ "SUSE"         popup SUSEMenu
+#+ "RHEL"         popup RHELMenu
+#+ "IntelFoundry" popup IntelFoundryMenu
++ "Quitter"       popup MenuQuit-Verify
+d146 5
+a150 3
++ "1900x1080 (Laptop)"  LaptopMonitor
++ "1900x1200 (Single)"  SingleMonitor
++ "3800x1200 (Dual)"    DualMonitor
+d158 1
+d168 1
+a168 2
++ "Cascade"     FvwmCascade
++ "FVWMTabs"    FvwmTabs 
+a175 1
++ "UGE Jobs"           WindowList (*JOB*),    NoCurrentDeskTitle, NoGeometry, IconifiedAtEnd, UseIconName, NoNumInDeskTitle, NoDeskNum
+a176 35
++ "tmux"               WindowList (*tmux*),   NoCurrentDeskTitle, NoGeometry, IconifiedAtEnd, UseIconName, NoNumInDeskTitle, NoDeskNum
+# }}
+
+# Menu URXVT {{
+DestroyMenu     Non-UGE
+AddToMenu       Non-UGE
++ "suselsf72%mini.term.xpm%"         Exec exec rsh suselsf72 /u/croysdal/bin/urxvt
++ "suselsf73%mini.term.xpm%"         Exec exec rsh suselsf73 /u/croysdal/bin/urxvt
++ "suselsf74%mini.term.xpm%"         Exec exec rsh suselsf74 /u/croysdal/bin/urxvt
++ "suselsf75%mini.term.xpm%"         Exec exec rsh suselsf75 /u/croysdal/bin/urxvt
++ "suselsf76%mini.term.xpm%"         Exec exec rsh suselsf76 /u/croysdal/bin/urxvt
++ "suselsf77%mini.term.xpm%"         Exec exec rsh suselsf77 /u/croysdal/bin/urxvt
++ "suselsf78%mini.term.xpm%"         Exec exec rsh suselsf78 /u/croysdal/bin/urxvt
++ "suselsf79%mini.term.xpm%"         Exec exec rsh suselsf79 /u/croysdal/bin/urxvt
++ "suselsf80%mini.term.xpm%"         Exec exec rsh suselsf80 /u/croysdal/bin/urxvt
++ "suselsf82%mini.term.xpm%"         Exec exec rsh suselsf82 /u/croysdal/bin/urxvt
++ "suselsf84%mini.term.xpm%"         Exec exec rsh suselsf84 /u/croysdal/bin/urxvt
+# }}
+
+# Menu UGEMenu {{
+DestroyMenu     UGEMenu
+AddToMenu       UGEMenu
++ "--= UGE =--" Title
++ "ilight URxvt%mini.term.xpm%"              Exec  exec qrsh -P ilight -N urxvt      -V '/u/croysdal/bin/urxvt -sl 1000 +sb -title ${{JOB_ID}}:ilight'
++ "ilight Xterm%mini.term.xpm%"              Exec  exec qrsh -P ilight -N xterm      -V '/usr/bin/X11/xterm -ls -sl 1000 +sb -title ${{JOB_ID}}:ilight'
++ "ilight Konsole%mini.terminal-remote.xpm%" Exec  exec qrsh -P ilight -N konsole    -V '/opt/kde3/bin/konsole --ls -T ${{JOB_ID}}:ilight'
++ "ilight Gnome Terminal%mini.gnome.xpm%"    Exec  exec qrsh -P ilight -N gnome_term -V '/opt/gnome/bin/gnome-terminal --ls -t ${{JOB_ID}}:ilight'
+#+ "iheavy URxvt%mini.term.xpm%"             Exec  exec qrsh -P iheavy -N urxvt      -V '/u/croysdal/bin/urxvt -sl 1000 +sb -title ${{JOB_ID}}:iheavy'
++ "iheavy Xterm%mini.term.xpm%"              Exec  exec qrsh -P iheavy -N xterm      -V '/usr/bin/X11/xterm -ls -sl 1000 +sb -title ${{JOB_ID}}:iheavy'
++ "iheavy Konsole%mini.terminal-remote.xpm%" Exec  exec qrsh -P iheavy -N konsole    -V '/opt/kde3/bin/konsole --ls -T ${{JOB_ID}}:iheavy'
++ "iheavy Gnome Terminal%mini.gnome.xpm%"    Exec  exec qrsh -P iheavy -N gnome_term -V '/opt/gnome/bin/gnome-terminal --ls -t ${{JOB_ID}}:iheavy'
+#+ "iperm URxvt%mini.term.xpm%"              Exec  exec qrsh -P iperm -N urxvt      -V '/u/croysdal/bin/urxvt -sl 1000 +sb -title ${{JOB_ID}}:iperm'
++ "iperm Xterm%mini.term.xpm%"               Exec  exec qrsh -P iperm -N xterm      -V '/usr/bin/X11/xterm -ls -sl 1000 +sb -title ${{JOB_ID}}:iperm'
++ "iperm Konsole%mini.terminal-remote.xpm%"  Exec  exec qrsh -P iperm -N konsole    -V '/opt/kde3/bin/konsole --ls -T ${{JOB_ID}}:iperm'
++ "iperm Gnome Terminal%mini.gnome.xpm%"     Exec  exec qrsh -P iperm -N gnome_term -V '/opt/gnome/bin/gnome-terminal --ls -t ${{JOB_ID}}:iperm'
+@
+
+
+1.2
+log
+@*** empty log message ***
+@
+text
+@d1 3
+a3 3
+# Menu Header {
+# vim: set sw=4 ts=4 sts=4 et tw=78 foldmarker={,} foldlevel=0 foldmethod=marker spell:
+# }
+d5 1
+a5 1
+# Menu Global MenuStyle {
+d13 2
+a14 1
+# }
+d16 1
+a16 1
+# Menu WindowList MenuStyle  {
+d22 2
+a23 2
+MenuStyle WindowList	VerticalItemSpacing 8, VerticalTitleSpacing 2
+# }
+d25 1
+a25 1
+# All MenuFvwmWindowOps menus {
+d27 1
+a27 1
+# Menu MenuFvwmWindowOps {
+d53 1
+a53 1
+#}
+d55 1
+a55 1
+# Menu MenuFvwmMoveToPage {
+d62 1
+a62 1
+# }
+d64 1
+a64 1
+# Menu MenuFvwmMoveToDesk {
+d75 1
+a75 1
+# }
+d77 1
+a77 1
+#}
+d79 1
+a79 1
+# All MenuFvwmRoot menues {
+d81 1
+a81 1
+# Menu MenuFvwmRoot {
+d85 6
+a90 10
++ "XTerm 30%mini.term2.xpm%"        Exec exec rsh suselsf30 /usr/X11R6/bin/xterm +sb -sl 1000
++ "XTerm 78%mini.term2.xpm%"        Exec exec rsh suselsf78 /usr/bin/X11/xterm   +sb -sl 1000
++ "URxvt 30%mini.term.xpm%"         Exec exec rsh suselsf30 /u/croysdal/bin/urxvt
++ "URxvt 78%mini.term.xpm%"         Exec exec rsh suselsf78 /u/croysdal/bin/urxvt
++ "ilight URxvt%mini.term.xpm%"  Exec exec qrsh -P ilight -N urxvt      -V '/u/croysdal/bin/urxvt'
++ "ilight Xterm%mini.term.xpm%"  Exec exec qrsh -P ilight -N xterm      -V '/usr/bin/X11/xterm'
+#+ "ilight Konsole%mini.terminal-remote.xpm%"        Exec exec qrsh -P ilight -N konsole    -V '/opt/kde3/bin/konsole'
+#+ "ilight Gnome Terminal%mini.gnome.xpm%" Exec exec qrsh -P ilight -N gnome_term -V '/opt/gnome/bin/gnome-terminal --ls'
+#+ "URxvt%mini.term2.xpm%"               Exec exec rsh suselsf31 '/u/croysdal/bin/urxvt'
+#+ "URxvt%mini.term2.xpm%"               FvwmUrxvt
+d92 1
+a92 2
+#+ "Edit local config"                  Exec exec gvim $[fvwm_home]/local_config
++ "Edit Config"   Exec exec gvim $[fvwm_home]/local_config
+d104 1
+a104 1
+# }
+d106 1
+a106 1
+# MenuMonitor {
+d112 1
+a112 1
+# }
+d114 1
+a114 1
+# MenuQuit-Verify {
+d120 1
+a120 1
+# }
+d122 1
+a122 1
+# Menu ArrangeWindows {
+d130 1
+a130 1
+# }
+d132 1
+a132 1
+# Menu Windowlists {
+d135 1
+a135 1
++ "IC Compiler Layout" WindowList (*Layout*), NoCurrentDeskTitle, NoGeometry, IconifiedAtEnd, UseIconName, NoNumInDeskTitle, NoDeskNum
+d138 19
+a156 1
+# }
+d158 1
+a158 1
+# Menu UGEMenu {
+d162 13
+a174 104
++ "ilight URxvt%mini.term.xpm%"          Exec exec qrsh -P ilight -N urxvt      -V '/u/croysdal/bin/urxvt -sl 1000 +sb -title ${JOB_ID}:ilight'
++ "ilight Xterm%mini.term.xpm%"          Exec exec qrsh -P ilight -N xterm      -V '/usr/bin/X11/xterm -ls -sl 1000 +sb -title ${JOB_ID}:ilight'
++ "ilight Konsole%mini.terminal-remote.xpm%"        Exec exec qrsh -P ilight -N konsole    -V '/opt/kde3/bin/konsole --ls -T ${JOB_ID}:ilight'
++ "ilight Gnome Terminal%mini.gnome.xpm%" Exec exec qrsh -P ilight -N gnome_term -V '/opt/gnome/bin/gnome-terminal --ls -t ${JOB_ID}:ilight'
+#+ "iheavy URxvt%mini.term.xpm%"          Exec exec qrsh -P iheavy -N urxvt      -V '/u/croysdal/bin/urxvt -sl 1000 +sb -title ${JOB_ID}:iheavy'
++ "iheavy Xterm%mini.term.xpm%"          Exec exec qrsh -P iheavy -N xterm      -V '/usr/bin/X11/xterm -ls -sl 1000 +sb -title ${JOB_ID}:iheavy'
++ "iheavy Konsole%mini.terminal-remote.xpm%"        Exec exec qrsh -P iheavy -N konsole    -V '/opt/kde3/bin/konsole --ls -T ${JOB_ID}:iheavy'
++ "iheavy Gnome Terminal%mini.gnome.xpm%" Exec exec qrsh -P iheavy -N gnome_term -V '/opt/gnome/bin/gnome-terminal --ls -t ${JOB_ID}:iheavy'
+#+ "iperm URxvt%mini.term.xpm%"          Exec exec qrsh -P iperm -N urxvt      -V '/u/croysdal/bin/urxvt -sl 1000 +sb -title ${JOB_ID}:iperm'
++ "iperm Xterm%mini.term.xpm%"          Exec exec qrsh -P iperm -N xterm      -V '/usr/bin/X11/xterm -ls -sl 1000 +sb -title ${JOB_ID}:iperm'
++ "iperm Konsole%mini.terminal-remote.xpm%"        Exec exec qrsh -P iperm -N konsole    -V '/opt/kde3/bin/konsole --ls -T ${JOB_ID}:iperm'
++ "iperm Gnome Terminal%mini.gnome.xpm%" Exec exec qrsh -P iperm -N gnome_term -V '/opt/gnome/bin/gnome-terminal --ls -t ${JOB_ID}:iperm'
+# }
+
+# Menu AdminMenu {
+DestroyMenu     AdminMenu
+AddToMenu       AdminMenu
++ "--= Admin =--" Title
++ "inteladmin Xterm%mini.term.xpm%"          Exec exec xterm -sl 1000 +sb -title inteladmin -e telnet -l jupton inteladmin
++ "inteladmin(root) Xterm%mini.term.xpm%"          Exec exec xterm -sl 1000 +sb -title inteladmin -e telnet -l Jupton inteladmin
+# }
+
+# Menu SUSEMenu {
+DestroyMenu     SUSEMenu
+AddToMenu       SUSEMenu
++ "--= SUSE =--" Title
++ "suse03 Xterm%mini.term.xpm%"          Exec exec rsh suse03 xterm -sl 1000 +sb -display ${HOSTNAME}${DISPLAY}
++ "suselsf47 Xterm%mini.term.xpm%"          Exec exec rsh suselsf47 xterm -sl 1000 +sb -display ${HOSTNAME}${DISPLAY}
++ "suselsf52 Xterm%mini.term.xpm%"          Exec exec rsh suselsf52 xterm -sl 1000 +sb -display ${HOSTNAME}${DISPLAY}
++ "suselsf72 Xterm%mini.term.xpm%"          Exec exec rsh suselsf72 xterm -sl 1000 +sb -display ${HOSTNAME}${DISPLAY}
++ "vgamdquad150 Xterm%mini.term.xpm%"          Exec exec rsh vgamdquad150 xterm -sl 1000 +sb -display ${HOSTNAME}${DISPLAY}
+# }
+
+# Menu IntelFoundryMenu {
+DestroyMenu     IntelFoundryMenu
+AddToMenu       IntelFoundryMenu
++ "--= IntelFoundry =--" Title
++ "suselsf52(myfoundry)%mini.term.xpm%"          Exec exec rsh suselsf52 /opt/firefox-8.0/firefox --display ${HOSTNAME}${DISPLAY} https://myfoundry.intel.com
+# }
+
+# Menu RHELMenu {
+DestroyMenu     RHELMenu
+AddToMenu       RHELMenu
++ "--= RHEL =--" Title
++ "redhathuge1 Xterm%mini.term.xpm%"          Exec exec rsh redhathuge1 xterm -sl 1000 +sb -display ${HOSTNAME}${DISPLAY}
++ "redhathuge2 Xterm%mini.term.xpm%"          Exec exec rsh redhathuge2 xterm -sl 1000 +sb -display ${HOSTNAME}${DISPLAY}
++ "redhathuge3 Xterm%mini.term.xpm%"          Exec exec rsh redhathuge3 xterm -sl 1000 +sb -display ${HOSTNAME}${DISPLAY}
+# }
+
+# Menu FvwmViewManPage {
+DestroyFunc FvwmViewManPage
+AddToFunc FvwmViewManPage
++ I Exec exec xterm -fg White -bg DarkBlue -g 80x40 \
+-n "Manual Page - $0" -T "Manual Page - $0" -e man "/remote/us01home33/croysdal/fvwm/solaris/share/man/man1/$0.1"
+# }
+
+# Menu MenuFvwmHelp {
+DestroyMenu	MenuFvwmHelp
+AddToMenu   	MenuFvwmHelp
++ "Fvwm"		FvwmViewManPage fvwm
++ "FvwmAnimate"		FvwmViewManPage FvwmAnimate
++ "FvwmAuto"		FvwmViewManPage FvwmAuto
++ "FvwmBacker"		FvwmViewManPage FvwmBacker
++ "FvwmBanner"		FvwmViewManPage FvwmBanner
++ "FvwmButtons"		FvwmViewManPage FvwmButtons
++ "FvwmCommand"		FvwmViewManPage FvwmCommand
++ "FvwmConsole"		FvwmViewManPage FvwmConsole
++ "FvwmConsoleC.pl"	FvwmViewManPage FvwmConsoleC.pl
++ "FvwmCpp"		FvwmViewManPage FvwmCpp
++ "FvwmDebug"		FvwmViewManPage FvwmDebug
++ "FvwmDragWell"	FvwmViewManPage FvwmDragWell
++ "FvwmEvent"		FvwmViewManPage FvwmEvent
++ "FvwmForm"		FvwmViewManPage FvwmForm
++ "FvwmGtk"		FvwmViewManPage FvwmGtk
++ "FvwmGtkDebug"	FvwmViewManPage FvwmGtkDebug
++ "FvwmIconBox"		FvwmViewManPage FvwmIconBox
++ "FvwmIconMan"		FvwmViewManPage FvwmIconMan
++ "FvwmIdent"		FvwmViewManPage FvwmIdent
++ "FvwmM4"		FvwmViewManPage FvwmM4
++ "FvwmPager"		FvwmViewManPage FvwmPager
++ "FvwmPerl"		FvwmViewManPage FvwmPerl
++ "FvwmProxy"		FvwmViewManPage FvwmProxy
++ "FvwmRearrange"	FvwmViewManPage FvwmRearrange
++ "FvwmSave"		FvwmViewManPage FvwmSave
++ "FvwmSaveDesk"	FvwmViewManPage FvwmSaveDesk
++ "FvwmScript"		FvwmViewManPage FvwmScript
++ "FvwmScroll"		FvwmViewManPage FvwmScroll
++ "FvwmTaskBar"		FvwmViewManPage FvwmTaskBar
++ "FvwmTheme"		FvwmViewManPage FvwmTheme
++ "FvwmWharf"		FvwmViewManPage FvwmWharf
++ "FvwmWinList"		FvwmViewManPage FvwmWinList
++ "FvwmWindowMenu"	FvwmViewManPage FvwmWindowMenu
++ "" Nop
++ "fvwm-config"		FvwmViewManPage fvwm-config
++ "fvwm-perllib"	FvwmViewManPage fvwm-perllib
++ "fvwm-root"		FvwmViewManPage fvwm-root
++ "fvwm-bug"		FvwmViewManPage fvwm-bug
++ "fvwm-convert-2.4"	FvwmViewManPage fvwm-convert-2.4
++ "" Nop
++ "fvwm-menu-desktop"	FvwmViewManPage fvwm-menu-desktop
++ "fvwm-menu-directory"	FvwmViewManPage fvwm-menu-directory
++ "fvwm-menu-headlines"	FvwmViewManPage fvwm-menu-headlines
++ "fvwm-menu-xlock"	FvwmViewManPage fvwm-menu-xlock
+# }
+a175 1
+#}
+d177 1
+@
+
+
+1.1
+log
+@Initial revision
+@
+text
+@d83 7
+a89 2
++ "ilight URxvt%mini.term.xpm%"          Exec exec qrsh -P ilight -N urxvt      -V '/u/croysdal/bin/urxvt'
+#+ "ilight Xterm%mini.term.xpm%"          Exec exec qrsh -P ilight -N xterm      -V '/usr/bin/X11/xterm'
+a91 1
++ "XTerm%mini.term2.xpm%"               Exec exec /usr/X/bin/xterm -ls -sl 1000
+d113 3
+a115 3
++ "Laptop"    LaptopMonitor
++ "Single"    SingleMonitor
++ "Dual"      DualMonitor
+@

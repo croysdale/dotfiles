@@ -1,0 +1,222 @@
+# Installation instructions:
+# This file goes in the /etc directory, and must be world readable.
+# You can copy this file to .dir_colors in your $HOME directory to override
+# the system defaults.
+COLOR tty
+
+# Below, there should be one TERM entry for each termtype that is colorizable
+TERM ansi
+TERM color_xterm
+TERM color-xterm
+TERM con132x25
+TERM con132x30
+TERM con132x43
+TERM con132x60
+TERM con80x25
+TERM con80x28
+TERM con80x30
+TERM con80x43
+TERM con80x50
+TERM con80x60
+TERM cons25
+TERM console
+TERM cygwin
+TERM dtterm
+TERM Eterm
+TERM eterm-color
+TERM fbterm
+TERM gnome
+TERM gnome-256color
+TERM jfbterm
+TERM konsole
+TERM konsole-256color
+TERM kterm
+TERM linux
+TERM linux-c
+TERM mach-color
+TERM mlterm
+TERM nxterm
+TERM rxvt
+TERM rxvt-256color
+TERM rxvt-cygwin
+TERM rxvt-cygwin-native
+TERM rxvt-unicode
+TERM rxvt-unicode256
+TERM rxvt-unicode-256color
+TERM st
+TERM st-256color
+TERM vt100
+TERM xterm
+TERM xterm-new
+TERM xterm-16color
+TERM xterm-256color
+TERM xterm-88color
+TERM xterm-color
+
+#############################################################################
+# Below are the color init strings for the basic file types. A color init
+# string consists of one or more of the following numeric codes:
+#
+# Attribute codes:
+#   00=none 01=bold 04=underscore 05=blink 07=reverse 08=concealed
+# Text color codes:
+#   30=black 31=red 32=green 33=yellow 34=blue 35=magenta 36=cyan 37=white
+# Background color codes:
+#   40=black 41=red 42=green 43=yellow 44=blue 45=magenta 46=cyan 47=white
+#
+# NOTES:
+# http://www.bigsoft.co.uk/blog/index.php/2008/04/11/configuring-ls_colors
+
+### By file type
+#
+# BLK                   38;5;68
+# CAPABILITY            38;5;17
+# CHR                   38;5;113;1
+# DOOR                  38;5;127
+# FIFO                  38;5;126
+# MULTIHARDLINK         38;5;222;1
+# ORPHAN                48;5;196;38;5;232;1
+# OTHER_WRITABLE        38;5;220;1
+# SETGID                48;5;234;38;5;100;1
+# SETUID                38;5;137
+# SOCK                  38;5;197
+# STICKY                38;5;86;48;5;234
+# STICKY_OTHER_WRITABLE 48;5;235;38;5;139;3
+#
+# *LS_COLORS 48;5;89;38;5;197;1;3;4;7 # :-)
+
+
+# Exac Solarized Dark color theme for the color GNU ls utility.
+# Designed for dircolors (GNU coreutils) 5.97
+#
+# This simple theme was simultaneously designed for these terminal color schemes:
+# - Solarized dark  (best)
+# - Solarized light
+# - default dark
+# - default light
+# with a slight optimization for Solarized Dark.
+#
+# How the colors were selected:
+# - Terminal emulators often have an option typically enabled by default that makes
+#   bold a different color.  It is important to leave this option enabled so that
+#   you can access the entire 16-color Solarized palette, and not just 8 colors.
+# 
+# ~croysdal/bin/256colors_num.pl
+# ~croysdal/bin/zsh_scripts/test_colors.zsh
+#
+
+## Default background == 8
+#
+# 256 xterm instead of ANSI colors. 
+# 38;5;159. 
+#     38 there refers to foreground, 
+#     48 would be background. 
+#     159 is the color. 
+#     Colors can be separated w/ the letter m, and ANSI escapes for underline, 
+#     bold, flash, etc. can also be tacked on with an m, as in 
+#  38;5;159m\e[04 
+#  (same as above, only underlined.)
+#
+# SOLARIZED 16 HEX     TERMCOL  XTERM/HEX   
+# --------- -- ------- -------  ----------- 
+# base03     8 #002b36 brblack  234 #1c1c1c # Background 
+# base02     0 #073642 black    235 #262626 # Background highlights
+# base01    10 #586e75 brgreen  240 #4e4e4e # Comments
+# base00    11 #657b83 bryellow 241 #585858 
+# base0     12 #839496 brblue   244 #808080 # Body text
+# base1     14 #93a1a1 brcyan   245 #8a8a8a # Highlights
+# base2      7 #eee8d5 white    254 #d7d7af 
+# base3     15 #fdf6e3 brwhite  230 #ffffd7 
+# yellow     3 #b58900 yellow   136 #af8700 
+# orange     9 #cb4b16 brred    166 #d75f00 
+# red        1 #dc322f red      160 #d70000 
+# magenta    5 #d33682 magenta  125 #af005f 
+# violet    13 #6c71c4 brmagenta 61 #5f5faf 
+# blue       4 #268bd2 blue      33 #0087ff 
+# cyan       6 #2aa198 cyan      37 #00afaf 
+# green      2 #859900 green     64 #5f8700 
+# }}
+
+
+#<File Attribute>  <fg/bg>;5;<color>;<Effect>
+# <bg/fg>    fg=38;bg=48
+# 5          Not sure what this is for
+# <Color>    256-color xterm
+# <Effects> 
+#        00	Default colour
+#        01	Bold
+#        04	Underlined
+#        05	Flashing text
+#        07	Reversed
+#        08	Concealed
+DIR     38;5;14          # base0
+FILE    38;5;12          # base1
+NORMAL  38;5;10          # base1
+LINK    38;5;9           # orange
+ORPHAN  38;5;1;4         # Orphaned sym link
+MISSING 38;5;1;4         # files that orphaned symlinks point to
+
+OTHER_WRITABLE 00        # Default color for other writable
+## TODO: Make this bold
+EXEC           00        # Default color for executables
+
+# Documents
+*README        38;5;64;1
+*README.txt    38;5;64;1
+*.txt          38;5;2
+
+# Logfiles
+*.log          38;5;3
+
+# Reports
+*.rpt          38;5;3
+
+# shell scripts
+*.zsh          38;5;6
+*.sh           38;5;6
+*.csh          38;5;6
+*.pl           38;5;6
+
+# tcl scripts
+*.tcl          38;5;5
+
+# SNPS files
+*.tf           38;5;13
+*.upf          38;5;13
+
+# Intel files
+*.sum          38;5;4
+
+## Bad files
+*.lock         38;5;1
+*.tar          38;5;1
+*.gpg          38;5;1
+*.acts         38;5;1
+*tmp           38;5;1
+*~             38;5;1
+*core           38;5;1
+
+#############################################################################
+### By file attributes
+# no	NORMAL, NORM	Global default, although everything should be something
+# fi	FILE	Normal file
+# di	DIR	Directory
+# ln	SYMLINK, LINK, LNK	Symbolic link. If you set this to target instead of a numerical value, the color is as for the file pointed to.
+# pi	FIFO, PIPE	Named pipe
+# do	DOOR	Door
+# bd	BLOCK, BLK	Block device
+# cd	CHAR, CHR	Character device
+# or	ORPHAN	Symbolic link pointing to a non-existent file
+# so	SOCK	Socket
+# su	SETUID	File that is setuid (u+s)
+# sg	SETGID	File that is setgid (g+s)
+# tw	STICKY_OTHER_WRITABLE	Directory that is sticky and other-writable (+t,o+w)
+# ow	OTHER_WRITABLE	Directory that is other-writable (o+w) and not sticky
+# st	STICKY	Directory with the sticky bit set (+t) and not other-writable
+# ex	EXEC	Executable file (i.e. has x set in permissions)
+# mi	MISSING	Non-existent file pointed to by a symbolic link (visible when you type ls -l)
+# lc	LEFTCODE, LEFT	Opening terminal code
+# rc	RIGHTCODE, RIGHT	Closing terminal code
+# ec	ENDCODE, END	Non-filename text
+#
+#

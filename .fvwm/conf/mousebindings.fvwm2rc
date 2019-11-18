@@ -1,0 +1,133 @@
+# Style Mouse Bindings Header {
+# vim: set sw=4 ts=4 sts=4 et tw=78 foldmarker={,} foldlevel=0 foldmethod=marker spell:
+# 
+############### 
+# Mouse syntax 
+# http://fvwm.org/doc/unstable/commands/Mouse.html
+# Mouse  <Button number> <Context> <Modifier>
+# 
+#
+############### 
+# Button number
+# +-------------------+
+# |  |||  |||    |||  |
+# | Left Middle Right |
+# +-------------------+
+#   1       2     3
+
+##########
+# Contexts
+#     R = Root Window                 rrrrrrrrrrrrrrrrrrrrrr
+#     W = Application Window          rIrrrrFSSSSSSSSSFrrrrr
+#     F = Frame Corners               rrrrrrS13TTTT642Srrrrr
+#     S = Frame Sides                 rIrrrrSwwwwwwwwwSrrrrr
+#     T = Title Bar                   rrrrrrSwwwwwwwwwSrrrrr
+#     I = Icon                        rIrrrrFSSSSSSSSSFrrrrr
+#                                     rrrrrrrrrrrrrrrrrrrrrr
+#
+#  '[', ']', '-' and '_' for the left, right, top or bottom side only
+#
+# "I" stands for Immediate
+# "M" stands for Motion
+# "C" stands for Click
+# "H" stands for Hold
+# "D" stands for Double Click
+
+# Get Key names here:
+# /usr/include/X11/keysymdef.h
+# ---------------------------------------------------------------------------
+# 
+# 
+# }
+
+# Root mouse menus {
+Mouse 1       R N   Nop
+Mouse 3       R A   Menu  MenuFvwmRoot
+# }
+
+# Anywhere menu {
+Mouse 3       A SCM   Menu  MenuFvwmRoot
+Mouse 1       A SCM Menu MenuFvwmWindowOps
+# }
+
+# Mouse 2 -- WindowList {
+Mouse 2       R  A  WindowList NoCurrentDeskTitle, NoGeometryWithInfo, IconifiedAtEnd, UseIconName, NoNumInDeskTitle, NoDeskNum, CurrentDesk 
+Mouse 2       R  S  WindowList NoCurrentDeskTitle, NoGeometry, IconifiedAtEnd, UseIconName, NoNumInDeskTitle, NoDeskNum, TitleForAllDesks
+Mouse 2       R  C  WindowList NoCurrentDeskTitle, NoGeometry, IconifiedAtEnd, UseIconName, NoNumInDeskTitle, NoDeskNum, TitleForAllDesks, OnlyIcons
+Mouse 2       A  M  WindowList NoCurrentDeskTitle, NoGeometry, IconifiedAtEnd, UseIconName, NoNumInDeskTitle, NoDeskNum, CurrentDesk
+Mouse 2       A CM  WindowList NoCurrentDeskTitle, NoGeometry, IconifiedAtEnd, UseIconName, NoNumInDeskTitle, NoDeskNum, TitleForAllDesks, OnlyIcons
+Mouse 2       A SM  WindowList NoCurrentDeskTitle, NoGeometry, IconifiedAtEnd, UseIconName, NoNumInDeskTitle, NoDeskNum, TitleForAllDesks
+# }
+
+# Titlebar mouse menus {
+# Left   click window title 
+Mouse 1       T N FvwmMoveOrRaise
+# Middle click window title 
+Mouse 2       T N WindowList NoCurrentDeskTitle, NoGeometryWithInfo, IconifiedAtEnd, UseIconName, NoNumInDeskTitle, NoDeskNum, CurrentDesk
+# Right  click window title 
+Mouse 3       T N Lower
+
+# Alt Middle click window title 
+Mouse 2       T M WindowList NoCurrentDeskTitle, NoGeometryWithInfo, IconifiedAtEnd, UseIconName, NoNumInDeskTitle, NoDeskNum 
+# Alt Right click window title 
+Mouse 3       T M Thumbnail    # Iconify and create thumbnail for window
+
+# Control Left   click window title 
+Mouse 1       ST C Menu MenuFvwmWindowOps
+# Control Middle click window title 
+Mouse 2       T C WindowShade
+# Control Right  click window title 
+Mouse 3       ST C Menu MenuFvwmRoot
+# }
+
+# Expand window to next object {
+
+# Control Mouse 1 on window side {
+Mouse 1       [ C Maximize True growleft  0
+Mouse 1       ] C Maximize True growright 0
+Mouse 1       - C Maximize True 0 growup
+Mouse 1       _ C Maximize True 0 growdown
+Mouse 3       S C Maximize False
+# }
+
+# Double-click Mouse 1 on window side {
+Mouse 1       [ A FvwmExpand growleft  0
+Mouse 1       ] A FvwmExpand growright 0
+Mouse 1       - A FvwmExpand 0 growup
+Mouse 1       _ A FvwmExpand 0 growdown
+# }
+
+# }
+
+# Titlebar Buttons {
+# Buttons: 1 ============= 6 4 2
+Mouse  1  1  A  Menu MenuFvwmWindowOps
+Mouse  1  6  A  Thumbnail
+Mouse  1  4  N  FvwmMaximizeLeftMonitor
+Mouse  2  4  N  FvwmMaximize 0 grow
+Mouse  3  4  A  FvwmMaximize grow grow
+Mouse  1  2  A  Close
+# }
+
+# Icons {
+Mouse  1  I  A  FvwmIconify
+Mouse  2  I  A  Move
+# }
+
+# Pager {
+## Right clcik to change name of desktops
+DestroyFunc FvwmGVimDesktops
+AddToFunc   FvwmGVimDesktops
++ I Exec exec gvim -f --noplugin $[fvwm_home]/desktops
++ I KillModule FvwmPager 
++ I Module FvwmPager 1 8
+
+Mouse (FvwmPager) 3 W N FvwmGVimDesktops
+# }
+
+# Vim/Xterm Thumbnail {
+## Alt - Right clcik anywhere to Thumbnail window
+Mouse (*vim*)   3 A M Thumbnail
+Mouse (*xterm*) 3 A M Thumbnail
+# }
+

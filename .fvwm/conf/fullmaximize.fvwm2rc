@@ -1,0 +1,8 @@
+DestroyFunc FuncFvwmMaximize
+AddToFunc FuncFvwmMaximize
++ I ThisWindow (Maximized) DestroyWindowStyle
++ I TestRc (NoMatch) WindowStyle !Title, !Handles, !Borders, ResizeHintOverride, !Iconifiable, FixedPosition, FixedSize
++ I UpdateStyles
++ I ThisWindow (Maximized) Maximize
++ I TestRc (NoMatch) Maximize ewmhiwa 100 100
+

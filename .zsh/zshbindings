@@ -1,0 +1,188 @@
+# To find out the keynames you can use
+#  | cat > /dev/null 
+#  or
+#  | od -c
+#
+# Some useful keybindings
+#  | $ xterm -version
+#  |   XFree86 4.3/OpenBSD 3.3(174)
+#  | $ echo $TERM
+#  |   xterm
+#
+#  bindkey "^Y"    yank                                # <STRG>-Y
+#  bindkey "\e[3~" delete-char                         # Delete
+#  bindkey "^[[A"  up-line-or-search                   # <ESC>-N
+#  bindkey "^[[B"  down-line-or-search                 # <ESC>-
+#  bindkey "^E"    expand-cmd-path                     # <STRG>-E
+#  bindkey "^N"    forward-word                        # <STRG>-N
+#  bindkey "^R"    history-incremental-search-backward # <STRG>-R
+#  bindkey "^P"    quote-line                          # <STRG>-P
+#  bindkey "^K"    run-help                            # <STRG>-K
+#  bindkey "^Z"    which-command                       # <STRG>-Z
+#  bindkey "^X"    what-cursor-position                # <STRG>-X
+#
+
+bindkey -e
+
+## Keep some emacs bindings
+	# bindkey "^A" beginning-of-line
+	# bindkey "^B" backward-char
+	# bindkey "^D" delete-char-or-list
+	# bindkey "^F" forward-char
+	# bindkey "^K" kill-line
+	# bindkey "^U" kill-whole-line
+	bindkey -M vicmd "^A" beginning-of-line
+	bindkey -M vicmd "^B" backward-char
+	bindkey -M vicmd "^D" delete-char-or-list
+	bindkey -M vicmd "^E" end-of-line
+	bindkey -M vicmd "^F" forward-char
+	bindkey -M vicmd "^K" kill-line
+	bindkey -M vicmd "^U" kill-whole-line
+
+    bindkey "^[e" expand-cmd-path
+
+
+## Need to set WORDCHARS before select-word-style 
+# Default
+#export WORDCHARS='*?_[]~=&;!#$%^(){}'
+# Added . : 
+export  WORDCHARS='*?_[]~=&;!#$%^(){}.:'
+autoload -U select-word-style
+select-word-style normal
+
+
+# Zle (these are not normally loaded outside of Zle)
+
+# bindkey "^W" backward-kill-word-match
+# bindkey "^[^H" backward-kill-word-match
+# bindkey "^[B" backward-word-match
+# bindkey "^[C" capitalize-word-match
+# bindkey "^[D" kill-word-match
+# bindkey "^[F" forward-word-match
+# bindkey "^[L" down-case-word-match
+# bindkey "^[U" up-case-word-match
+# bindkey "^[b" backward-word-match
+# bindkey "^[c" capitalize-word-match
+# bindkey "^[d" kill-word-match
+# bindkey "^[f" forward-word-match
+# bindkey "^[u" up-case-word-match
+# bindkey "^[^?" backward-kill-word-match
+
+# forward-word-match, backward-word-match
+#        kill-word-match, backward-kill-word-match
+#        transpose-words-match, capitalize-word-match
+#        up-case-word-match, down-case-word-match
+#        select-word-style, match-word-context, match-words-by-style
+
+
+## Help with Ctrl-? or F1
+	bindkey "^_" run-help                            # i. e. "run-help foo" == "man foo"
+	bindkey "^[OP" run-help                          # F1
+
+	bindkey " " magic-space                          # do history expansion on space
+
+    # Edit command in an external editor.
+    bindkey -M vicmd "v" edit-command-line
+
+    # Bind to history substring search plugin if enabled;
+    # otherwise, bind to built-in Zsh history search.
+    if (( $+plugins[(er)history-substring-search] )); then
+      bindkey -M vicmd "k" history-substring-search-up
+      bindkey -M vicmd "j" history-substring-search-down
+    else
+      bindkey -M vicmd "k" up-line-or-history
+      bindkey -M vicmd "j" down-line-or-history
+    fi
+
+    # Then, M-m will copy the last word of the current line, then the second last word, etc.
+    # But with M-. you can go back in lines too! Thus:
+    #
+    # % echo a b c
+    # % echo 1 2 3
+    # % echo <M-.><M-.><M-m>
+    # % echo b
+
+    autoload -Uz copy-earlier-word
+    zle -N copy-earlier-word
+    bindkey "^[m" copy-earlier-word
+
+	#bindkey -s "\C-t" "dirs -v\rcd ~"                # Ctrl-T : Show pushd dirs
+
+	# bindkey "^R" history-incremental-search-backward # Search in my $HISTFILE (STRG+R)
+	bindkey '^Q' history-beginning-search-backward   #
+	bindkey "^I" expand-or-complete                  # assimilable to "ls<TAB>"
+	# bindkey " " my-expand-abbrev                     # See ~/.zsh/zshmisc "/^myiabs" for details
+    
+    bindkey "^R" history-incremental-pattern-search-backward
+    bindkey "^S" history-incremental-pattern-search-forward
+
+	#
+    # VIM keys for navigating menus
+	# bindkey -M menuselect 'h' vi-backward-char                
+	# bindkey -M menuselect 'j' vi-down-line-or-history         
+	# bindkey -M menuselect 'k' vi-up-line-or-history           
+	# bindkey -M menuselect 'l' vi-forward-char                 
+	# bindkey -M menuselect 'i' accept-and-menu-complete
+	# bindkey -M menuselect 'o' accept-and-infer-next-history
+
+    bindkey "^P" vi-up-line-or-history
+    bindkey "^N" vi-down-line-or-history
+
+    bindkey "^P" up-history
+    bindkey "^N" down-history
+    # bindkey "^[[1~" vi-beginning-of-line   # Home
+    # bindkey "^[[4~" vi-end-of-line         # End
+    # bindkey '^[[2~' beep                   # Insert
+    # bindkey '^[[5~' vi-backward-blank-word # Page Up
+    # bindkey '^[[6~' vi-forward-blank-word  # Page Down
+
+    ## Ctrl-X r  : Show newest files
+    zle -C newest-files complete-word _generic
+    bindkey '^r^r' newest-files
+
+    autoload -U backward-kill-word-match
+    zle -N backward-kill-word-space backward-kill-word-match 
+    zstyle ':zle:backward-kill-word-space' word-style space
+    bindkey '^[w' backward-kill-word-space
+
+    # Pasting entire line with prompt. Prompt will delete itself
+    SEGMENT_SEPARATOR=''
+    bindkey -s $SEGMENT_SEPARATOR '^u'
+    bindkey "^[B" vi-backward-blank-word
+    bindkey "^[F" vi-forward-blank-word
+
+
+    fancy-ctrl-z () {
+        if [[ $#BUFFER -eq 0 ]]; then
+            BUFFER="fg"
+            zle accept-line
+        else
+            zle push-input
+            zle clear-screen
+        fi
+    }
+    zle -N fancy-ctrl-z
+    bindkey '^Z' fancy-ctrl-z
+
+    function _showbuffers()
+    {
+        local nl=$'\n' kr
+        typeset -T kr KR $'\n'
+        KR=($killring)
+        typeset +g -a buffers
+        buffers+="      Pre: ${PREBUFFER:-$nl}"
+        buffers+="  Buffer: $BUFFER$nl"
+        buffers+="     Cut: $CUTBUFFER$nl"
+        buffers+="       L: $LBUFFER$nl"
+        buffers+="       R: $RBUFFER$nl"
+        buffers+="Killring:$nl$nl$kr"
+        zle -M "$buffers"
+    }
+    zle -N showbuffers _showbuffers
+    bindkey "^[o" showbuffers
+
+    # Edit the current command line in $EDITOR
+    autoload -U edit-command-line
+    zle -N edit-command-line
+    bindkey '\C-x\C-e' edit-command-line
+# }}}

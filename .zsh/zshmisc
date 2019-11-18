@@ -1,0 +1,89 @@
+#  ,----
+#  | [dope@painless:~]% ulimit -a
+#  | -t: cpu time (seconds)         2000
+#  | -f: file size (blocks)         500000
+#  | -d: data seg size (kbytes)     100000
+#  | -s: stack size (kbytes)        8192
+#  | -c: core file size (blocks)    0
+#  | -m: resident set size (kbytes) unlimited
+#  | -u: processes                  1791
+#  | -n: file descriptors           1024
+#  | -l: locked-in-memory size (kb) 50000
+#  | -v: address space (kb)         unlimited
+#  | -N 10: file locks              unlimited
+#  | [dope@painless:~]%
+#  `----
+#
+# Note: This settings protect *not* against 'fork'-bombs like
+#  $ (){ :|:&};:
+#  $ perl -e 'while(1){ fork();}'
+# but i don't care a pap for it. Trust me. I know what I'm doing. See
+# zshbuiltins(1) /ulimit for details.
+ulimit -c unlimited
+ulimit -d unlimited
+ulimit -f unlimited
+ulimit -l unlimited
+ulimit -n unlimited
+ulimit -s unlimited
+ulimit -t unlimited
+
+# Use hard limits, except for a smaller stack and no core dumps
+unlimit
+limit stack 8192
+limit core 0
+limit -s
+
+
+# An array (colon separated list) containing the suffixes of files to
+# be ignored during filename completion. However, if completion only
+# generates files with suffixes in this list, then these files are
+# completed anyway.
+# Note: U can use ``ls **/*~*(${~${(j/|/)fignore}})(.)'' to list all
+#       plain files that do not have extensions listed in `fignore' or
+#       ``rm **/*(${~${(j/|/)fignore}})(.)'' to remove.
+#fignore=( .part ,v .aux .toc .lot .lof .blg .bbl .bak .BAK .sav .old .o .trace .swp \~)
+fignore=( .part ,v .aux .toc .lot .lof .blg .bbl .sav .o .trace .swp \~)
+
+# use this instead of "global aliases".
+#  $ Igr<Space>
+# will be expanded to
+#  $ groff -s -p -t -e -Tlatin1 -mandoc
+typeset -A myiabs
+myiabs=(
+        "Im"    "| more"
+        "Ia"    "| awk"
+        "Ig"    "| grep"
+        "Ieg"   "| egrep"
+        "Iag"   "| agrep"
+        "Igr"   "groff -s -p -t -e -Tlatin1 -mandoc"
+        "Ip"    "| $PAGER"
+        "Ih"    "| head"
+        "Ik"    "| keep"
+        "It"    "| tail"
+        "Is"    "| sort"
+        "Iv"    "| $EDITOR"
+        "Iw"    "| wc"
+        "Ix"    "| xargs"
+)
+
+my-expand-abbrev() {
+    local MATCH
+    LBUFFER=${LBUFFER%%(#m)[_a-zA-Z0-9]#}
+    LBUFFER+=${myiabs[$MATCH]:-$MATCH}
+    zle self-insert
+}
+
+#-------------------------------------------------- 
+# 'hash' often visited directorys
+#   Note: That's *not* variables or aliase!
+#    ,----
+#    | $ hash -d M=~/.mutt
+#    | $ M
+#    | ~/.mutt
+#    | $ echo $M
+#    |
+#    | $ pwd
+#    | /home/dope/.mutt
+#    | $ 
+#    `----
+hash -d Z=~/.zsh/					# "setupfiles" for ZSH

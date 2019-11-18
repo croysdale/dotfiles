@@ -1,0 +1,159 @@
+##################################################
+# $Id: .zshrc,v 1.1 2007/10/27 19:05:57 dope Exp $
+# 
+# README!
+# 
+# Filename       : ~/.zshrc
+# Purpose        : setup file for the shell 'zsh'
+# Author         : Christian Schneider <strcat@gmx.net>
+# Homepage       : http://www.strcat.de/zsh/
+# Latest release : <http://strcat.de/dotfiles/>
+#
+# Structure of this file:
+#  Lines starting with '#' are comments.
+#
+# Take a quick (haha) look on zshbuiltins(1), zshcompwid(1),
+# zshcompsys(1), zshcompctl(1), zshexpn(1), zshmisc(1), zshmodules(1),
+# zshoptions(1), zshparam(1), zshzle(1) or - for hardliner -
+# zshall(1).
+#  ,----[ Overview (Zsh 4.2.6) ]
+#  | [dope@painless:~ :) ]% man -k zsh
+#  | zsh                  (1)  - the Z shell (384 lines)
+#  | zshall               (1)  - the Z shell meta-man page (19841 lines)
+#  | zshbuiltins          (1)  - zsh built-in commands (1756 lines) 
+#  | zshcompctl           (1)  - zsh programmable completion (593 lines)
+#  | zshcompsys           (1)  - zsh completion system (4095 lines)
+#  | zshcompwid           (1)  - zsh completion widgets (1026 lines)
+#  | zshcontrib           (1)  - user contributions to zsh (1478 lines)
+#  | zshexpn              (1)  - zsh expansion and substitution (1613 lines)
+#  | zshmisc              (1)  - everything and then some (1474 lines)
+#  | zshmodules           (1)  - zsh loadable modules (2443 lines)
+#  | zshoptions           (1)  - zsh options (1077 lines)
+#  | zshparam             (1)  - zsh parameters (1007 lines)
+#  | zshtcpsys            (1)  - zsh tcp system (720 lines)
+#  | zshzftpsys           (1)  - zftp function front-end (614 lines)
+#  | zshzle               (1)  - zsh command line editor (1575 lines)
+#  | [dope@painless:~ :) ]%
+#  `----
+#  
+# Zsh start up sequence:
+#  1) /etc/zshenv   -> Always run for every zsh.   (login + interactive + other)
+#  2)   ~/.zshenv   -> Usually run for every zsh.  (login + interactive + other)
+#  3) /etc/zprofile -> Run for login shells.       (login)
+#  4)   ~/.zprofile -> Run for login shells.       (login)
+#  5) /etc/zshrc    -> Run for interactive shells. (login + interactive)
+#  6)   ~/.zshrc    -> Run for interactive shells. (login + interactive)
+#  7) /etc/zlogin   -> Run for login shells.       (login)
+#  8)   ~/.zlogin   -> Run for login shells.       (login)
+#
+# Last modified: [ 2008-11-25 00:26:47 ]
+#
+#
+# THIS FILE IS NOT INTENDED TO BE USED AS /etc/zshrc, NOR WITHOUT
+# EDITING!
+#
+# This file is based on ideas of:
+#  Michael Prokop: <http://www.michael-prokop.at/computer/config/.zshrc>
+#  Marijan Peh...: <http://free-po.hinet.hr/MarijanPeh/files/zshrc>
+#  Adam Spiers...: <http://adamspiers.org/computing/shells/>
+#
+# Tested and used under {Net,Open}BSD, Slackware, Gentoo, Debian and LFS
+# with Zsh 4.0.7, 4.0.9, 4.1.1, 4.2.0. 4.2.1, 4.2.4, 4.2.5 and 4.2.6.
+#############################################################################
+
+# Path to your oh-my-zsh configuration.
+export ZSH=$HOME/.oh-my-zsh
+##  gnu-utils does not exist
+plugins=(gnu-utis fz common-aliases )
+plugins=(zsh-editing-workbench common-aliases command-not-found )
+# git
+# gitfast
+# git-extras
+# github
+# last-working-dir
+# per-directory-history
+# sudo
+# terminitor
+# tmux
+# tmuxinator
+# Set name of the theme to load ~/.oh-my-zsh/themes/
+## Good git theme
+ZSH_THEME="agnoster"
+ZSH_THEME="kevin3"
+
+for file in ~/.zsh/zshexports   \
+            ~/.zsh/zshoptions   \
+            ~/.zsh/zshzle       \
+            ~/.zsh/zshbindings  \
+            ~/.zsh/zshcompctl   \
+            ~/.zsh/zshstyle     \
+            ~/.zsh/zshmisc      \
+            ~/.zsh/zshhighlight \
+            ~/.fzf.zsh          \
+            ~/.zsh/z.sh         \
+            $ZSH/oh-my-zsh.sh   \
+            ~/.zsh/fzf_funcs    \
+            ~/.zsh/zshaliases   \
+            ~/.zsh/zshfunctions \
+            ~/.zsh/tmux_funcs
+    do
+    # Test and then source some options
+    if [ -f $file ]; then
+            source $file
+    else
+            print "Note: $file is unavailable."
+    fi
+done
+
+#cdpath=(.. ~ ~/src ~/zsh)
+# Options to fzf command
+# -x, --extended       Extended-search mode
+export FZF_COMPLETION_OPTS='-x'
+export FZF_DEFAULT_COMMAND="~croysdal/bin/ack -i --nocolor --nogroup --ignore-dir=dbs --ignore-dir=CEL --ignore-dir=RCS --ignore-dir=mwdb -f "
+
+# Use hard limits, except for a smaller stack and no core dumps
+unlimit
+limit stack 8192
+limit core 0
+limit -s
+
+umask 022
+
+# Shell functions
+setenv() { typeset -x "${1}${1:+=}${(@)argv[2,$#]}" }  # csh compatibility
+freload() { while (( $# )); do; unfunction $1; autoload -U $1; shift; done }
+
+# Where to look for autoloaded function definitions
+fpath=($fpath ~/.zfunc ~/.zsh/zsh-completions-master/src )
+
+# Autoload all shell functions from all directories in $fpath (following
+# symlinks) that have the executable bit on (the executable bit is not
+# necessary, but gives you an easy way to stop the autoloading of a
+# particular shell function). $fpath should not be empty for this to work.
+for func in $^fpath/*(N-.x:t); autoload $func
+
+# automatically remove duplicates from these arrays
+# typeset -U path cdpath fpath manpath
+
+HISTSIZE=200
+DIRSTACKSIZE=20
+
+# Set/unset  shell options
+setopt   notify globdots correct pushdtohome cdablevars autolist
+setopt   correctall autocd recexact longlistjobs
+setopt   autoresume histignoredups pushdsilent noclobber
+setopt   autopushd pushdminus extendedglob rcquotes mailwarning
+unsetopt bgnice autoparamslash
+
+# Autoload zsh modules when they are referenced
+zmodload -a zsh/stat stat
+zmodload -a zsh/zpty zpty
+zmodload -a zsh/zprof zprof
+zmodload -ap zsh/mapfile mapfile
+
+# Always put tmux in a consistent location
+# setenv TMUX_TMPDIR "/tmp/tmux_$USER"
+
+## Need this for proper display of powerline-fonts
+export LC_ALL=en_US.UTF-8
+

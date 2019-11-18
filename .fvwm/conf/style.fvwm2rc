@@ -1,0 +1,69 @@
+# Style Header {
+# vim: set sw=4 ts=4 sts=4 et tw=78 foldmarker={,} foldmethod=marker spell:
+# }
+
+BugOpts ExplainWindowPlacement true
+# Global Style {
+#Style  *  TileCascadePlacement 
+#Style  *  !MinOverlapPlacement 
+Style  *  SmartPlacement, CleverPlacement
+#Style  *  !UsePPosition, ResizeOpaque
+Style  *  ResizeOpaque
+Style  *  DecorateTransient, DontRaiseTransient
+Style  * RaiseTransient
+Style  *  DontLowerTransient, StackTransientParent
+
+## Prevent ICC from placing ICC sub-windows in wrong location
+Style  *  NoPPosition, !UseTransientPPosition, !UseTransientUSPosition
+Style  *  WindowShadeSteps 20, WindowShadeScrolls, SlipperyIcon
+Style  *  MwmDecor, MWMButtons
+Style  *  HintOverride, MWMFunctions, MWMBorder
+Style  *  NoIconTitle
+Style  *  SnapAttraction 20 All Screen
+Style  *  SnapGrid 1 1
+Style  *  Font $[fvwm_font17]
+Style  * FPFocusByProgram, FPFocusByFunction, FPFocusByFunctionWarpPointer, FPEnterToFocus
+Style  * MouseFocus, MouseFocusClickRaisesOff
+#EdgeScroll                   100  100
+EdgeThickness                 0
+#EdgeResistance               100 100
+#Style * EdgeMoveDelay        1500
+#Style * EdgeMoveResistance   1500
+# }
+
+# Mouse cursor style {
+CursorStyle root  left_ptr
+CursorStyle default  left_ptr 
+CursorStyle position  left_ptr
+CursorStyle sys    left_ptr 
+CursorStyle menu  left_ptr
+CursorStyle title  left_ptr
+CursorStyle resize  fleur
+CursorStyle stroke  cross
+CursorStyle select  draped_box
+# }
+
+# Program Styles {
+Style "*"       Icon programs.xpm
+Style "*"       MiniIcon programs.xpm
+Style "*term*"  MiniIcon mini.xterm.xpm
+Style "URxvt"   MiniIcon mini.xterm.xpm
+Style "Firefox" Icon firefox.png, EWMHMiniIconOverride
+
+## TODO -- Add style for ICC Main   - Open Iconized
+
+## Put new terminal windows on left side
+Style "*term"        PositionPlacement 0 0
+
+## Put new xv windows on left side
+Style "*xv*"         PositionPlacement 0 0
+
+Style "*icc_shell*"   PositionPlacement m+0 m+0
+Style "*FvwmIdent*"   PositionPlacement m+0 m+0, !UsePPosition
+Style "Layout Window" PositionPlacement 1900p 0p
+
+## Put new Gvim windows in right side
+Style "*Vim*"   PositionPlacement $[RightWinX] 0p
+Style DeskControl NoTitle, NeverFocus, CirculateSkip, WindowListSkip, Sticky, StaysOnBottom, FixedSize, NoHandles
+Style FvwmBar NoTitle, WindowListSkip, CirculateSkip, Sticky, NeverFocus, StaysOnBottom, NoHandles
+# }

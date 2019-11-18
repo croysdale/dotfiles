@@ -1,0 +1,127 @@
+#####
+# Name:     PackWindowUp
+# Bound:    Alt+Shift+Up When a window is active
+# Purpose:  Interrogate all windows on the current page, find the window with an edge
+#           closest to active window, and slide the Active window upto that edge, or
+#           the Page edge, if no window is in the way.
+#
+#           The Wrappers are required to look after the Context while we're testing
+#           windows. Could also do it with a load of variables, but this is nicer.
+#
+#           See PackWindowLeft for a description of the logic (i know it looks a little
+#           cryptic).
+#
+#           Sometimes terminals seem to need WindowRefresh, but 99% of the time it just
+#           works, it creates a little flicker so I'll leave it out until it starts to bug
+#           me.
+#
+#           Windows are also Raised, you can disable this.
+#
+#################
+DestroyFunc PackWindowUp
+AddToFunc PackWindowUp
++ I SetEnv low_w 0
++ I WindowId $3 Raise
++ I All (CurrentPage, !Iconic,  \
+        !Shaded) PipeRead "test `expr $[w.y] + $[w.height]` -gt $[low_w] \
+        -a `expr $[w.y] + $[w.height]` -lt $0 \
+        -a \\( \\( $[w.x] -gt $1 -a $[w.x] -lt `expr $1 + $2` \\) \
+            -o \\( $1 -gt $[w.x] -a $1 -lt `expr $[w.x] + $[w.width]` \\) \
+            -o \\( $1 -le $[w.x] -a `expr $1 + $2` -ge `expr $[w.x] + $[w.width]` \\) \
+            -o \\( $[w.x] -lt $1 -a `expr $[w.x] + $[w.width]` -gt `expr $1 + $2` \\) \
+        \\) \
+        && echo SetEnv low_w `expr $[w.y] + $[w.height]` \
+        || echo Nop"
++ I WindowId $3 AnimatedMove keep $[low_w]p
+#+ I WindowId $3 RefreshWindow
+
+AddToFunc PackWrapperUp I NoWindow PackWindowUp $[w.y] $[w.x] $[w.width] $[w.id]
+
+#####
+# Name:     PackWindowDown
+# Bound:    Alt+Shift+Down When a window is active.
+# Purpose:  See PackWindowUp.
+#
+#################
+DestroyFunc PackWindowDown
+AddToFunc PackWindowDown
++ I SetEnv high_w $[vp.height]
++ I WindowId $3 Raise
++ I All (CurrentPage, !Iconic, \
+        !Shaded) PipeRead "test $[w.y] -lt $[high_w] \
+        -a $[w.y] -gt `expr $0 + $4`  \
+        -a \\( \\( $[w.x] -gt $1 -a $[w.x] -lt `expr $1 + $2` \\) \
+            -o \\( $1 -gt $[w.x] -a $1 -lt `expr $[w.x] + $[w.width]` \\) \
+            -o \\( $1 -le $[w.x] -a `expr $1 + $2` -ge `expr $[w.x] + $[w.width]` \\) \
+            -o \\( $[w.x] -lt $1 -a `expr $[w.x] + $[w.width]` -gt `expr $1 + $2` \\) \
+        \\) \
+        && echo SetEnv high_w $[w.y] \
+        || echo Nop"
++ I PipeRead "echo WindowId $3 AnimatedMove keep `expr $[high_w] - $4`p"
+#+ I WindowId $3 RefreshWindow
+
+AddToFunc PackWrapperDown I NoWindow PackWindowDown $[w.y] $[w.x] $[w.width] $[w.id] $[w.height]
+
+#####
+# Name:     PackWindowLeft
+# Bound:    Alt+Shift+Left When a window is active
+# Purpose:  See PackWindowUp.
+#
+# The Logic works likes this:
+#   1. Set Destination to the Left Edge
+#   2. For every window, Run these tests:
+#               + Is the Window's Right edge further _Right_ than furthest edge seen yet?
+#       And:    + Is it's Right edge Further _Left_ than Target Windows Left edge? (ie, in the way)
+#           Yes:
+#                   + Does the window start inside Target Window, and end below?
+#               Or  + Does it start above, and end inside?
+#               Or  + Is it the same vertical position/height/size, or start inside and end inside?
+#               Or  + Does it start above, and end below?
+#                   Yes:
+#                       This is the new Destination.
+#                   No:
+#                       Nop
+#           No:
+#               Nop
+#   3. Move to Destination.
+#
+#################
+DestroyFunc PackWindowLeft
+AddToFunc PackWindowLeft
++ I SetEnv left_w 0
++ I WindowId $3 Raise
++ I All (CurrentPage, !Iconic, \
+        !Shaded) PipeRead "test `expr $[w.x] + $[w.width]` -gt $[left_w] \
+        -a `expr $[w.x] + $[w.width]` -lt $1 \
+        -a \\( \\( $[w.y] -gt $0 -a $[w.y] -lt `expr $0 + $4` \\) \
+            -o \\( $[w.y] -lt $0 -a `expr $[w.y] + $[w.height]` -gt $0 \\) \
+            -o \\( $[w.y] -ge $0 -a `expr $[w.y] + $[w.height]` -le `expr $0 + $4` \\) \
+            -o \\( $[w.y] -lt $0 -a `expr $[w.y] + $[w.height]` -gt `expr $0 + $4` \\) \
+        \\) \
+        && echo SetEnv left_w `expr $[w.x] + $[w.width]`  \
+        || echo Nop"
++ I WindowId $3 AnimatedMove $[left_w]p keep
+#+ I WindowId $3 RefreshWindow
+
+AddToFunc PackWrapperLeft I NoWindow PackWindowLeft $[w.y] $[w.x] $[w.width] $[w.id] $[w.height]
+
+DestroyFunc PackWindowRight
+AddToFunc PackWindowRight
++ I SetEnv right_w $[vp.width]
++ I WindowId $3 Raise
++ I All (CurrentPage, !Iconic, \
+        !Shaded) PipeRead "test $[w.x] -lt $[right_w] \
+        -a $[w.x] -gt `expr $1 + $2` \
+        -a \\( \\( $[w.y] -gt $0 -a $[w.y] -lt `expr $0 + $4` \\) \
+            -o \\( $[w.y] -lt $0 -a `expr $[w.y] + $[w.height]` -gt $0 \\) \
+            -o \\( $[w.y] -ge $0 -a `expr $[w.y] + $[w.height]` -le `expr $0 + $4` \\) \
+            -o \\( $[w.y] -lt $0 -a `expr $[w.y] + $[w.height]` -gt `expr $0 + $4` \\) \
+        \\) \
+        && echo SetEnv right_w $[w.x] \
+        || echo Nop"
++ I PipeRead "echo WindowId $3 AnimatedMove `expr $[right_w] - $2`p keep"
+#+ I WindowId $3 RefreshWindow
+
+AddToFunc PackWrapperRight I NoWindow PackWindowRight $[w.y] $[w.x] $[w.width] $[w.id] $[w.height]
+
+

@@ -1,0 +1,108 @@
+# Menu Header {{
+# vim: set sw=4 ts=4 sts=4 et tw=78 foldmarker={{,}} foldlevel=0 foldmethod=marker spell:
+# }}
+
+## TODO : Caculate coordinates instead of hardcoding them
+
+# {{ Monitor3800x1200
+DestroyFunc Monitor3800x1200
+AddToFunc   Monitor3800x1200
++ I SetEnv Monitor Monitor3800x1200
++ I SetEnv RightWinX        990p
++ I SetEnv RightMonWinX    1922p
++ I SetEnv RightMonWidth   1890p
++ I SetEnv RightMonHeight  1178p
++ I SetEnv TopWinY             0
++ I SetEnv MidWinY          368p
++ I SetEnv BotWinY          738p
++ I SetEnv MaxHeight        -40p
++ I SetEnv LeftWidth        990p
++ I SetEnv RightWidth       812p
++ I SetEnv LeftMonWidth    1804p
++ I EwmhBaseStruts   0     0  0   0
++ I Read $[fvwm_home]/conf/menu.fvwm2rc
++ I *FvwmPager: Geometry 100x600+1812+5
++ I Style  *  IconBox 1600 615 1920 -1, IconGrid 2 3, IconFill top right
++ I KillModule FvwmPager 
++ I Module FvwmPager 1 8
+# }}
+
+# {{ Monitor1900x1200
+DestroyFunc Monitor1900x1200
+AddToFunc   Monitor1900x1200
++ I SetEnv RightWinX    990p
++ I SetEnv TopWinY       0
++ I SetEnv MidWinY      368p
++ I SetEnv BotWinY      738p
++ I SetEnv MaxHeight    -15p
++ I SetEnv LeftWidth        990p
++ I SetEnv RightWidth   812p
++ I SetEnv Monitor      Monitor1900x1200
++ I SetEnv RightMonWidth   1910p
++ I SetEnv RightMonHeight  1200p
++ I SetEnv RightMonWinX    0p
++ I SetEnv RightMonHeight   -15p
++ I EwmhBaseStruts   0     0  0   0
++ I Read $[fvwm_home]/conf/menu.fvwm2rc
++ I *FvwmPager: Geometry 100x600+1812+5
++ I Style  *  IconBox 1600 615 1920 -1, IconGrid 2 3, IconFill top right
++ I KillModule FvwmPager 
++ I Module FvwmPager 1 8
+# }}
+
+# {{ Monitor1900x1080
+DestroyFunc Monitor1900x1080
+AddToFunc   Monitor1900x1080
++ I SetEnv Monitor      Monitor1900x1080
+## Width of left/right monitors. 
++ I SetEnv LeftMonWidth    1804p
++ I SetEnv RightMonWidth   1910p
+## Height of left/right monitors. 
++ I SetEnv RightMonHeight  1080p
++ I SetEnv MaxHeight       1062p
+## Left edge for window on right side of left monitor
++ I SetEnv RightWinX        990p
+## Left edge for window on right side of left monitor
++ I SetEnv RightMonWinX    1922p
+## Top edge when placing in grid (Alt - Num Keys)
++ I SetEnv TopWinY             0
++ I SetEnv MidWinY          368p
++ I SetEnv BotWinY          738p
+## Top edge when placing in grid (Alt - Num Keys)
++ I SetEnv LeftWidth    990p
++ I SetEnv RightWidth       812p
+## Region that windows cannnot be placed
+ + I EwmhBaseStruts   0     0  0   0
+# + I EwmhBaseStruts   0     1900  0   80
+## Location of Pager (right side of left monitor)
++ I *FvwmPager: Geometry 100x600+1812+5
+## Location for Icons (under the Pager)
++ I Style  *  IconBox 1600 615 1920 -1, IconGrid 2 3, IconFill top right
+## Reload menus for new Monitor settings
++ I Read $[fvwm_home]/conf/menu.fvwm2rc
+## Re-start Pager with new location
++ I KillModule FvwmPager 
++ I Module FvwmPager 1 8
+# }}
+
+# {{ Monitor2500x1600
+DestroyFunc Monitor2500x1600
+AddToFunc   Monitor2500x1600
++ I SetEnv Monitor      Monitor2500x1600
++ I SetEnv RightWinX    990p
++ I SetEnv TopWinY       0
++ I SetEnv MidWinY      368p
++ I SetEnv BotWinY      738p
++ I SetEnv MaxHeight    -35p
++ I SetEnv LeftWidth    981p
++ I SetEnv RightWidth   812p
++ I SetEnv RightMonWinX    0p
++ I SetEnv RightMonWidth   1910p
++ I SetEnv RightMonHeight  1148p
++ I EwmhBaseStruts   0     0  0   0
++ I Read $[fvwm_home]/conf/menu.fvwm2rc
++ I *FvwmPager: Geometry 100x600+2412+5
++ I Style  *  IconBox 2200 615 2520 -1, IconGrid 2 3, IconFill top right
++ I KillModule FvwmPager 
++ I Module FvwmPager 1 8
+# }}

@@ -1,0 +1,79 @@
+head	1.1;
+access;
+symbols;
+locks
+	croysdal:1.1; strict;
+comment	@# @;
+
+
+1.1
+date	2013.12.03.17.15.29;	author croysdal;	state Exp;
+branches;
+next	;
+
+
+desc
+@@
+
+
+1.1
+log
+@Initial revision
+@
+text
+@DestroyFunc FvwmMaximizeLeft
+AddToFunc   FvwmMaximizeLeft
++ I Maximize True 33 grow
++ I AnimatedMove  0  0  
++ I WarpToWindow 50 50
++ I Raise
+
+DestroyFunc FvwmMaximizeMiddle
+AddToFunc   FvwmMaximizeMiddle
++ I Maximize True 31 grow
++ I AnimatedMove 33 0 
++ I WarpToWindow 50 50
++ I Raise
+
+DestroyFunc FvwmMaximizeRight
+AddToFunc   FvwmMaximizeRight
++ I Maximize True 31 grow
++ I AnimatedMove 66 0 
++ I WarpToWindow 50 50
++ I Raise
+
+DestroyFunc FvwmMaximizeMiddleRight
+AddToFunc   FvwmMaximizeMiddleRight
++ I Maximize True 67 grow
++ I AnimatedMove 33 0 
++ I WarpToWindow 50 50
++ I Raise
+
+DestroyFunc FvwmGridMove
+AddToFunc   FvwmGridMove
++ I Focus
++ I Resize 32 30
++ I AnimatedMove $0 $1 
++ I WarpToWindow 50 50
++ I Raise
++ I Focus
+
+DestroyFunc FvwmArrangeICCPage
+AddToFunc   FvwmArrangeICCPage
++ I Next ("*LayoutWindow*", CurrentPage, ) FvwmMaximizeMiddleRight
++ I Next ("*Gvim*", CurrentPage, ) FvwmGridMove  64 0 
++ I Next ("*Gvim*", CurrentPage, ) FvwmGridMove  64 32
++ I Next ("*term*", CurrentPage, ) FvwmGridMove  0 32
++ I Next ("*term*", CurrentPage, ) FvwmGridMove  0 64
+
+DestroyFunc FvwmGridMoveGrow
+AddToFunc   FvwmGridMoveGrow
++ I Focus
++ I Resize 15 15
++ I AnimatedMove $0 $1 
++ I WarpToWindow 50 50
++ I Raise
++ I Maximize grow grow
++ I Focus
+
+@

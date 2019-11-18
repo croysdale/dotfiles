@@ -1,0 +1,21 @@
+# ============== Strokes ==============
+#
+# ####
+# # Mouse Gestures.
+# #
+# # Syntax reminder:
+# #
+# #   1   2   3
+# #
+# #   4   5   6
+# #
+# #   7   8   9
+#
+## Examples
+##  https://github.com/zy/zy-fvwm/blob/master/zy-strokes.fvwm2rc
+#
+# # close window
+# Mouse 1 R N StrokeFunc DrawMotion 
+#
+# Stroke        14789        0        A        A        Pick Close
+#
