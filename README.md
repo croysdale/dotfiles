@@ -25,9 +25,9 @@ Clone into existing HOME directory .. could interfer with existing files
    git clone --bare http://github.com/croysdale/dotfiles.git $HOME/.myconf
 ```
 
-Clone into a sub-directory and then more files to $HOME
+Clone into a sub-directory and then move files to $HOME ... untested ...
 ```
-   git clone --separate-git-dir=~/.myconf /path/to/repo ~
+   git clone --separate-git-dir=~/.myconf http://github.com/croysdale/dotfiles.git ~
 ```
 
 Install additional packages required for zsh
@@ -41,7 +41,7 @@ Install additional packages required for zsh
    git clone http://github.com/changyuheng/fz                    ~/.oh-my-zsh/custom/plugins/fz
 ```
 
-Install additional packages required for zsh
+Run fzf installer
 ```
    ~/.fzf/install
 ```

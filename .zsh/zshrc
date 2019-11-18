@@ -79,7 +79,7 @@ plugins=(zsh-editing-workbench common-aliases command-not-found )
 # Set name of the theme to load ~/.oh-my-zsh/themes/
 ## Good git theme
 ZSH_THEME="agnoster"
-ZSH_THEME="kevin3"
+ZSH_THEME="kevin"
 
 for file in ~/.zsh/zshexports   \
             ~/.zsh/zshoptions   \
@@ -90,7 +90,7 @@ for file in ~/.zsh/zshexports   \
             ~/.zsh/zshmisc      \
             ~/.zsh/zshhighlight \
             ~/.fzf.zsh          \
-            ~/.zsh/z.sh         \
+            ~/.zsh/z/z.sh       \
             $ZSH/oh-my-zsh.sh   \
             ~/.zsh/fzf_funcs    \
             ~/.zsh/zshaliases   \
@@ -140,7 +140,7 @@ DIRSTACKSIZE=20
 
 # Set/unset  shell options
 setopt   notify globdots correct pushdtohome cdablevars autolist
-setopt   correctall autocd recexact longlistjobs
+setopt   autocd recexact longlistjobs
 setopt   autoresume histignoredups pushdsilent noclobber
 setopt   autopushd pushdminus extendedglob rcquotes mailwarning
 unsetopt bgnice autoparamslash

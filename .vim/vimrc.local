@@ -6,6 +6,7 @@
 
 " Look for tags in local directory. If not found, continue looking up.
 set tags=tags;/
+set tags^=.git/tags
 
 " Disable blinking cursor
 "set guicursor+=a:blinkwait0

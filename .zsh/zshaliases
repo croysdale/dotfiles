@@ -244,6 +244,7 @@ alias sa=' source ~/.zsh/zshaliases'
 
 # Misc aliases
 alias sz=' source ~/.zshrc'
+trap "source ~/.zshrc" USR1
 alias sz_all='pkill -usr1 -u $USER zsh'
 alias c=' clear'
 alias du='du --apparent-size'
@@ -340,10 +341,13 @@ alias pd="perl -d"
 #bindkey "^v" copy-prev-word
 
 
-alias light="~croysdal/bin/colorscheme solarized_light"
-alias dark="~croysdal/bin/colorscheme solarized_dark"
+alias light="~/bin/colorscheme solarized_light"
+alias dark="~/bin/colorscheme solarized_dark"
 
 alias realpath="readlink -f \$PWD"
+
+alias dot_config='/usr/bin/git --git-dir=$HOME/.myconf/ --work-tree=$HOME'
+alias dot_status='dot_config config status.showUntrackedFiles no'
 
 ## Solarized colors
 export yellow="#b58900"
