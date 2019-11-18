@@ -1,0 +1,16 @@
+"let g:spf13_bundle_groups=['general', 'neocomplcache', 'programming', 'php', 'ruby', 'python', 'go', 'twig', 'javascript', 'haskell', 'html', 'misc', 'scala']
+"
+"let g:spf13_bundle_groups=['general', 'programming', 'php', 'python', 'html', 'misc', 'scala']
+
+" Pull in tcl/tk 
+let g:spf13_bundle_groups=['general', 'programming', 'misc', 'html', 'scala', 'neocomplete']
+
+"let g:spf13_bundle_groups=['general', 'programming', 'misc', 'html', 'scala', 'neocomplete']
+
+let g:spf13_no_views=1
+
+if has("gui_running")
+else 
+    set t_Co=256
+endif
+
