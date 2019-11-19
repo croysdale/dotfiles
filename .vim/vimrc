@@ -88,6 +88,13 @@
                                     " Selected characters/lines in visual mode
     endif
 
+    " Reduce the delay for entering normal mode when pressing escape
+    set timeoutlen=100
+    set timeoutlen=3000
+
+
+    let mapleader = ','
+
     set backspace=indent,eol,start  " Backspace for dummies
     set linespace=0                 " No extra spaces between rows
     "set number                          " Line numbers on
@@ -107,6 +114,7 @@
     set foldenable                  " Auto fold code
     "set list
     "set listchars=tab:\ ,trail:,extends:#,nbsp:. " Highlight problematic whitespace
+    set undofile
 
 " }
 
@@ -1230,6 +1238,27 @@ inoremap <expr><C-l>     deocomplete#complete_common_string()
   "   endfunction
 " }}
 
+"" TODO : Make this work so I can complete Snips {{ 
+" imap <expr><TAB> pumvisible() ? neosnippet#expandable_or_jumpable() ?
+"  \ "\<Plug>(neosnippet_expand_or_jump)" :
+"  \ <SID>check_back_space() ? "\<TAB>" :
+"  \ deoplete#mappings#manual_complete() : "\<TAB>"
+"
+" function! s:check_back_space() abort "{{{
+" let col = col('.') - 1
+" return !col || getline('.')[col - 1]  =~ '\s'
+" endfunction"}}}
+"
+" smap <expr><TAB> neosnippet#expandable_or_jumpable() ?
+"  \ "\<Plug>(neosnippet_expand_or_jump)" : "\<TAB>"
+"  }}
+	
+inoremap <silent><expr> <Tab> pumvisible() ? "\<C-n>" : "\<Tab>"
+
+	" For conceal markers.
+	if has('conceal')
+	  set conceallevel=2 concealcursor=niv
+	endif
 " neosnippet {{
 let g:snips_author = 'Kevin Croysdale <croysdle@gmail.com>'
 let g:neosnippet#snippets_directory='~/.vim/snippets'
