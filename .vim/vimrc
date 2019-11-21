@@ -262,7 +262,7 @@ set cmdheight=2
 
 " Prevents problems in when using a terminal where <Esc> followed 
 " by a key (for me 'w') leads to things like inserting <F8>
-" set noesckeys 
+ set noesckeys 
 
 set textwidth=0
 
@@ -719,7 +719,7 @@ map  <Delete>   x
 
 "}}
 
-" PLUG-INS {{
+" Plugins {{
 
 " Vimwiki {{
 
@@ -781,14 +781,6 @@ nnoremap <M-Right> :TmuxNavigateRight<cr>
 " nnoremap <silent> <M-/> :TmuxNavigatePrevious<cr>
 " }}
 
-" indent-guides {{
-" Toggle indent-guides with 'ig'
-let g:indent_guides_guide_size            = 4
-let g:indent_guides_start_level           = 1
-let g:indent_guides_enable_on_vim_startup = 0
-let g:indent_guides_color_change_percent  = 1
-" }}
-
 " delimitMate {{
 " Enter 2nd paran to close
     let delimitMate_matchpairs = "(:),[:],{:},<:>"
@@ -826,22 +818,6 @@ nnoremap <leader>r :%s/<c-r>///g<left><left>
 " g:fuzzysearch_ignorecase = 1
 " g:fuzzysearch_max_history = 30
 let  g:fuzzysearch_match_spaces=1
-" }}
-
-" Ultisnip {{
-" <Ctrl><CR> to select a snippet (Only works in GUI)
-let g:UltiSnipsExpandTrigger="<C-CR>"
-let g:UltiSnipsJumpForwardTrigger="<C-tab>"
-let g:UltiSnipsJumpBackwardTrigger="<s-tab>"
-let g:UltiSnipsEditSplit="horizontal"
-
-" Use <F12> to load list of all Ulti-snippets
-function! UltiSnipsCallUnite()
-    Unite -start-insert -winheight=100 -immediately -no-empty ultisnips
-    return ''
-endfunction
-inoremap <silent> <F12> <C-R>=(pumvisible()? "\<LT>C-E>":"")<CR><C-R>=UltiSnipsCallUnite()<CR>
-nnoremap <silent> <F12> a<C-R>=(pumvisible()? "\<LT>C-E>":"")<CR><C-R>=UltiSnipsCallUnite()<CR>
 " }}
 
 " Unite  {{
@@ -936,7 +912,7 @@ endif
     vmap <Leader>a<Bar> :Tabularize /<Bar><CR>
 " }}
 
-" Fugitive {
+" Fugitive {{
     nnoremap <silent> <leader>gs :Gstatus<CR>
     nnoremap <silent> <leader>gd :Gdiff<CR>
     nnoremap <silent> <leader>gc :Gcommit<CR>
@@ -947,7 +923,7 @@ endif
     nnoremap <silent> <leader>gw :Gwrite<CR>:GitGutter<CR>
     nnoremap <silent> <leader>ge :Gedit<CR>
     nnoremap <silent> <leader>gg :GitGutterToggle<CR>
-"}
+"}}
 
 " Flagship {{
 " set guioptions-=e
@@ -963,7 +939,6 @@ autocmd FileType perl let b:dispatch = 'perl -Wc %'
 let g:session_autosave='yes'
 let g:session_persist_font = 0
 let g:session_persist_colors = 0
-
 
 " }}
 
@@ -987,9 +962,8 @@ let g:ctrlp_custom_ignore = {
   \ }
 
 
-" TMux send {{
+" tmux send {{
 " TODO Fix the plugin keys "
-
 
 
 " vmap <leader>q <Esc>"ryy<Esc>:call Send_keys_to_Tmux(@r)<CR>
@@ -1008,14 +982,6 @@ vmap <F2>      "ry<Esc>:call Send_keys_to_Tmux(@r)<CR>'>
 " nmap <C-c><C-c> <Plug>NormalModeSendToTmux
 " nmap <leader>r <Plug>SetTmuxVars
 "}}
-
-" let g:tmux_navigator_no_mappings = 1
-
-" nnoremap <silent> <M-Left> :TmuxNavigateLeft<cr>
-" nnoremap <silent> <M-Down> :TmuxNavigateDown<cr>
-" nnoremap <silent> <M-Up> :TmuxNavigateUp<cr>
-" nnoremap <silent> <M-Right> :TmuxNavigateRight<cr>
-" nnoremap <silent> <M-/> :TmuxNavigatePrevious<cr>
 
 " Splitjoin {{
     nmap cS :SplitjoinSplit<cr>
@@ -1224,46 +1190,54 @@ inoremap <expr><C-l>     neocomplete#complete_common_string()
 inoremap <expr><C-g>     deocomplete#undo_completion()
 inoremap <expr><C-l>     deocomplete#complete_common_string()
 
-" Kevin  -- close popup and keep completion
-" TODO  : Fix this
-" inoremap <expr><Esc>      pumvisible() ? neocomplete#close_popup() . "\<Esc>" : "\<Esc>" 
-" inoremap <expr><Esc>      pumvisible() ? deocomplete#close_popup() . "\<Esc>" : "\<Esc>" 
+" inoremap <silent><expr> <Tab> pumvisible() ? "\<C-n>" : "\<Tab>"
 
-"" Enable this to only complete after Tab
-"let g:neocomplcache_disable_auto_complete = 1
-  " inoremap <expr><tab> pumvisible() ? "\<c-n>" : <sid>check_back_space() ? "\<tab>" : "\<c-x>\<c-u>"
-  "   function! s:check_back_space()
-  "   let col = col('.') - 1
-  "   return !col || getline('.')[col - 1] =~ '\s'
-  "   endfunction
-" }}
+" Plugin key-mappings.
+" Note: It must be "imap" and "smap".  It uses <Plug> mappings.
+imap <C-k>     <Plug>(neosnippet_expand_or_jump)
+smap <C-k>     <Plug>(neosnippet_expand_or_jump)
+xmap <C-k>     <Plug>(neosnippet_expand_target)
 
-"" TODO : Make this work so I can complete Snips {{ 
-" imap <expr><TAB> pumvisible() ? neosnippet#expandable_or_jumpable() ?
-"  \ "\<Plug>(neosnippet_expand_or_jump)" :
-"  \ <SID>check_back_space() ? "\<TAB>" :
-"  \ deoplete#mappings#manual_complete() : "\<TAB>"
-"
-" function! s:check_back_space() abort "{{{
-" let col = col('.') - 1
-" return !col || getline('.')[col - 1]  =~ '\s'
-" endfunction"}}}
-"
-" smap <expr><TAB> neosnippet#expandable_or_jumpable() ?
-"  \ "\<Plug>(neosnippet_expand_or_jump)" : "\<TAB>"
-"  }}
-	
-inoremap <silent><expr> <Tab> pumvisible() ? "\<C-n>" : "\<Tab>"
+" SuperTab like snippets behavior.
+" Note: It must be "imap" and "smap".  It uses <Plug> mappings.
+imap <expr><TAB>
+\ pumvisible() ? "\<C-n>" :
+\ neosnippet#expandable_or_jumpable() ?
+\    "\<Plug>(neosnippet_expand_or_jump)" : "\<TAB>"
+smap <expr><TAB> neosnippet#expandable_or_jumpable() ?
+\ "\<Plug>(neosnippet_expand_or_jump)" : "\<TAB>"
 
-	" For conceal markers.
-	if has('conceal')
-	  set conceallevel=2 concealcursor=niv
-	endif
-" neosnippet {{
+" Enable snipMate compatibility feature.
+" let g:neosnippet#enable_snipmate_compatibility = 1
+
+" Tell Neosnippet about the other snippets
+let g:neosnippet#snippets_directory='~/.vim/bundle/vim-snippets/snippets'
+
+" For conceal markers.
+if has('conceal')
+  set conceallevel=2 concealcursor=niv
+endif
+
 let g:snips_author = 'Kevin Croysdale <croysdle@gmail.com>'
-let g:neosnippet#snippets_directory='~/.vim/snippets'
-let g:neosnippet#disable_runtime_snippets = { "_": 1, }
+"let g:neosnippet#snippets_directory='~/.vim/snippets'
+"let g:neosnippet#disable_runtime_snippets = { "_": 1, }
 " }}
+
+" " Ultisnip {{
+" " <Ctrl><CR> to select a snippet (Only works in GUI)
+" let g:UltiSnipsExpandTrigger="<C-CR>"{{
+" let g:UltiSnipsJumpForwardTrigger="<C-tab>"
+" let g:UltiSnipsJumpBackwardTrigger="<s-tab>"}}
+" let g:UltiSnipsEditSplit="horizontal"
+"
+" " Use <F12> to load list of all Ulti-snippets
+" function! UltiSnipsCallUnite()
+"     Unite -start-insert -winheight=100 -immediately -no-empty ultisnips
+"     return ''
+" endfunction
+" inoremap <silent> <F12> <C-R>=(pumvisible()? "\<LT>C-E>":"")<CR><C-R>=UltiSnipsCallUnite()<CR>
+" nnoremap <silent> <F12> a<C-R>=(pumvisible()? "\<LT>C-E>":"")<CR><C-R>=UltiSnipsCallUnite()<CR>
+" " }}
 
 " indent-guides {{
 " Toggle indent-guides with 'ig'
@@ -1386,10 +1360,13 @@ let g:vdebug_options= {
 autocmd BufRead,BufNewFile DebuggerWatch setfiletype debugger_watch
 autocmd BufRead,BufNewFile DebuggerStack setfiletype debugger_stack
 autocmd BufRead,BufNewFile DebuggerStatus setfiletype debugger_status
-
 " }}
 
+" vimux {{
+nnoremap <Leader>X :call VimuxRunCommand("clear; " . "python bufname("%")")<CR>
 " }}
+
+" }} End of Plugins
 
 " Functions {{
 

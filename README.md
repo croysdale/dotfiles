@@ -17,17 +17,10 @@ Setup aliases
    alias dot_config='/usr/bin/git --git-dir=$HOME/.myconf/ --work-tree=$HOME'
    alias dot_status='dot_config config status.showUntrackedFiles no'
 ```
-
-Two options:
-
 Clone into existing HOME directory .. could interfer with existing files
 ```
    git clone --bare http://github.com/croysdale/dotfiles.git $HOME/.myconf
-```
-
-Clone into a sub-directory and then move files to $HOME ... untested ...
-```
-   git clone --separate-git-dir=~/.myconf http://github.com/croysdale/dotfiles.git ~
+   dot_config checkout
 ```
 
 Install additional packages required for zsh

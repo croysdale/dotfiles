@@ -82,8 +82,10 @@ Plug 'Shougo/deoplete.nvim'
 "     \   \*ignore_case\": v:true,
 "     \ })' }
 
+" Snips 
 Plug 'Shougo/neosnippet.vim'
 Plug 'Shougo/neosnippet-snippets'
+Plug 'honza/vim-snippets'
 
 " Plugs required by deoplete
 Plug 'roxma/nvim-yarp'
@@ -130,7 +132,7 @@ Plug 'powerman/vim-plugin-viewdoc'
 Plug 'sjl/gundo.vim'
 
 " Snippet completion (<TAB> and <Ctrl><Enter>)
-" TODO : Renabled after fixing deoplete
+" TODO : Should I use this or neosnippet?
 " if (has("lua"))
 "     Plug 'SirVer/ultisnips' 
 " endif
@@ -188,6 +190,10 @@ Plug 'nathanaelkane/vim-indent-guides' , { 'for': [ 'perl', 'vim', 'tcl', 'csh',
 
 " Generate a tagbar on right of screen 
 Plug 'majutsushi/tagbar' , { 'for': ['tcl', 'perl', 'logfile'] }
+
+" Plugs being tested
+" Allows easy control of tmux from vim
+Plug 'benmills/vimux'
 
 "" Plugs to retest {{
 "
