@@ -7,7 +7,7 @@
 ""     Example:  https://github.com/kien/ctrlp.vim
 
 
-call plug#begin('~/.vim/bundle.local')
+call plug#begin('~/.vim/bundle')
 " }}
 
 " ========= Helper bundles ========================================={{
@@ -98,6 +98,8 @@ Plug 'Shougo/unite.vim'
 Plug 'Shougo/vimproc.vim'
 
 " Plug 'Shougo/vimfiler.vim' , { 'on': 'VimFiler' }
+
+" Enables completion of syntax files
 " Plug 'Shougo/neco-syntax'
 
 " }}
@@ -189,11 +191,14 @@ Plug 'vim-utils/vim-husk'
 Plug 'nathanaelkane/vim-indent-guides' , { 'for': [ 'perl', 'vim', 'tcl', 'csh', 'bash', 'zsh', 'sh' ] }
 
 " Generate a tagbar on right of screen 
-Plug 'majutsushi/tagbar' , { 'for': ['tcl', 'perl', 'logfile'] }
+Plug 'majutsushi/tagbar' 
+"Plug 'majutsushi/tagbar' , { 'for': ['tcl', 'perl', 'logfile'] }
 
 " Plugs being tested
 " Allows easy control of tmux from vim
 Plug 'benmills/vimux'
+
+Plug 'dense-analysis/ale'
 
 "" Plugs to retest {{
 "
@@ -300,14 +305,13 @@ Plug 'benmills/vimux'
 " Plug 'ggVGc/vim-fuzzysearch' , { 'on': 'FuzzySearch' }
 
 " Plug 'vim-scripts/Tail-Bundle'
+"}}
 
 
-" Source local bundles {
-    " if filereadable(expand("~/.vim/bundles.vim.local"))
-    "     " source ~/.vim/bundles.vim.local
-    " endif
-" }
-
+" source local bundles {{
+    if filereadable(expand("~/.vim/bundles.vim.local"))
+        source ~/.vim/bundles.vim.local
+    endif
 "}}
 "
 call plug#end()

@@ -230,6 +230,9 @@ setopt HISTSAVENODUPS
 # contiguous.                       
 setopt HISTFINDNODUPS
 
+# Do not share history between sessions
+unsetopt share_history
+
 # If the internal history needs to be trimmed to add the current command line,
 # setting this option will cause the oldest history event that has a duplicate
 # to be lost before losing a unique event from the list.

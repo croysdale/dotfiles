@@ -51,14 +51,6 @@
     "set mousehide               " Hide the mouse cursor while typing
     scriptencoding utf-8
 
-    "if has ('x') && has ('gui') " On Linux use + register for copy-paste
-        "set clipboard=unnamedplus
-    "elseif has ('gui')          " On mac and Windows, use * register for copy-paste
-        "set clipboard=unnamed
-    "endif
-
-
-
 " }
 
 " Vim UI {
@@ -198,30 +190,6 @@ set isfname-==
 
 """" Windows, Buffers
 set swb=useopen,usetab " Allow changing tabs/windows for quickfix/:sb/etc
-
-" statusline {{
-" Disabled when airline is used
-hi default link User1 Error
-set statusline =
-set statusline +=[%n]                                    " buffer number
-set statusline +=\ %t                                    " short file file
-set statusline +=\ %1*%m%0*                              " modified flag
-" set statusline +=\ %=%20.50{tagbar#currenttag('%s','')}  " Current function
-set statusline +=\ %h                                    " [help]
-set statusline +=%r                                      " read only flag
-set statusline +=%w                                      " preview window flag
-set statusline +=%=%-14.(%l,%c%V%)                       " Line, column-virtual column"
-set statusline +=%=lines:\ %-5L                          " Lines in the buffer
-" }}
-
-let g:airline_powerline_fonts = 1
-
-"set titlestring=VIM:%-25.55F\ %a%r%m titlelen=70
-" set title
-set titlestring=VIM:%(\ %m%)\ %F%(\ %a%)\ -\ %{v:servername}
-" TODO Fix to display hostname in title
-let hostname = hostname()
-"set titlestring=VIM:%(\ %m%)\ %F%(\ %a%)\ -\ %{v:servername} %{g:hostname} 
 
 " Don't redraw while executing macros (good performance config)
 set lazyredraw
@@ -409,24 +377,6 @@ endif
 
 " Autocmds {{
 
-" statusline with Tagbar {{
-
-function! SetStatusLine()
-    set statusline=
-    set statusline+=%<\                                     " cut at start
-    set statusline+=%2*[%n%H%M%R%W]%*\                      " flags and buf no
-    set statusline+=%-40f\                                  " path
-    if (&ft=='tcl' || &ft=='perl')
-    set statusline+=\ %=%-20.50{tagbar#currenttag('%s','')} " Current function
-    endif
-    set statusline+=%=%1*%y%*%*\                            " file type
-    set statusline+=%r                                     " read only flag
-    set statusline+=%w                                     " preview window flag
-    set statusline+=%10((%l,%c)%)\                          " line and column
-    set statusline+=%P                                      " percentage of file
-    return ''
-endfunction
-" }}
 
 " Automatically switch to the current file directory when a new buffer is opened
 " augroup autocd
@@ -441,10 +391,6 @@ augroup Quickfix
     autocmd FileType    quickfix nnoremap <buffer> <CR> <CR>
     " au FileType qf nnoremap <buffer> <Enter> <Enter>
     autocmd CmdWinEnter * nnoremap <buffer> <cr> <cr>
-augroup END
-
-augroup setStatusLine
-    autocmd BufReadPost * :call SetStatusLine()
 augroup END
 
 " Color matching parans
@@ -558,7 +504,7 @@ cnoremap %% <C-R>=expand('%:h').'/'<cr>
 " => Visual mode related
 """"""""""""""""""""""""""""""
 " Visual mode pressing * or # searches for the current selection
-" Super useful! From an idea by Michael Naumann
+" Super useful! from an idea by Michael Naumann
 vnoremap <silent> * :call VisualSelection('f')<CR>
 vnoremap <silent> # :call VisualSelection('b')<CR>
 
@@ -649,23 +595,16 @@ endtry
 " For building tabs
 "map <F11>  :sp tags<CR>:%s/^\([^ :]*:\)\=\([^   ]*\).*/syntax keyword Tag \2/<CR>:wq! tags.vim<CR>/^<CR><F12>
 "map <F12>  :so tags.vim<CR>
+"
+
+noremap <silent><buffer> <F3> :exec 'source '.bufname('%')<CR>
 
 " Remap Q to gq in visual mode to reformat text that is highlighted.
 vnoremap Q gq
 " Remap Q to gqap in normal mode to reformat text in current paragraph.
 nnoremap Q gqap
 
-" Command line - emacs style command line editing
-cnoremap <C-A> <Home>
-cnoremap <C-D> <Backspace>
-cnoremap <C-F> <Right>
-cnoremap <C-B> <Left>
-cnoremap <ESC>b <S-Left>
-cnoremap <ESC>f <S-Right>
-cnoremap <ESC><C-H> <C-W>
-"
 " Emacs style editing in insert mode
-"
 imap <C-A>  <ESC>0i
 imap <C-B>  <ESC>hi
 imap <C-D>  <ESC>xi
@@ -678,7 +617,7 @@ map <leader>v :source $MYVIMRC<CR>
 map <leader>d :diffupdate<CR>
 
 " Paste from the system clipboard with ,p in normal mode
-nmap <leader>p "*p 
+noremap <leader>p "*p
 
 " <space> toggles folds opened and closed
 nnoremap <space> za
@@ -686,35 +625,6 @@ nnoremap <space> za
 " <space> in visual mode creates a fold over the marked range"{
 vnoremap <space> zf
 
-" Quick keys to jump through Synopsys logfiles
-" map ,el /ELAP\\|^step<CR>
-" map ,run / Running /<CR>
-" map ,fin /Finish running/<CR>"}
-" map ,err /^Error: /<CR>
-
-" "   ,b = break line in commented text (Assuming space after comment char)
-" nmap ,b i<CR><ESC>k2xPjbPa <ESC>
-" "   ,j = join line in commented text
-" map ,j Jxx
-
-"   ,B = break line at current position *and* join the next line
-"nmap ,B i<CR><ESC>kxPjPa <ESC>Jxx
-
-" KEY Assignments
-" ---------------
-" HOME key = Go to beginning of file
-" map  <S-PageUp> 1G
-" map  <Home> 1G
-" " <Shift>-HOME key = Go to end of file
-" map  <S-PageDown>  G
-" map  <S-Home>  G
-" " <Shift>-DOWN key = Move screen down one line
-" map  <S-Up>  k
-" " <Shift>-UP key = Move screen up one line
-" map  <S-Down> j
-" " INSERT CHARACTER key = Insert mode on
-" map  <Insert>   i
-" DELETE CHARACTER key = Delete one character
 map  <Delete>   x
 
 "}}
@@ -747,16 +657,16 @@ map  <Delete>   x
 " TMUX send {{
 " TODO Fix the plugin keys "
 " Normal mode -- send current line
-nmap <leader>q <Esc>^V/[^\\]$<CR>"ry<Esc>//e+1<CR>:call Send_keys_to_Tmux(@r)<CR>
-nmap <F2>      <Esc>^V/[^\\]$<CR>"ry<Esc>//e+1<CR>:call Send_keys_to_Tmux(@r)<CR>
+noremap <leader>q <Esc>^V/[^\\]$<CR>"ry<Esc>//e+1<CR>:call Send_keys_to_Tmux(@r)<CR>
+noremap <F2>      <Esc>^V/[^\\]$<CR>"ry<Esc>//e+1<CR>:call Send_keys_to_Tmux(@r)<CR>
 
 " 2017/11/28 11:53 Will this simple code work?
-nmap <leader>q V"ryj:call Send_keys_to_Tmux(@r)<CR>
-nmap <F2>      V"ryj:call Send_keys_to_Tmux(@r)<CR>
+noremap <leader>q V"ryj:call Send_keys_to_Tmux(@r)<CR>
+noremap <F2>      V"ryj:call Send_keys_to_Tmux(@r)<CR>
 
 " Visual mode -- send highlight lines 
-vmap <leader>q "ryj:call Send_keys_to_Tmux(@r)<CR>'>
-vmap <F2>      "ryj:call Send_keys_to_Tmux(@r)<CR>'>
+vnoremap <leader>q "ryj:call Send_keys_to_Tmux(@r)<CR>'>
+vnoremap <F2>      "ryj:call Send_keys_to_Tmux(@r)<CR>'>
 
 " nmap <leader>q <Esc>"ryy<Esc>:call Send_keys_to_Tmux(@r)<CR>
 
@@ -954,14 +864,6 @@ function! Multiple_cursors_after()
 endfunction
 " }}
 
-
-" Ignore Synopsys binary directories
-let g:ctrlp_custom_ignore = {
-  \ 'dir':  '\v(CEL|FRAM|RCS)$',
-  \ 'file': '\v\.(exe|so|dll)$',
-  \ }
-
-
 " tmux send {{
 " TODO Fix the plugin keys "
 
@@ -981,6 +883,10 @@ vmap <F2>      "ry<Esc>:call Send_keys_to_Tmux(@r)<CR>'>
 
 " nmap <C-c><C-c> <Plug>NormalModeSendToTmux
 " nmap <leader>r <Plug>SetTmuxVars
+
+" Prompt for a command to run
+map <Leader>vp :VimuxPromptCommand<CR>
+
 "}}
 
 " Splitjoin {{
@@ -1255,35 +1161,19 @@ nnoremap <leader>gu :GundoToggle<CR>
 " https://github.com/bling/vim-airline
 
 let g:airline#extensions#tabline#enabled = 1
-let g:airline_detect_paste=0
-let g:airline#extensions#ctrlp#show_adjacent_modes = 1
+"let g:airline_detect_paste=0
+"let g:airline#extensions#ctrlp#show_adjacent_modes = 1
 
 set laststatus=2
 
 
-"* defines whether the preview window should be excluded from have its window
-  "statusline modified (may help with plugins which use the preview window
-  "heavily) >
-  let g:airline_exclude_preview = 0
+let g:airline_exclude_preview = 0
 
-" https://github.com/bling/vim-airline/issues/299#issuecomment-25772886
-"function! AccentDemo()
-  "let keys = ['a','b','c','d','e','f','g','h']
-  "for k in keys
-    "call airline#parts#define_text(k, k)
-  "endfor
-  "call airline#parts#define_accent('a', 'red')
-  "call airline#parts#define_accent('b', 'green')
-  "call airline#parts#define_accent('c', 'blue')
-  "call airline#parts#define_accent('d', 'yellow')
-  "call airline#parts#define_accent('e', 'orange')
-  "call airline#parts#define_accent('f', 'purple')
-  "call airline#parts#define_accent('g', 'bold')
-  "call airline#parts#define_accent('h', 'italic')
-  "let g:airline_section_a = airline#section#create(keys)
-"endfunction
-"autocmd VimEnter * call AccentDemo()
+let g:airline_powerline_fonts = 1
 
+let g:airline_theme='angr'
+
+let g:airline#extensions#ale#enabled = 1
 " }}
 
 " delimitMate {{

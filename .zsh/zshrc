@@ -64,7 +64,7 @@
 # Path to your oh-my-zsh configuration.
 export ZSH=$HOME/.oh-my-zsh
 ##  gnu-utils does not exist
-plugins=(gnu-utis fz common-aliases )
+plugins=(git gnu-utis fz common-aliases )
 plugins=(zsh-editing-workbench common-aliases command-not-found )
 # git
 # gitfast
@@ -95,7 +95,8 @@ for file in ~/.zsh/zshexports   \
             ~/.zsh/fzf_funcs    \
             ~/.zsh/zshaliases   \
             ~/.zsh/zshfunctions \
-            ~/.zsh/tmux_funcs
+            ~/.zsh/tmux_funcs   \
+            ~/.zsh/zshrc.local 
     do
     # Test and then source some options
     if [ -f $file ]; then
