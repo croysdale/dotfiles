@@ -47,14 +47,11 @@ vim
 
 Install additional tmux plugins
 ```
-tmux
-Install additional packages required for vim
-```
 ~/.tmux/plugins/tpm/scripts/install_plugins.sh
 ```
-## Cheatsheets
+Cheatsheets
 
 [Cheatsheet 1](https://www.cheatography.com//kcroysdale/cheat-sheets/unified-vim-tmux-fvwm-environment/pdf/)
 
-## Full Tutorial credit
+Full Tutorial credit
 Built following tutorial from [Atlassian](https://www.atlassian.com/git/tutorials/dotfiles)

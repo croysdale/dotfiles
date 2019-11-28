@@ -99,11 +99,6 @@ prompt_status() {
   [[ -n "$symbols" ]] && prompt_segment 8 default "$symbols"
 }
 
-## Main prompt
-## TODO : Add modules loaded
-##      : Add RDT vers?
-##      : Add runda dir (m1102)
-##   > synopsys > m1102 > ICC 13.12-SP5 > RDT > route_crash/apr
 build_prompt() {
   RETVAL=$?
   prompt_status
@@ -112,10 +107,6 @@ build_prompt() {
   prompt_end
 }
 
-#echo -n " %{$bg%F{$CURRENT_BG}%}$SEGMENT_SEPARATOR%{$fg%} "
-#{%k%F{$CURRENT_BG}%}
-# Top-line
-#   Full path fg: magenta
 PROMPT='
 %k%F{10}[%h] %/ %f%b%k
 $(build_prompt) %E'

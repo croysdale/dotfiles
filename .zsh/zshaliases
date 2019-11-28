@@ -249,6 +249,8 @@ alias sz_all='pkill -usr1 -u $USER zsh'
 alias c=' clear'
 alias du='du --apparent-size'
 alias psg='ps -aef | grep \!* | grep -v grep'
+function theme () { source ~/.oh-my-zsh/themes/$*.zsh-theme }
+alias ktheme="source ~/.oh-my-zsh/custom/themes/kevin.zsh-theme" 
 
 alias rl="rlogin"
 compdef rl=rlogin
@@ -268,8 +270,6 @@ if [[ `uname -s` == "Linux" ]] ; then
     compdef gman=man
 fi
 
-alias gpg='/berry/nonrunda/bin/gpg'
-
 ## Find all gpg files that have matching .tar.gz
 ## TODO : Works when pasted into shell but not as alias
 alias lsgpg="ls -lh **/*.gpg(e_'[[ -e $REPLY:r ]]'_)"
@@ -279,10 +279,6 @@ alias all_users='w | awk ''{print $1}'' | sort -u'
 ## stty aliases
 alias sane=' echo -e "\\033c";tput is2;stty sane line 1' 
 alias erase=" stty erase "
-
-## Update to use new xtermcontrol binary
-alias st=settitle
-alias cf=change_font_size
 
 # tmux
 alias tmux='tmux -2 -u'

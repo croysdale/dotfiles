@@ -170,7 +170,7 @@ else
   export PAGER="more"
 fi
 
-export PERL5LIB=~/Komodo-PerlRemoteDebugging-8.0.2-78971-linux-x86
+export PERL5LIB=~/share/Komodo-PerlRemoteDebugging-8.0.2-78971-linux-x86
 export PERL5DB="BEGIN { require q($PERL5LIB/perl5db.pl)}"
 export PERLDB_OPTS="RemotePort=localhost:9000"
 # export DBGP_IDEKEY="$USER"
