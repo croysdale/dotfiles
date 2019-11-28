@@ -73,6 +73,7 @@ alias vi="${EDITOR}"
 alias view="${EDITOR} -R"
 alias ex="${EDITOR} -e"
 alias pltags="${VIMRUNTIME}/tools/pltags.pl"
+alias dump_vim_maps='vim -T xterm +"set nomore" +map +qall'
 
 # grep wrapper with search highlighting (<http://www.acme.com/software/hgrep/>)
 # Only for non-linux systems needed (see below)
@@ -344,6 +345,7 @@ alias realpath="readlink -f \$PWD"
 
 alias dot_config='/usr/bin/git --git-dir=$HOME/.myconf/ --work-tree=$HOME'
 alias dot_status='dot_config config status.showUntrackedFiles no'
+alias setup_dot='export GIT_WORK_TREE=$HOME; export GIT_DIR=$HOME/.myconf'
 
 ## Solarized colors
 export yellow="#b58900"

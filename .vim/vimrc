@@ -3,43 +3,21 @@
 " }}
 "
 
-" Use before config {
+" Use before config {{
     if filereadable(expand("~/.vim/vimrc.before"))
         source ~/.vim/vimrc.before
     endif
-" }
+" }}
 
-" Environment {
+" Setup Bundle Support 
+call plug#begin('~/.vim/autoload/plug.vim')
 
-    " Basics {
-        set nocompatible        " Must be first line
-        if !(has('win16') || has('win32') || has('win64'))
-            set shell=/bin/sh
-        endif
-    " }
+if filereadable(expand("~/.vim/bundles.vim"))
+    source ~/.vim/bundles.vim
+endif
 
-    " Windows Compatible {
-        " On Windows, also use '.vim' instead of 'vimfiles'; this makes synchronization
-        " across (heterogeneous) systems easier.
-        if has('win32') || has('win64')
-          set runtimepath=$HOME/.vim,$VIM/vimfiles,$VIMRUNTIME,$VIM/vimfiles/after,$HOME/.vim/after
-        endif
-    " }
 
-    " Setup Bundle Support {
-    call plug#begin('~/.vim/autoload/plug.vim')
-
-    " }
-
-" }
-
-" Use bundles config {
-    if filereadable(expand("~/.vim/bundles.vim"))
-        source ~/.vim/bundles.vim
-    endif
-" }
-
-" General {
+" General {{
 
     set background=dark         " Assume a dark background
     if !has('gui')
@@ -51,9 +29,9 @@
     "set mousehide               " Hide the mouse cursor while typing
     scriptencoding utf-8
 
-" }
+" }}
 
-" Vim UI {
+" Settings {{
 
     if filereadable(expand("~/.vim/bundle/vim-colors-solarized/colors/solarized.vim"))
         let g:solarized_termcolors=256
@@ -108,10 +86,6 @@
     "set listchars=tab:\ ,trail:,extends:#,nbsp:. " Highlight problematic whitespace
     set undofile
 
-" }
-
-" Formatting {
-
     set nowrap                      " Do not wrap long lines
     set autoindent                  " Indent at the same level of the previous line
     set shiftwidth=4                " Use indents of 4 spaces
@@ -122,27 +96,9 @@
     set splitright                  " Puts new vsplit windows to the right of the current
     set splitbelow                  " Puts new split windows to the bottom of the current
 
-    " Remove trailing whitespaces and ^M chars
-    " To disable the stripping of whitespace, add the following to your
-    " .vimrc.before.local file:
-    "   let g:spf13_keep_trailing_whitespace = 1
-    augroup SPF13_Programming
-        autocmd BufNewFile,BufRead *.html.twig set filetype=html.twig
-        autocmd FileType haskell setlocal expandtab shiftwidth=2 softtabstop=2
-        " preceding line best in a plugin but here for now.
+" }}
 
-        autocmd BufNewFile,BufRead *.coffee set filetype=coffee
-
-        " Workaround vim-commentary for Haskell
-        autocmd FileType haskell setlocal commentstring=--\ %s
-        " Workaround broken colour highlighting in Haskell
-        autocmd FileType haskell setlocal nospell
-    augroup END
-
-" }
-
-" Key (re)Mappings {
-
+" Key (re)Mappings {{
 
     " Shortcuts
     " Change Working Directory to that of the current file
@@ -165,8 +121,7 @@
     map <leader>ev :vsp %%
     map <leader>et :tabe %%
 
-" }
-
+" }}
 
 " Settings {{ 
 
@@ -417,10 +372,15 @@ augroup Filetypes
     autocmd BufRead,BufNewFile *.md    setfiletype markdown
 augroup END
 
+augroup VimFiles
+    autocmd! 
+    autocmd FileType vim noremap <silent><buffer> <F3> :exec 'source '.bufname('%')<CR>
+augroup END
+
 " http://vim.wikia.com/wiki/Jump_to_a_function_from_where_it_is_called
 augroup Programming
     autocmd! 
-    autocmd BufReadPost *.pl    nmap gx yiw/^\(sub\<Bar>function\)\s\+<C-R>"<CR>
+    autocmd FileType perl nmap gx yiw/^\(sub\<Bar>function\)\s\+<C-R>"<CR>
 
 " When starting to edit a file:
 "   For *.c and *.h files set formatting of comments and set C-indenting on
@@ -430,8 +390,7 @@ augroup Programming
     autocmd BufRead Makefile* set noexpandtab tabstop=8 shiftwidth=8
 augroup END
 
-" Synopsys files
-augroup Synopsys
+augroup Log_files
     autocmd! 
     "autocmd FileChangedShell *.log*  echon "" 
     autocmd FileType log set colorcolumn=0
@@ -597,8 +556,6 @@ endtry
 "map <F12>  :so tags.vim<CR>
 "
 
-noremap <silent><buffer> <F3> :exec 'source '.bufname('%')<CR>
-
 " Remap Q to gq in visual mode to reformat text that is highlighted.
 vnoremap Q gq
 " Remap Q to gqap in normal mode to reformat text in current paragraph.
@@ -679,16 +636,13 @@ nmap <leader><F2> <Plug>SetTmuxVars
 " }}
 
 " vim-tmux-navigator {{
-" Re-map from Ctrl<hjkl> to Alt<hjkl> to avoid conflict
-
-" 2017/05/13 13:17 Need to leave the default mappings (C-k, C-j) since these are sent
-" from tmux to vim
+" 2017/05/13 13:17 Need to leave the default mappings (C-k, C-j) since these are sent from tmux to vim
 " let g:tmux_navigator_no_mappings = 1
 nnoremap <M-Left>  :TmuxNavigateLeft<cr>
 nnoremap <M-Down>  :TmuxNavigateDown<cr>
 nnoremap <M-Up>    :TmuxNavigateUp<cr>
 nnoremap <M-Right> :TmuxNavigateRight<cr>
-" nnoremap <silent> <M-/> :TmuxNavigatePrevious<cr>
+nnoremap <M-/>     :TmuxNavigatePrevious<cr>
 " }}
 
 " delimitMate {{
@@ -705,48 +659,15 @@ nnoremap <M-Right> :TmuxNavigateRight<cr>
     augroup END
 " }}
 
-" Easymotion {{
-" nmap s <Plug>(easymotion-s2)
-" nmap t <Plug>(easymotion-t2)
-"
-"
-" " Gif config
-" map <Leader>l <Plug>(easymotion-lineforward)
-" map <Leader>j <Plug>(easymotion-j)
-" map <Leader>k <Plug>(easymotion-k)
-" map <Leader>h <Plug>(easymotion-linebackward)
-"
-" let g:EasyMotion_startofline = 0 " keep cursor colum when JK motion
-"
-" let g:EasyMotion_smartcase = 1
-" }}
-
-" FuzzySearch {{
-nnoremap <leader>r :%s/<c-r>///g<left><left>
-" g:fuzzysearch_prompt = 'fuzzy /'
-" g:fuzzysearch_hlsearch = 1
-" g:fuzzysearch_ignorecase = 1
-" g:fuzzysearch_max_history = 30
-let  g:fuzzysearch_match_spaces=1
-" }}
-
 " Unite  {{
 let g:unite_source_history_yank_enable = 1
-
-call unite#filters#matcher_default#use(['matcher_fuzzy'])
-call unite#filters#sorter_default#use(['sorter_rank'])
-call unite#custom#source('file_rec', 'ignore_pattern', 'RCS')
-call unite#custom#source('grep', 'ignore_pattern', 'RCS')
-
-"    -buffer-name=files and also pass in the -resume flag.
-
-"For searching the word in the cursor in all opened buffer
-"noremap <silent> <Leader>sa :Unite grep:$buffers::<C-r><C-w><CR>
-
 let g:unite_enable_start_insert=1
+call unite#filters#sorter_default#use(['sorter_rank'])
+
 " Impact normal C-r
 "inoremap <silent> <C-r> <esc>:<C-u>Unite register
             "\ -buffer-name=register -no-start-insert <CR>
+
 inoremap <silent> <C-y> <esc>:<C-u>Unite history/yank
          \ -buffer-name=yank     -no-start-insert           <CR>
 nnoremap <silent> gr :<C-u>Unite register
@@ -787,6 +708,25 @@ nnoremap <silent> gs
 "nnoremap <Leader>ur :<C-u>Unite -no-split -buffer-name=runtimepath -auto-resize runtimepath<CR>
 "nnoremap <silent> [unite]p  :<C-u>Unite phrase -start-insert<CR>
 
+" Set mappings for the Unite windows
+function! s:unite_settings()
+	nmap <buffer> Q <plug>(unite_exit)
+	nmap <buffer> <esc> <plug>(unite_exit)
+	nmap <buffer> <C-c> <plug>(unite_exit)
+	imap <buffer> <C-c> <plug>(unite_exit)
+    imap <buffer> <C-j>   <Plug>(unite_select_next_line)
+    imap <buffer> <C-k>   <Plug>(unite_select_previous_line)
+    imap <silent><buffer><expr> <C-s> unite#do_action('split')
+    imap <silent><buffer><expr> <C-v> unite#do_action('vsplit')
+    imap <silent><buffer><expr> <C-t> unite#do_action('tabopen')
+    nmap <silent><buffer><expr> <C-s> unite#do_action('split')
+    nmap <silent><buffer><expr> <C-v> unite#do_action('vsplit')
+    nmap <silent><buffer><expr> <C-t> unite#do_action('tabopen')
+endfunction
+augroup unite
+    autocmd!
+    autocmd FileType unite call s:unite_settings()
+augroup END
 
 if executable('ag')
 	let g:unite_source_grep_command='ag'
@@ -944,65 +884,6 @@ nnoremap <leader>l :CtrlPLine<CR>
 "       \ },
 "       \ ],
 "     \ }
-" "}}
-
-" Unite  {{
-let g:unite_source_history_yank_enable = 1
-
-call unite#filters#matcher_default#use(['matcher_fuzzy'])
-call unite#filters#sorter_default#use(['sorter_rank'])
-call unite#custom#source('file_rec', 'ignore_pattern', 'RCS')
-call unite#custom#source('grep', 'ignore_pattern', 'RCS')
-
-"    -buffer-name=files and also pass in the -resume flag.
-
-"For searching the word in the cursor in all opened buffer
-"noremap <silent> <Leader>sa :Unite grep:$buffers::<C-r><C-w><CR>
-
-let g:unite_enable_start_insert=1
-" Impact normal C-r
-"inoremap <silent> <C-r> <esc>:<C-u>Unite register
-            "\ -buffer-name=register -no-start-insert <CR>
-inoremap <silent> <C-y> <esc>:<C-u>Unite history/yank
-         \ -buffer-name=yank     -no-start-insert           <CR>
-nnoremap <silent> gr :<C-u>Unite register
-         \ -buffer-name=register                            <CR>
-nnoremap <silent> gc :<C-u>Unite file
-         \ -buffer-name=file -no-start-insert -resume       <CR>
-nnoremap <silent> gb :<C-u>Unite buffer
-         \ -buffer-name=buffer -no-start-insert -resume     <CR>
-nnoremap <silent> gF :<C-u>Unite file_rec/async
-         \ -buffer-name=file_rec   -resume                  <CR>
-nnoremap <silent> gm :<C-u>Unite mapping
-         \ -buffer-name=mapping                             <CR>
-nnoremap <silent> ge :<C-u>Unite output:message             <CR>
-nnoremap <silent> gy :<C-u>Unite history/yank
-         \ -buffer-name=yank    -no-start-insert            <CR>
-nnoremap <silent> g/ :<C-u>Unite grep:.
-         \ -buffer-name=search -auto-resize                 <CR>
-nnoremap <silent> gl :<C-u>Unite line
-         \ -buffer-name=line   -auto-resize -resume         <CR>
-nnoremap <silent> g? :<C-u>Unite line
-         \ -buffer-name=line   -auto-resize -resume         <CR>
-
-nnoremap <silent> gA :<C-u>UniteBookmarkAdd                <CR>
-nnoremap <silent> gB :<C-u>Unite bookmark -no-start-insert <CR>
-nnoremap <silent> gC :<C-u>Unite command                   <CR>
-nnoremap <silent> gR :<C-u>UniteResume
-         \ -no-start-insert -no-start-insert                <CR>
-
-""	nnoremap  [unite]f  :<C-u>Unite source<CR>
-nnoremap <silent> gs
-        \ :<C-u>Unite -buffer-name=files -no-split
-        \ jump_point file_point buffer_tab
-        \ file_rec:! file file/new<CR>
-
-"nnoremap <leader>t  :<C-u>Unite -no-split -buffer-name=files   -start-insert file_rec/async:!<cr>
-"nnoremap <Leader>um :<C-u>Unite -no-split -buffer-name=mappings -auto-resize mapping<CR>
-"nnoremap <Leader>uf :<C-u>Unite -no-split -buffer-name=function -auto-resize function<CR>
-"nnoremap <Leader>ur :<C-u>Unite -no-split -buffer-name=runtimepath -auto-resize runtimepath<CR>
-"nnoremap <silent> [unite]p  :<C-u>Unite phrase -start-insert<CR>
-
 
 if executable('ag')
 	let g:unite_source_grep_command='ag'
@@ -1014,24 +895,6 @@ elseif executable('ack')
 	let g:unite_source_grep_recursive_opt=''
 endif
 
-function! s:unite_settings()
-	nmap <buffer> Q <plug>(unite_exit)
-	nmap <buffer> <esc> <plug>(unite_exit)
-	nmap <buffer> <C-c> <plug>(unite_exit)
-	imap <buffer> <C-c> <plug>(unite_exit)
-    imap <buffer> <C-j>   <Plug>(unite_select_next_line)
-    imap <buffer> <C-k>   <Plug>(unite_select_previous_line)
-    imap <silent><buffer><expr> <C-s> unite#do_action('split')
-    imap <silent><buffer><expr> <C-v> unite#do_action('vsplit')
-    imap <silent><buffer><expr> <C-t> unite#do_action('tabopen')
-    nmap <silent><buffer><expr> <C-s> unite#do_action('split')
-    nmap <silent><buffer><expr> <C-v> unite#do_action('vsplit')
-    nmap <silent><buffer><expr> <C-t> unite#do_action('tabopen')
-endfunction
-augroup unite
-    autocmd!
-    autocmd FileType unite call s:unite_settings()
-augroup END
 
 " }}
 
@@ -1347,7 +1210,5 @@ func! DeleteTrailingWS()
   exe "normal `z"
 endfunc
 autocmd BufWrite *.tcl :call DeleteTrailingWS()
-
-"}}
 
 " }}

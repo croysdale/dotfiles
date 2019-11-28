@@ -1,6 +1,3 @@
-" Modeline and Notes (spacebar to open/close folds) {{
-" vim: set sw=4 ts=4 sts=4 et foldmarker={{,}} foldlevel=0 foldmethod=marker spell:
-" }}
 
 "" Documentation for each bundle on the web at: 
 ""     https://github.com/<plugin_name>
@@ -8,102 +5,73 @@
 
 
 call plug#begin('~/.vim/bundle')
-" }}
 
-" ========= Helper bundles ========================================={{
+" Helper bundles {{{1
 " Needed by other bundles
 Plug 'MarcWeber/vim-addon-mw-utils'
-Plug 'tomtom/tlib_vim'
 " Enable async processes for plugins like Unite
-" }}
-
-" ================ Colorschemes ===================================={{
-" Switch colorschemes <F8> and Shift<F8> 
-Plug 'xolox/vim-colorscheme-switcher'
+Plug 'tomtom/tlib_vim'
 Plug 'xolox/vim-misc'
+Plug 'Shougo/vimproc.vim'
 
-" Plug 'tomasr/molokai'
-" Plug 'romainl/Apprentice'
-" Plug 'zefei/cake16'
-" Plug '29decibel/codeschool-vim-theme'
-" Plug 'jeetsukumaran/vim-mochalatte'
-Plug 'altercation/vim-colors-solarized'
-" Plug 'chriskempson/base16-vim'
-" Plug 'DAddYE/soda.vim'
-" Plug 'vim-scripts/Cleanroom'
-" Plug 'jnurmine/Zenburn'
-" Plug 'junegunn/seoul256.vim'
-" Plug 'morhetz/gruvbox'
-" Plug 'sjl/badwolf'
-Plug 'NLKNguyen/papercolor-theme'
-"}}
-
-" ================ tpope bundles   ================================={{
+" tpope bundles   {{{1
 " quoting/parenthesizing made simple
 Plug 'tpope/vim-surround'
-" Highlight syntax for markdown
-Plug 'tpope/vim-markdown'
-" Enhancements to netrw (built in file manager)
-Plug 'tpope/vim-vinegar'
 " enable repeating supported plugin maps with "."
 Plug 'tpope/vim-repeat'
 " Correct common mis-spellings
 Plug 'tpope/vim-abolish'
-" Readline style insertion (Ctrl-a,w,d,f,...)
-Plug 'tpope/vim-rsi'
+
 " pairs of handy bracket mappings 
 Plug 'tpope/vim-unimpaired'
-" fuzzy matching algorithm for use by other Vim plugins
-Plug 'tpope/vim-tbone'
 " Plugin for using GIT
 Plug 'tpope/vim-fugitive'
 
-" asynchronous build and test dispatcher
-" Breaks tab complete ??
-" Plug "tpope/vim-dispatch"
 
 " Plug 'tpope/vim-haystack'`
 " Change data with Ctrl-A / Ctrl-Z
 Plug 'tpope/vim-speeddating'
 
-" Simple plugin to replace airline
-" Plug 'tpope/vim-flagship'
-"}}
+" Text Objects, Motions and Operators {{{1
+Plug 'wellle/targets.vim'
 
+" Command Line {{{1
+" Readline style insertion (Ctrl-a,w,d,f,...)
+Plug 'tpope/vim-rsi'
+" Mappings that boost vim's command line (based on rsi)
+" Plug 'vim-utils/vim-husk'
 
-" ================ Shougo bundles   ================================={{
-" Auto-completion bundles             - <TAB>
-" Plug 'Shougo/neocomplete.vim'
-Plug 'Shougo/deoplete.nvim'
-" Plug 'Shougo/deoplete.nvim', { 'do': ':UpdateRemotePlugins \| call
-"     \ deoplete#custom#option({
-"     \   \"max_list\": 50,
-"     \   \"smart_case\": v:true,
-"     \   \*ignore_case\": v:true,
-"     \ })' }
+" Languages - Formatters {{{1
+"Plug 'sheerun/vim-polyglot'
+"Plug 'mattn/emmet-vim' , { 'for':  ['html', 'css']}
+"Plug 'sbdchd/neoformat', { 'on' : 'Neoformat'}
 
-" Snips 
+" Auto-completion bundles {{{1
+if has('nvim')
+  Plug 'Shougo/deoplete.nvim', { 'do': ':UpdateRemotePlugins' }
+else
+  Plug 'Shougo/deoplete.nvim'
+  Plug 'roxma/nvim-yarp'
+  Plug 'roxma/vim-hug-neovim-rpc'
+endif
+
+" Snips  {{{1
 Plug 'Shougo/neosnippet.vim'
 Plug 'Shougo/neosnippet-snippets'
 Plug 'honza/vim-snippets'
 
-" Plugs required by deoplete
-Plug 'roxma/nvim-yarp'
-Plug 'roxma/vim-hug-neovim-rpc'
-
 " Unite searches/displays information - gm, gl, gC, gy, g/, gr, gb, <F12>
 " http://www.ustream.tv/recorded/11240673
 Plug 'Shougo/unite.vim'
-
-Plug 'Shougo/vimproc.vim'
-
-" Plug 'Shougo/vimfiler.vim' , { 'on': 'VimFiler' }
+Plug 'Shougo/neoyank.vim'
 
 " Enables completion of syntax files
 " Plug 'Shougo/neco-syntax'
 
-" }}
+" File management {{{1
 
+" Enhancements to netrw (built in file manager)
+Plug 'tpope/vim-vinegar'
 
 " Fuzzy finder for opening files (,m ,f ,F ..)
 Plug 'kien/ctrlp.vim'
@@ -127,19 +95,14 @@ Plug 'vim-scripts/vimwiki'
 Plug 'godlygeek/tabular'
 
 " Man page viewer
-" Plug 'emezeske/manpageview'
 Plug 'powerman/vim-plugin-viewdoc'
 
 " Undo navigator                    - ,gu
 Plug 'sjl/gundo.vim'
+" Plug 'mbbill/undotree', { 'on' : 'UndotreeToggle' }
 
-" Snippet completion (<TAB> and <Ctrl><Enter>)
-" TODO : Should I use this or neosnippet?
-" if (has("lua"))
-"     Plug 'SirVer/ultisnips' 
-" endif
+" Perl bundles  {{{1
 
-" ================ perl bundles   ================================={{
 " Debugger for perl
 if (has("python") || has("python3")) 
     Plug 'joonty/vdebug' , { 'for': 'perl' }
@@ -150,11 +113,13 @@ Plug 'vim-scripts/perlhelp.vim' , { 'for': 'perl' }
 Plug 'vim-scripts/perl-support.vim' , { 'for': 'perl' }
 
 Plug 'vim-perl/vim-perl'
-" }}
 
-" TMUX bundles {{
+" TMUX bundles {{{1
 " Interact with tmux (VimuxRunCommand)
 Plug 'benmills/vimux'
+
+" :Tmux, :Tyank, :Twrite, :Tattach
+Plug 'tpope/vim-tbone'
 
 " Common keys for tmux and vim for window/pane navigation
 Plug 'christoomey/vim-tmux-navigator'
@@ -162,19 +127,22 @@ Plug 'christoomey/vim-tmux-navigator'
 " Send to Tmux (similar to vim-dispatch)
 Plug 'jgdavey/tslime.vim'
 
+" asynchronous build and test dispatcher
+" Breaks tab complete ??
+" Plug "tpope/vim-dispatch"
+
 " Auto-complete words from another tmux panes into vim
 " Breaks neocomplete??
 " Plug 'wellle/tmux-complete.vim'
-" }}
 
-" HTML bundles {{
+" HTML bundles {{{1
 " Tag matches for HTML
 Plug 'gregsexton/MatchTag' , { 'for': 'html' }
 Plug 'heracek/HTML-AutoCloseTag' , { 'for': 'html' }
 Plug 'hail2u/vim-css3-syntax' , { 'for': 'html' }
-" }}
 
-Plug 'scrooloose/syntastic'
+" Syntax checker {{{1
+" Plug 'scrooloose/syntastic'
 
 if executable('ag')
     Plug 'mileszs/ack.vim'
@@ -183,9 +151,6 @@ endif
 
 " New stuff 
 Plug 'airblade/vim-gitgutter'
-
-" Mappings that boost vim's command line (based on rsi)
-Plug 'vim-utils/vim-husk'
 
 " Highlight the indents 
 Plug 'nathanaelkane/vim-indent-guides' , { 'for': [ 'perl', 'vim', 'tcl', 'csh', 'bash', 'zsh', 'sh' ] }
@@ -200,11 +165,8 @@ Plug 'benmills/vimux'
 
 Plug 'dense-analysis/ale'
 
-"" Plugs to retest {{
+"" Plugs to retest {{{1
 "
-" " Newer version of netrw (build it file viewer)
-" Plug 'vim-scripts/netrw.vim'
-
 " expand regions in visual-mode       - m
 " Plug 'terryma/vim-expand-region'
 
@@ -262,21 +224,6 @@ Plug 'dense-analysis/ale'
 
 
 
-" RCS utilities {{
-"
-" Caused some odd BufWirePost errors??
-" autocmd BufRead,BufWritePost             * call sy#start(b:sy_path)
-" Shows signs in gutter for RCS
-" 2015/02/27 07:09 Not working.
-" Plug 'mhinz/vim-signify'
-" let g:signify_vcs_list = [ 'rcs' ]
-
-" Add support for RCS                :RCSci
-" Plug 'vim-scripts/rcs.vim' , { 'for': [ 'fvwm', 'perl', 'vim', 'tcl', 'csh', 'bash', 'zsh', 'sh' ] }
-
-" Opens RCS diff to previous version :RCSdiff
-" Plug 'vim-scripts/rcsdiff.vim'  , { 'for': [ 'fvwm', 'perl', 'vim', 'tcl', 'csh', 'bash', 'zsh', 'sh' ] }
-" }}
 
 " Add support for scratch page        :Scratch (gs)
 " Plug 'mtth/scratch.vim'
@@ -290,7 +237,6 @@ Plug 'dense-analysis/ale'
 " Plug 'rhysd/clever-f.vim'
 
 " Plug 'danro/rename.vim'
-" Plug 'kana/vim-textobj-entire'
 " Plug 'noahfrederick/vim-skeleton' , { 'for' : [ 'perl', 'csh', 'bash', 'zsh', 'sh' ] }
 " Plug 'chrisbra/vim-diff-enhanced', { 'on' : 'EnhancedDiff' }
 " Plug 'justinmk/vim-sneak'
@@ -305,13 +251,29 @@ Plug 'dense-analysis/ale'
 " Plug 'ggVGc/vim-fuzzysearch' , { 'on': 'FuzzySearch' }
 
 " Plug 'vim-scripts/Tail-Bundle'
-"}}
 
 
-" source local bundles {{
+" Colorschemes {{{1
+Plug 'altercation/vim-colors-solarized'
+Plug 'NLKNguyen/papercolor-theme'
+" Plug 'tomasr/molokai'
+" Plug 'romainl/Apprentice'
+" Plug 'zefei/cake16'
+" Plug '29decibel/codeschool-vim-theme'
+" Plug 'jeetsukumaran/vim-mochalatte'
+" Plug 'chriskempson/base16-vim'
+" Plug 'DAddYE/soda.vim'
+" Plug 'vim-scripts/Cleanroom'
+" Plug 'jnurmine/Zenburn'
+" Plug 'junegunn/seoul256.vim'
+" Plug 'morhetz/gruvbox'
+" Plug 'sjl/badwolf'
+" source local bundles {{{1
     if filereadable(expand("~/.vim/bundles.vim.local"))
         source ~/.vim/bundles.vim.local
     endif
-"}}
 "
 call plug#end()
+
+" Modeline (spacebar to open/close folds) {{{1
+" vim: fdm=marker
