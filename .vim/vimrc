@@ -3,7 +3,7 @@
 " }}
 "
 
-" Use before config {{
+" Source vimrc.before {{
     if filereadable(expand("~/.vim/vimrc.before"))
         source ~/.vim/vimrc.before
     endif
@@ -18,110 +18,63 @@ endif
 
 
 " General {{
-
     set background=dark         " Assume a dark background
-    if !has('gui')
-        "set term=$TERM          " Make arrow and other keys work
-    endif
     filetype plugin indent on   " Automatically detect file types.
     syntax on               " Syntax highlighting
-    "set mouse=a                 " Automatically enable mouse usage
-    "set mousehide               " Hide the mouse cursor while typing
     scriptencoding utf-8
-
 " }}
 
 " Settings {{
 
-    if filereadable(expand("~/.vim/bundle/vim-colors-solarized/colors/solarized.vim"))
-        let g:solarized_termcolors=256
-        let g:solarized_termtrans=1
-        let g:solarized_contrast="normal"
-        let g:solarized_visibility="normal"
-        color solarized             " Load a colorscheme
-    endif
+if filereadable(expand("~/.vim/bundle/vim-colors-solarized/colors/solarized.vim"))
+    let g:solarized_termcolors=256
+    let g:solarized_termtrans=1
+    let g:solarized_contrast="high"    " low, normal, high
+    let g:solarized_visibility="normal"  " low, normal, high
+    colorscheme solarized
+endif
 
-    set tabpagemax=15               " Only show 15 tabs
-    set showmode                    " Display the current mode
+highlight clear SignColumn      " SignColumn should match background for
+                                " things like vim-gitgutter
 
-    highlight clear SignColumn      " SignColumn should match background for
-                                    " things like vim-gitgutter
+highlight clear LineNr          " Current line number row will have same background color in relative mode.
+                                " Things like vim-gitgutter will match LineNr highlight
 
-    highlight clear LineNr          " Current line number row will have same background color in relative mode.
-                                    " Things like vim-gitgutter will match LineNr highlight
+set rulerformat=%30(%=\:b%n%y%m%r%w\ %l,%c%V\ %P%) " A ruler on steroids
 
-    if has('cmdline_info')
-        set ruler                   " Show the ruler
-        set rulerformat=%30(%=\:b%n%y%m%r%w\ %l,%c%V\ %P%) " A ruler on steroids
-        set showcmd                 " Show partial commands in status line and
-                                    " Selected characters/lines in visual mode
-    endif
+" Reduce the delay for entering normal mode when pressing escape
+set timeoutlen=1000 ttimeoutlen=0
 
-    " Reduce the delay for entering normal mode when pressing escape
-    set timeoutlen=1000 ttimeoutlen=0
+" Prevents problems in when using a terminal where <Esc> followed 
+" by a key (for me 'w') leads to things like inserting <F8>
+set noesckeys 
 
+let mapleader = ','
 
-    let mapleader = ','
+set backspace=indent,eol,start  " Backspace for dummies
+set incsearch                   " Find as you type search
+set hlsearch                    " Highlight search terms
 
-    set backspace=indent,eol,start  " Backspace for dummies
-    set linespace=0                 " No extra spaces between rows
-    "set number                          " Line numbers on
-    "set showmatch                   " Show matching brackets/parenthesis
-    set incsearch                   " Find as you type search
-    set hlsearch                    " Highlight search terms
+set winminheight=0              " Windows can be 0 line high
+set ignorecase                  " Case insensitive search
+set smartcase                   " Case sensitive when uc present
+set wildmenu                    " Show list instead of just completing
+set wildmode=list:longest,full  " Command <Tab> completion, list matches, then longest common part, then all.
+set whichwrap=b,s,h,l,<,>,[,]   " Backspace and cursor keys wrap too
+set scrolljump=5                " Lines to scroll when cursor leaves screen
+set scrolloff=3                 " Minimum lines to keep above and below cursor
+set undofile
 
-    set winminheight=0              " Windows can be 0 line high
-    set noinfercase                 " Case insensitive completion
-    set ignorecase                  " Case insensitive search
-    set smartcase                   " Case sensitive when uc present
-    set wildmenu                    " Show list instead of just completing
-    set wildmode=list:longest,full  " Command <Tab> completion, list matches, then longest common part, then all.
-    set whichwrap=b,s,h,l,<,>,[,]   " Backspace and cursor keys wrap too
-    set scrolljump=5                " Lines to scroll when cursor leaves screen
-    set scrolloff=3                 " Minimum lines to keep above and below cursor
-    set foldenable                  " Auto fold code
-    "set list
-    "set listchars=tab:\ ,trail:,extends:#,nbsp:. " Highlight problematic whitespace
-    set undofile
-
-    set nowrap                      " Do not wrap long lines
-    set autoindent                  " Indent at the same level of the previous line
-    set shiftwidth=4                " Use indents of 4 spaces
-    set expandtab                   " Tabs are spaces, not tabs
-    set tabstop=4                   " An indentation every four columns
-    set softtabstop=4               " Let backspace delete indent
-    set nojoinspaces                " Prevents inserting two spaces after punctuation on a join (J)
-    set splitright                  " Puts new vsplit windows to the right of the current
-    set splitbelow                  " Puts new split windows to the bottom of the current
-
-" }}
-
-" Key (re)Mappings {{
-
-    " Shortcuts
-    " Change Working Directory to that of the current file
-    " cmap cwd lcd %:p:h
-    " cmap cd. lcd %:p:h
-
-    " Visual shifting (does not exit Visual mode)
-    vnoremap < <gv
-    vnoremap > >gv
-
-    " Allow using the repeat operator with a visual selection (!)
-    " http://stackoverflow.com/a/8064607/127816
-    vnoremap . :normal .<CR>
-
-    " Some helpers to edit mode
-    " http://vimcasts.org/e/14
-    cnoremap %% <C-R>=expand('%:h').'/'<cr>
-    map <leader>ew :e %%
-    map <leader>es :sp %%
-    map <leader>ev :vsp %%
-    map <leader>et :tabe %%
-
-" }}
-
-" Settings {{ 
+set nowrap                      " Do not wrap long lines
+set autoindent                  " Indent at the same level of the previous line
+set shiftwidth=4                " Use indents of 4 spaces
+set expandtab                   " Tabs are spaces, not tabs
+set tabstop=4                   " An indentation every four columns
+set softtabstop=4               " Let backspace delete indent
+set smartindent		            " always set autoindenting on
+set nojoinspaces                " Prevents inserting two spaces after punctuation on a join (J)
+set splitright                  " Puts new vsplit windows to the right of the current
+set splitbelow                  " Puts new split windows to the bottom of the current
 
 " Look for tags in local directory. If not found, continue looking up.
 set tags=tags;/
@@ -132,8 +85,6 @@ set tags^=.git/tags
 
 " Enable spelling check
 set spell 
-"set number                      " Line numbers on
-
 
 " Do not use swapfile 
 set noswapfile
@@ -154,7 +105,6 @@ set magic
 set noerrorbells
 set visualbell
 set t_vb=
-set tm=500
 
 set shortmess+=filmnrxoOtT          " Abbrev. of messages (avoids 'hit enter')
 set viewoptions=folds,options,cursor,unix,slash " Better Unix / Windows compatibility
@@ -165,31 +115,15 @@ set hidden                          " Allow buffer switching without saving
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 " => Files, backups and undo
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
-" Turn backup off
-set nobackup
 set nowritebackup
-set wildmode=list:longest,full  " Command <Tab> completion, list matches, then longest common part, then all.
-
-set fileformats=unix
 
 set diffopt=iwhite,filler
-set t_kb=
+"set t_kb=
 
-set smartindent		" always set autoindenting on
 set viminfo='20,\"0,:50,/50" read/write a .viminfo file, 
 
 " Make 2 line status to prevent "hit-return" message
 set cmdheight=2
-
-" Prevents problems in when using a terminal where <Esc> followed 
-" by a key (for me 'w') leads to things like inserting <F8>
- set noesckeys 
-
-set textwidth=0
-
-" Cursorline : Off due to syntax performance issues.
-set nocursorcolumn
-set nocursorline
 
 " Set utf8 as standard encoding and en_US as the standard language
 set encoding=utf8
@@ -197,31 +131,11 @@ set encoding=utf8
 " Remember info about open buffers on close
 set viminfo^=%
 
-set tagrelative
-
 set completeopt=menu,longest
-
-" Automatically insert the current comment leader after hitting 'o' or
-" 'O' in Normal mode.
-"
-
-" http://www.reddit.com/r/vim/comments/3ae4qf/psa_set_clipboardunnamed/
-" does is that the register you use for yanking and pasting when you don't specify 
-" one becomes the system clipboard '*'. So when you need to paste something into 
-" vim you just select it, switch to vim, press p, done, no indentation mess either.
-" But it also works the other way round, you can yank something and paste with middle click in your system. 
-" You can also set it to unnamedplus instead which will use the '+' register 
-" (On Linux this would be the Ctrl+C/V instead of select/middleclick then). 
-" unnamedplus needs X11 support of course. I never tried this but you can also 
-" set both, which should yank to both clipboards from vim and paste from the
-" clipboard that was used last in the system.
-
 
 " set clipboard^=unnamed
 
 " Automatically insert the comment after hitting 'o' or 'O' in Normal mode.
-"set formatoptions=qol 
-" formatoptions=croql
 set formatoptions-=cro
 
 " c	Auto-wrap comments using textwidth, inserting the current comment
@@ -231,15 +145,33 @@ set formatoptions-=cro
 " o	Automatically insert the current comment leader after hitting 'o' or
 " 	'O' in Normal mode.
 
-" Searching options
-"set noincsearch                 " Disable incremental search
-"set nohlsearch                  " Do not highlight search terms
-"set noignorecase                " Case sensitive search
-
-set foldenable                  " Auto fold code
-
 " Map gf to create new files if they don't exist
 ":map gf :e <cfile><CR>
+
+" }}
+
+" Key (re)Mappings {{
+
+" Shortcuts
+" Change Working Directory to that of the current file
+" cmap cwd lcd %:p:h
+" cmap cd. lcd %:p:h
+
+" Visual shifting (does not exit Visual mode)
+vnoremap < <gv
+vnoremap > >gv
+
+" Allow using the repeat operator with a visual selection (!)
+" http://stackoverflow.com/a/8064607/127816
+vnoremap . :normal .<CR>
+
+" Some helpers to edit mode
+" http://vimcasts.org/e/14
+cnoremap %% <C-R>=expand('%:h').'/'<cr>
+map <leader>ew :e %%
+map <leader>es :sp %%
+map <leader>ev :vsp %%
+map <leader>et :tabe %%
 
 " Yank from the cursor to the end of the line, to be consistent with C and D.
 nnoremap Y y$
@@ -288,6 +220,7 @@ nnoremap <C-Space> <C-W>
 
 " Quickly yank all lines in the file.
 nmap <leader>yy :%y+<CR>
+
 " }}
 
 " GUI {{
