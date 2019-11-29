@@ -1,122 +1,108 @@
-" Modeline and Notes {{
+" Modeline and Notes (space to toggle folds) {{
 " vim: set sw=4 ts=4 sts=4 et tw=78 foldmarker={{,}} foldmethod=marker spell:
 " }}
-"
 
-" Source vimrc.before {{
-    if filereadable(expand("~/.vim/vimrc.before"))
-        source ~/.vim/vimrc.before
-    endif
-" }}
-
-" Setup Bundle Support 
+" Bundle setup {{
 call plug#begin('~/.vim/autoload/plug.vim')
 
 if filereadable(expand("~/.vim/bundles.vim"))
     source ~/.vim/bundles.vim
 endif
-
+" }}
 
 " General {{
-    set background=dark         " Assume a dark background
-    filetype plugin indent on   " Automatically detect file types.
-    syntax on                   " Syntax highlighting
-    scriptencoding utf-8
+filetype plugin indent on   " Automatically detect file types.
+syntax on                   " Syntax highlighting
+scriptencoding utf-8
 " }}
 
 " Settings {{
 
+let mapleader = ','
+
+" Solarized Color {{
 if filereadable(expand("~/.vim/bundle/vim-colors-solarized/colors/solarized.vim"))
-    let g:solarized_termcolors=256
-    let g:solarized_termtrans=1
-    let g:solarized_contrast="high"    " low, normal, high
-    let g:solarized_visibility="normal"  " low, normal, high
+    set background=dark                  " Use dark background
+    let g:solarized_termcolors=256       " Default only use 16 colors
+    let g:solarized_termtrans=1          " Required for some terms like MobaXterm
+    let g:solarized_contrast="high"      " Valid options: low, normal, high
+    let g:solarized_visibility="normal"  " Valid options: low, normal, high
     colorscheme solarized
 endif
 
-highlight clear SignColumn      " SignColumn should match background for things like vim-gitgutter
+highlight clear SignColumn        " Use solarized colors for SignColumn (vim-gitgutter)
+highlight clear LineNr            " Use solorized colors for line number row 
+" }}
 
-highlight clear LineNr          " Current line number row will have same background color in relative mode.
-                                " Things like vim-gitgutter will match LineNr highlight
+                                  " Search
+set incsearch                     " Find as you type search
+set hlsearch                      " Highlight search terms
+set ignorecase                    " Case insensitive search
+set smartcase                     " Case sensitive when uc present
+set magic                         " For regular expressions turn magic on (Use \v for extra magic)
 
-set rulerformat=%30(%=\:b%n%y%m%r%w\ %l,%c%V\ %P%) " A ruler on steroids
-
-" Reduce the delay for entering normal mode when pressing escape
-set timeoutlen=1000 ttimeoutlen=0
-
-let mapleader = ','
-
-set backspace=indent,eol,start  " Backspace for dummies
-set incsearch                   " Find as you type search
-set hlsearch                    " Highlight search terms
-
-set winminheight=0              " Windows can be 0 line high
-set ignorecase                  " Case insensitive search
-set smartcase                   " Case sensitive when uc present
-set wildmenu                    " Show list instead of just completing
-set wildmode=list:longest,full  " Command <Tab> completion, list matches, then longest common part, then all.
+                                  " Tab completion
+set wildmenu                      " Show list instead of just completing
+set wildmode=list:longest,full    " Command <Tab> completion, list matches, then longest common part, then all.
 set completeopt=menu,longest
 
-" Text formatting 
-set isfname-==                  " Allow filename completion after an equal sign (ie. set var=)
-set whichwrap=b,s,h,l,<,>,[,]   " Backspace and cursor keys wrap too
-set scrolljump=3                " Lines to scroll when cursor leaves screen
-set scrolloff=1                 " Minimum lines to keep above and below cursor
-set nowrap                      " Do not wrap long lines
+                                  " Text formatting
+set isfname-==                    " Allow filename completion after an equal sign (ie. set var=)
+set whichwrap=b,s,h,l,<,>,[,]     " Backspace and cursor keys wrap too
+set scrolljump=3                  " Lines to scroll when cursor leaves screen
+set scrolloff=1                   " Minimum lines to keep above and below cursor
+set nowrap                        " Do not wrap long lines
 
-" Indenting
-set autoindent                  " Indent at the same level of the previous line
-set shiftwidth=4                " Use indents of 4 spaces
-set expandtab                   " Tabs are spaces, not tabs
-set tabstop=4                   " An indentation every four columns
-set softtabstop=4               " Let backspace delete indent
-set smartindent		            " always set autoindenting on
-set nojoinspaces                " Prevents inserting two spaces after punctuation on a join (J)
+                                  " Indenting
+set autoindent                    " Indent at the same level of the previous line
+set shiftwidth=4                  " Use indents of 4 spaces
+set expandtab                     " Tabs are spaces, not tabs
+set tabstop=4                     " An indentation every four columns
+set softtabstop=4                 " Let backspace delete indent
+set smartindent                   " always set autoindenting on
+set nojoinspaces                  " Prevents inserting two spaces after punctuation on a join (J)
+set formatoptions-=cro            " Automatically insert the comment after 'o'/'O' in Normal mode.
 
-" Windows
-set splitright                  " Puts new vsplit windows to the right of the current
-set splitbelow                  " Puts new split windows to the bottom of the current
-set switchbuf=useopen,usetab    " Allow changing tabs/windows for quickfix/:sb/etc
+                                  " Windows
+set winminheight=0                " Windows can be 0 line high
+set splitright                    " Puts new vsplit windows to the right of the current
+set splitbelow                    " Puts new split windows to the bottom of the current
+set switchbuf=useopen,usetab      " Allow changing tabs/windows for quickfix/:sb/etc
 
-set tags=tags;/                 " Look for tags in local directory. If not found, continue looking up.
-set tags^=.git/tags             " Check for git tags
-set synmaxcol=180               " faster GUI performance for complex syntax with long lines
-
-set spell                       " Enable spelling check
-set noswapfile                  " Do not use swapfile 
-set lazyredraw                  " Don't redraw while executing macros (good performance config)
-set magic                       " For regular expressions turn magic on (Use \v for extra magic)
-
-" No annoying sound on errors
-set noerrorbells
+                                  " Performance 
+set lazyredraw                    " Don't redraw while executing macros (good performance config)
+set noerrorbells                  " No annoying sound on errors
 set visualbell
 set t_vb=
+set synmaxcol=180                 " faster GUI performance for complex syntax with long lines
+set timeoutlen=500 ttimeoutlen=0  " Reduce the delay for entering normal mode when pressing escape
 
-set shortmess+=filmnrxoOtT          " Abbrev. of messages (avoids 'hit enter')
-set cmdheight=2                     " Make 2 line status to prevent "hit-return" message
-set viewoptions=folds,options,cursor,unix,slash " Better Unix / Windows compatibility
-set hidden                          " Allow buffer switching without saving
+                                  " Ruler and messages
+set shortmess+=filmnrxoOtT        " Abbrev. messages (Avoid 'hit-enter')
+set cmdheight=2                   " 2 line cmd line. Avoid "hit-return" message
 
-" Files, backups and undo
-set undofile
-set nowritebackup
+                                  " Files, backups and undo
+set undofile                      " Persistent undo
+set noswapfile                    " Do not use swapfile
 
-set diffopt=iwhite,filler
 
-" viminfo / history
-set viminfo='20,\"0,:50,/50         " read/write a .viminfo file, 
-set viminfo^=%                      " Remember info about open buffers on close
-set history=1000                    " Store a ton of history (default is 20)
-set encoding=utf8                   " Set utf8 as standard encoding 
+                                  " viminfo / history
+set viminfo='20,\"0,:50,/50       " read/write a .viminfo file, 
+set viminfo^=%                    " Remember info about open buffers on close
+set history=1000                  " Store a ton of history (default is 20)
+
+                                  " Misc
+set spell                         " Enable spelling check
+set diffopt=iwhite,filler         " Ignore white spaces in diff
+set backspace=indent,eol,start    " Backspace for dummies
+set encoding=utf8                 " Set utf8 as standard encoding 
+set tags=tags;/                   " Look for tags in local directory. If not found, continue looking up.
+set tags^=.git/tags               " Check for git tags
 
 " set clipboard^=unnamed
 
-set formatoptions-=cro               " Automatically insert the comment after 'o'/'O' in Normal mode.
-
 " Map gf to create new files if they don't exist
 ":map gf :e <cfile><CR>
-"
-
 " }}
 
 " Key (re)Mappings {{
@@ -188,7 +174,6 @@ nnoremap <C-Space> <C-W>
 nmap <leader>yy :%y+<CR>
 
 " }}
-
 
 " Autocmds {{
 
