@@ -20,7 +20,7 @@ endif
 " General {{
     set background=dark         " Assume a dark background
     filetype plugin indent on   " Automatically detect file types.
-    syntax on               " Syntax highlighting
+    syntax on                   " Syntax highlighting
     scriptencoding utf-8
 " }}
 
@@ -34,8 +34,7 @@ if filereadable(expand("~/.vim/bundle/vim-colors-solarized/colors/solarized.vim"
     colorscheme solarized
 endif
 
-highlight clear SignColumn      " SignColumn should match background for
-                                " things like vim-gitgutter
+highlight clear SignColumn      " SignColumn should match background for things like vim-gitgutter
 
 highlight clear LineNr          " Current line number row will have same background color in relative mode.
                                 " Things like vim-gitgutter will match LineNr highlight
@@ -44,10 +43,6 @@ set rulerformat=%30(%=\:b%n%y%m%r%w\ %l,%c%V\ %P%) " A ruler on steroids
 
 " Reduce the delay for entering normal mode when pressing escape
 set timeoutlen=1000 ttimeoutlen=0
-
-" Prevents problems in when using a terminal where <Esc> followed 
-" by a key (for me 'w') leads to things like inserting <F8>
-set noesckeys 
 
 let mapleader = ','
 
@@ -60,12 +55,16 @@ set ignorecase                  " Case insensitive search
 set smartcase                   " Case sensitive when uc present
 set wildmenu                    " Show list instead of just completing
 set wildmode=list:longest,full  " Command <Tab> completion, list matches, then longest common part, then all.
-set whichwrap=b,s,h,l,<,>,[,]   " Backspace and cursor keys wrap too
-set scrolljump=5                " Lines to scroll when cursor leaves screen
-set scrolloff=3                 " Minimum lines to keep above and below cursor
-set undofile
+set completeopt=menu,longest
 
+" Text formatting 
+set isfname-==                  " Allow filename completion after an equal sign (ie. set var=)
+set whichwrap=b,s,h,l,<,>,[,]   " Backspace and cursor keys wrap too
+set scrolljump=3                " Lines to scroll when cursor leaves screen
+set scrolloff=1                 " Minimum lines to keep above and below cursor
 set nowrap                      " Do not wrap long lines
+
+" Indenting
 set autoindent                  " Indent at the same level of the previous line
 set shiftwidth=4                " Use indents of 4 spaces
 set expandtab                   " Tabs are spaces, not tabs
@@ -73,33 +72,20 @@ set tabstop=4                   " An indentation every four columns
 set softtabstop=4               " Let backspace delete indent
 set smartindent		            " always set autoindenting on
 set nojoinspaces                " Prevents inserting two spaces after punctuation on a join (J)
+
+" Windows
 set splitright                  " Puts new vsplit windows to the right of the current
 set splitbelow                  " Puts new split windows to the bottom of the current
+set switchbuf=useopen,usetab    " Allow changing tabs/windows for quickfix/:sb/etc
 
-" Look for tags in local directory. If not found, continue looking up.
-set tags=tags;/
-set tags^=.git/tags
+set tags=tags;/                 " Look for tags in local directory. If not found, continue looking up.
+set tags^=.git/tags             " Check for git tags
+set synmaxcol=180               " faster GUI performance for complex syntax with long lines
 
-" Disable blinking cursor
-"set guicursor+=a:blinkwait0
-
-" Enable spelling check
-set spell 
-
-" Do not use swapfile 
-set noswapfile
-
-" Allow filename completion after an equal sign (ie. set var=)
-set isfname-==
-
-"""" Windows, Buffers
-set swb=useopen,usetab " Allow changing tabs/windows for quickfix/:sb/etc
-
-" Don't redraw while executing macros (good performance config)
-set lazyredraw
-
-" For regular expressions turn magic on (Use \v for extra magic)
-set magic
+set spell                       " Enable spelling check
+set noswapfile                  " Do not use swapfile 
+set lazyredraw                  " Don't redraw while executing macros (good performance config)
+set magic                       " For regular expressions turn magic on (Use \v for extra magic)
 
 " No annoying sound on errors
 set noerrorbells
@@ -107,46 +93,29 @@ set visualbell
 set t_vb=
 
 set shortmess+=filmnrxoOtT          " Abbrev. of messages (avoids 'hit enter')
+set cmdheight=2                     " Make 2 line status to prevent "hit-return" message
 set viewoptions=folds,options,cursor,unix,slash " Better Unix / Windows compatibility
-"set virtualedit=onemore             " Allow for cursor beyond last character
-set history=1000                    " Store a ton of history (default is 20)
 set hidden                          " Allow buffer switching without saving
 
-"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
-" => Files, backups and undo
-"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+" Files, backups and undo
+set undofile
 set nowritebackup
 
 set diffopt=iwhite,filler
-"set t_kb=
 
-set viminfo='20,\"0,:50,/50" read/write a .viminfo file, 
-
-" Make 2 line status to prevent "hit-return" message
-set cmdheight=2
-
-" Set utf8 as standard encoding and en_US as the standard language
-set encoding=utf8
-
-" Remember info about open buffers on close
-set viminfo^=%
-
-set completeopt=menu,longest
+" viminfo / history
+set viminfo='20,\"0,:50,/50         " read/write a .viminfo file, 
+set viminfo^=%                      " Remember info about open buffers on close
+set history=1000                    " Store a ton of history (default is 20)
+set encoding=utf8                   " Set utf8 as standard encoding 
 
 " set clipboard^=unnamed
 
-" Automatically insert the comment after hitting 'o' or 'O' in Normal mode.
-set formatoptions-=cro
-
-" c	Auto-wrap comments using textwidth, inserting the current comment
-" 	leader automatically.
-" r	Automatically insert the current comment leader after hitting
-"	<Enter> in Insert mode.
-" o	Automatically insert the current comment leader after hitting 'o' or
-" 	'O' in Normal mode.
+set formatoptions-=cro               " Automatically insert the comment after 'o'/'O' in Normal mode.
 
 " Map gf to create new files if they don't exist
 ":map gf :e <cfile><CR>
+"
 
 " }}
 
@@ -180,9 +149,6 @@ nnoremap Y y$
 "    TODO 2015/06/16 13:39 Need to disable in correction window
 nnoremap <CR> :
 
-" faster GUI performance
-set scrolljump=5
-set synmaxcol=180 
 
 nnoremap <F4> :bd<CR>
 
@@ -242,7 +208,6 @@ endif
 " augroup autocd
 "     autocmd!
 "     autocmd BufEnter * if bufname("") !~ "^\[A-Za-z0-9\]*://" | lcd %:p:h | endif
-"     " Always switch to the current file directory
 " augroup END
 
 augroup Quickfix
