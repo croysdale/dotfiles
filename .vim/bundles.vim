@@ -98,8 +98,8 @@ Plug 'godlygeek/tabular'
 Plug 'powerman/vim-plugin-viewdoc'
 
 " Undo navigator                    - ,gu
-Plug 'sjl/gundo.vim'
-" Plug 'mbbill/undotree', { 'on' : 'UndotreeToggle' }
+" Plug 'sjl/gundo.vim'
+Plug 'mbbill/undotree', { 'on' : 'UndotreeToggle' }
 
 " Perl bundles  {{{1
 
@@ -111,12 +111,13 @@ endif
 " Perl helper routines
 Plug 'vim-scripts/perlhelp.vim' , { 'for': 'perl' }
 Plug 'vim-scripts/perl-support.vim' , { 'for': 'perl' }
-
-Plug 'vim-perl/vim-perl'
+Plug 'vim-perl/vim-perl', { 'for': 'perl', 'do': 'make clean test-more try-tiny' }
 
 " TMUX bundles {{{1
 " Interact with tmux (VimuxRunCommand)
 Plug 'benmills/vimux'
+" Python tester for vimux .. needs ipython
+Plug 'julienr/vim-cellmode', { 'for' : 'python' }
 
 " :Tmux, :Tyank, :Twrite, :Tattach
 Plug 'tpope/vim-tbone'

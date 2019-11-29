@@ -1,18 +1,9 @@
 # https://github.com/junegunn/fzf/wiki/examples
 
 ## TODO:
-#    Add a Fqdel function to kill UGE jobs
-#    Add as a controller for an icc_shell process
-#    Search for all RDT commands and help
-#    Search all RDT code
-#        Jump to line in file in gvim?
-#        Populate quick list with matches?
 #    fbind : Search all tmux/zsh bindings
-#    Quick search of ICC logfile ... paste into ICC pane
-#       Activate with >icc_Shell   sh fzf_search_icc_log
 #    Search all docs    
 #    fzf ypcat passwd/group
-#
 #
 # if [ -n "$TMUX_PANE" -a ${FZF_TMUX:-1} -ne 0 -a ${LINES:-40} -gt 15 ]; then
 #   _fzf-file-widget() {
@@ -164,23 +155,6 @@ function fd() {
   dir=$(find ${1:-*} -path '*/\.*' -prune \
                   -o -type d -print 2> /dev/null | fzf +m) &&
   cd "$dir"
-}
-
-# TODO : Simplify to the old code now that this works
-# Find ICC docs (Need ICC on MANPATH)
-# function fzf_icc() {
-#   local icc
-#   fzf --query="$1" < ~/.vim/syntax/build/icc/icc.dict >! /tmp/fzf.result 
-#   icc=$(</tmp/fzf.result)
-#   Man $icc
-# }
-
-# Find ICC2 docs 
-function fzf_icc2() {
-  local icc
-  cat ${HOME}/.icc2_man | fzf --query="$1" >! /tmp/fzf.result 
-  icc=$(</tmp/fzf.result)
-  Man $icc
 }
 
 v() {

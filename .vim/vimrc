@@ -49,7 +49,6 @@ endif
 
     highlight clear LineNr          " Current line number row will have same background color in relative mode.
                                     " Things like vim-gitgutter will match LineNr highlight
-    "highlight clear CursorLineNr    " Remove highlight color from current line number
 
     if has('cmdline_info')
         set ruler                   " Show the ruler
@@ -59,8 +58,7 @@ endif
     endif
 
     " Reduce the delay for entering normal mode when pressing escape
-    set timeoutlen=100
-    set timeoutlen=3000
+    set timeoutlen=1000 ttimeoutlen=0
 
 
     let mapleader = ','
@@ -250,10 +248,6 @@ nnoremap Y y$
 "    TODO 2015/06/16 13:39 Need to disable in correction window
 nnoremap <CR> :
 
-" Enable cursor column/line (could slow down vim)
-"set cursorcolumn
-"set c
-
 " faster GUI performance
 set scrolljump=5
 set synmaxcol=180 
@@ -288,14 +282,6 @@ inoremap kj <esc>
 " " make single quote act like backtick, useful when backtick is a dead key
 " nnoremap ' `
 
-" Center screen when searching 
-" nnoremap n nzz
-" nnoremap N Nzz
-" nnoremap * *zz
-" nnoremap # #zz
-" nnoremap g* g*zz
-" nnoremap g# g#zz
-
 " Map Control-Space to Control-W to make gvim windows more like tmux
 " Does not work with vimwiki
 nnoremap <C-Space> <C-W>
@@ -306,17 +292,6 @@ nmap <leader>yy :%y+<CR>
 
 " GUI {{
 
-" Set extra options when running in GUI mode
-" Highlight {{
-" Popup menu hightLight Group
-"highlight link EasyMotionTarget ErrorMsg
-"highlight link EasyMotionShade Comment
-"highlight Pmenu    ctermbg=13  guibg=DarkBlue
-"highlight PmenuSel ctermbg=7   guibg=DarkBlue     guifg=LightBlue
-"highlight PmenuSbar ctermbg=7  guibg=DarkGray
-"highlight PmenuThumb           guibg=Black
-" }}
-
 if has("gui_running")
    "" Only show line numbers in the GUI (easier cut/paste from terminals)
    set number " Display line numbers
@@ -325,13 +300,10 @@ if has("gui_running")
    " set guioptions+=e " Use GUI tab label
    " set guitablabel=%M\ %t
    set colorcolumn=80
-else 
-    set t_Co=256
 endif
 " }}
 
 " Autocmds {{
-
 
 " Automatically switch to the current file directory when a new buffer is opened
 " augroup autocd
@@ -344,7 +316,7 @@ augroup Quickfix
     autocmd!
     autocmd BufReadPost quickfix nnoremap <buffer> <CR> <CR>
     autocmd FileType    quickfix nnoremap <buffer> <CR> <CR>
-    " au FileType qf nnoremap <buffer> <Enter> <Enter>
+    " au FileType quickfix nnoremap <buffer> <Enter> <Enter>
     autocmd CmdWinEnter * nnoremap <buffer> <cr> <cr>
 augroup END
 
@@ -587,6 +559,9 @@ map  <Delete>   x
 "}}
 
 " Plugins {{
+
+" viewdoc {{
+   let viewdoc_open   = "belowright vnew"
 
 " Vimwiki {{
 
@@ -854,37 +829,6 @@ nnoremap <leader>m :CtrlPMRUFiles<CR>
 nnoremap <leader>M :CtrlPMixed<CR>
 nnoremap <leader>l :CtrlPLine<CR>
 
-"  let g:ctrlp_abbrev = {
-"     \ 'gmode': 'i',
-"     \ 'abbrevs': [
-"       \ {
-"         \ 'pattern': '^cdvim',
-"         \ 'expanded': '@cd $HOME/.vim',
-"         \ 'mode': 'pfrz',
-"       \ },
-"       \ {
-"         \ 'pattern': '^fvwm',
-"         \ 'expanded': '@cd $HOME/.fvwm',
-"         \ 'mode': 'pfrz',
-"       \ },
-"       \ {
-"         \ 'pattern': '^tcl',
-"         \ 'expanded': '@cd $HOME/tcl',
-"         \ 'mode': 'pfrz',
-"       \ },
-"       \ {
-"         \ 'pattern': '^bin',
-"         \ 'expanded': '@cd $HOME/bin',
-"         \ 'mode': 'pfrz',
-"       \ },
-"       \ {
-"         \ 'pattern': '^home',
-"         \ 'expanded': '@cd $HOME',
-"         \ 'mode': 'pfrz',
-"       \ },
-"       \ ],
-"     \ }
-
 if executable('ag')
 	let g:unite_source_grep_command='ag'
 	let g:unite_source_grep_default_opts='--nocolor --nogroup --hidden'
@@ -894,8 +838,6 @@ elseif executable('ack')
 	let g:unite_source_grep_default_opts='--no-heading --no-color'
 	let g:unite_source_grep_recursive_opt=''
 endif
-
-
 " }}
 
 " tagbar  {{
@@ -992,22 +934,6 @@ let g:snips_author = 'Kevin Croysdale <croysdle@gmail.com>'
 "let g:neosnippet#disable_runtime_snippets = { "_": 1, }
 " }}
 
-" " Ultisnip {{
-" " <Ctrl><CR> to select a snippet (Only works in GUI)
-" let g:UltiSnipsExpandTrigger="<C-CR>"{{
-" let g:UltiSnipsJumpForwardTrigger="<C-tab>"
-" let g:UltiSnipsJumpBackwardTrigger="<s-tab>"}}
-" let g:UltiSnipsEditSplit="horizontal"
-"
-" " Use <F12> to load list of all Ulti-snippets
-" function! UltiSnipsCallUnite()
-"     Unite -start-insert -winheight=100 -immediately -no-empty ultisnips
-"     return ''
-" endfunction
-" inoremap <silent> <F12> <C-R>=(pumvisible()? "\<LT>C-E>":"")<CR><C-R>=UltiSnipsCallUnite()<CR>
-" nnoremap <silent> <F12> a<C-R>=(pumvisible()? "\<LT>C-E>":"")<CR><C-R>=UltiSnipsCallUnite()<CR>
-" " }}
-
 " indent-guides {{
 " Toggle indent-guides with 'ig'
 let g:indent_guides_guide_size            = 4
@@ -1016,8 +942,9 @@ let g:indent_guides_enable_on_vim_startup = 0
 let g:indent_guides_color_change_percent  = 1
 " }}
 
-" Gundo {{
-nnoremap <leader>gu :GundoToggle<CR>
+" Gundo / Undotree {{
+" nnoremap <leader>gu :GundoToggle<CR>
+nnoremap <leader>gu :UndotreeToggle<CR>
 " }}
 
 " vim-airline {{
@@ -1039,55 +966,6 @@ let g:airline_theme='angr'
 let g:airline#extensions#ale#enabled = 1
 " }}
 
-" delimitMate {{
-" Enter 2nd paran to close
-    let delimitMate_matchpairs = "(:),[:],{:},<:>"
-    autocmd FileType vim,html let b:delimitMate_matchpairs = "(:),[:],{:},<:>"
-    let delimitMate_jump_expansion = 1
-    let delimitMate_balance_matchpairs = 1
-    let delimitMate_excluded_regions = "Comment,String"
-    let delimitMate_excluded_ft = "mail,txt"
-    augroup delimitMate
-        au FileType c,perl let b:delimitMate_eol_marker = ";"
-    augroup END
-" }}
-"
-let g:UltiSnipsExpandTrigger="<C-CR>"
-let g:UltiSnipsJumpForwardTrigger="<C-tab>"
-let g:UltiSnipsJumpBackwardTrigger="<s-tab>"
-let g:UltiSnipsEditSplit="horizontal"
-
-
-" perl support {{
-" -------------
-"let g:Perl_Debugger = 'ptkdb'
-" let g:Perl_XtermDefaults = "-fa monospace -fs 10 -geometry 80x60"
-" }}
-"
-
-" Bundle  "Lokaltog/vim-easymotion"
-nmap s <Plug>(easymotion-s2)
-nmap t <Plug>(easymotion-t2)
-
-" Gif config
-" map  / <Plug>(easymotion-sn)
-" omap / <Plug>(easymotion-tn)
-
-" These `n` & `N` mappings are options. You do not have to map `n` & `N` to EasyMotion.
-" Without these mappings, `n` & `N` works fine. (These mappings just provide
-" different highlight method and have some other features )
-" map  n <Plug>(easymotion-next)
-" map  N <Plug>(easymotion-prev)
-
-" Gif config
-map <Leader>l <Plug>(easymotion-lineforward)
-map <Leader>j <Plug>(easymotion-j)
-map <Leader>k <Plug>(easymotion-k)
-map <Leader>h <Plug>(easymotion-linebackward)
-
-let g:EasyMotion_startofline = 0 " keep cursor colum when JK motion
-
-let g:EasyMotion_smartcase = 1
 
 " Vdebug {{
 " -------
