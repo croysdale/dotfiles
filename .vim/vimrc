@@ -189,18 +189,6 @@ nmap <leader>yy :%y+<CR>
 
 " }}
 
-" GUI {{
-
-if has("gui_running")
-   "" Only show line numbers in the GUI (easier cut/paste from terminals)
-   set number " Display line numbers
-   set numberwidth=1 " using only 1 column (and 1 space) while possible
-   " set guioptions-=T
-   " set guioptions+=e " Use GUI tab label
-   " set guitablabel=%M\ %t
-   set colorcolumn=80
-endif
-" }}
 
 " Autocmds {{
 

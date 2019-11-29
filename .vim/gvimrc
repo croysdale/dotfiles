@@ -8,13 +8,23 @@
 set lines=52 columns=79
 
 "http://www.lowing.org/fonts/
-"set guifont=Monospace\ 9
 set guifont=DejaVu\ Sans\ Mono\ for\ Powerline\ 12
 " set antialias
 " set guioptions-=m           " Remove the toolbar
 set guioptions-=T           " Remove the toolbar
 set guioptions-=r  "remove right-hand scroll bar
 set guioptions-=L  "remove left-hand scroll bar
+
+" Disable blinking cursor
+"set guicursor+=a:blinkwait0
+
+"" Only show line numbers in the GUI (easier cut/paste from terminals)
+set number " Display line numbers
+set numberwidth=1 " using only 1 column (and 1 space) while possible
+" set guioptions-=T
+" set guioptions+=e " Use GUI tab label
+" set guitablabel=%M\ %t
+set colorcolumn=80
 
 set t_Co=256
 
