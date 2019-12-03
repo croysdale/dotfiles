@@ -28,6 +28,10 @@ SetEnv fvwm_font            "-adobe-helvetica-bold-r-normal--11-80-100-100-p-60-
 SetEnv fvwm_font17          "-adobe-helvetica-medium-r-normal--17-120-100-100-p-88-iso8859-1"
 SetEnv fvwm_font18          "-adobe-helvetica-bold-o-normal--18-180-75-75-p-104-iso8859-1"
 SetEnv fvwm_font20          "-adobe-helvetica-bold-o-normal--20-140-100-100-p-103-iso8859-1"
+SetEnv fvwm_font            "xft:DejaVu Sas Moo for Powerlie:pixelsize=12"
+SetEnv fvwm_font17          "xft:DejaVu Sas Moo for Powerlie:pixelsize=17"
+SetEnv fvwm_font18          "xft:DejaVu Sas Moo for Powerlie:pixelsize=18"
+SetEnv fvwm_font20          "xft:DejaVu Sas Moo for Powerlie:pixelsize=20"
 
 # Available themes: arctic, smokey, solarized
 SetEnv  fvwm_theme      solarized
@@ -58,12 +62,6 @@ DesktopSize                  1x1
 # }
 
 
-## xmodmap -e "add Mod2 = Num_Lock"
-## xmodmap -e "clear Num_Lock"
-## xmodmap -e "add Mod5 = Scroll_Lock"
-## At Synopsys, you need to run this:
-## xmodmap -e "clear mod3"
-
 IgnoreModifiers  
 
 # This puts the resize/geometry super-mini-window-things in the middle
@@ -91,9 +89,7 @@ Read  $[fvwm_home]/deco/$[fvwm_theme].fvwm2rc
 
 Read  $[fvwm_home]/conf/style.fvwm2rc 
 
-setEnv defaultMonitor "Monitor3800x1200"
-
-Read  $[fvwm_home]/conf/monitors.fvwm2rc
+# Read  $[fvwm_home]/conf/monitors.fvwm2rc
 
 Read  $[fvwm_home]/conf/functions.fvwm2rc
 

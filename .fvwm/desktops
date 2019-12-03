@@ -2,15 +2,15 @@
 # After changing names, re-start FVWM (Alt-R)
 #
 # Length limit |<--------->|
-SetEnv desk1   "1 ICF"
-SetEnv desk2   "2 Regress"
-SetEnv desk3   "3 Broxton"
-SetEnv desk4   "4 Mercer"
+SetEnv desk1   "1 Desk1"
+SetEnv desk2   "2 Desk2"
+SetEnv desk3   "3 Desk3"
+SetEnv desk4   "4 Desk4"
 # Length limit |<--------->|
-SetEnv desk5   "5 Mcore"  
+SetEnv desk5   "5 Desk5"  
 SetEnv desk6   "6 Desk6"    
-SetEnv desk7   "7 Misc"
-SetEnv desk8   "8 System"
+SetEnv desk7   "7 Desk7"
+SetEnv desk8   "8 Desk8"
 # Length limit |<--------->|
 
 

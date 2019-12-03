@@ -35,6 +35,8 @@ AddToMenu	MenuFvwmWindowOps
 + "(Un)Maximize"	Maximize
 + "Maximize horz"	Maximize True grow 0
 + "Maximize vert"	Maximize True 0 grow
++ "Maximize left "   FvwmMaximizeLeft
++ "Maximize right"	 FvwmMaximizeRight
 + "Maximize left monitor <CM> m"     FvwmMaximizeLeftMonitor	
 + "Maximize right monitor <SCM> ->"	FvwmMaximizeRightMonitor
 + "(Un)Shade"		WindowShade
@@ -107,7 +109,6 @@ AddToMenu	"MenuFvwmRoot"
 + "Help"             popup MenuHelp
 + "WindowLists"      popup WindowLists
 # + "Arrange"          popup ArrangeWindows
-+ "Monitor"          popup Monitor
 + "Update DISPLAY"   Exec exec echo "setenv DISPLAY $[HOSTNAME]$[DISPLAY]" >> ~/.display
 #+ "Dirs"             popup FvwmMenuFilePopup
 + "Quitter"          popup MenuQuit-Verify
@@ -134,16 +135,6 @@ AddToMenu       MenuHelp
 + "VIM"         Exec exec /depot/vim-7.3/bin/gvim /global/berryweb/doc/VIM.wiki
 + "UGE"         Exec exec /depot/vim-7.3/bin/gvim /global/berryweb/doc/UGE.wiki
 + "TMUX"        Exec exec /depot/vim-7.3/bin/gvim /global/berryweb/doc/TMUX.wiki
-# }}
-
-# MenuMonitor {{
-DestroyMenu     Monitor
-AddToMenu       Monitor
-+ "3800x1200 "  Monitor3800x1200
-+ "1900x1200 "  Monitor1900x1200
-+ "1900x1080 "  Monitor1900x1080
-+ "2500x1600 "  Monitor2500x1600
-+ "1440x900 "  Monitor1440x900
 # }}
 
 # MenuQuit-Verify {{

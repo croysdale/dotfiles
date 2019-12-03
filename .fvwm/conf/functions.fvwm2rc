@@ -29,13 +29,11 @@ AddToFunc   InitFunction
 + I Exec xmodmap -e "clear mod3"
 + I EwmhBaseStruts   0     0  0   0
 + I GotoDesk   0 1
-+ I $[defaultMonitor]
 # }
 
 # { RestartFunction
 DestroyFunc RestartFunction
 AddToFunc   RestartFunction
-+ I $[Monitor]
 + I Read	$[fvwm_home]/local_config
 + I SetEnv LeftWinX     -5
 + I SetEnv LeftWinX     0
@@ -114,7 +112,7 @@ AddToFunc   FvwmWindowShade
 # { FvwmMaximizeLeft
 DestroyFunc FvwmMaximizeLeft
 AddToFunc   FvwmMaximizeLeft
-+ I ResizeMove   $[LeftWidth] $[MaxHeight] $[LeftWinX]  0 Warp
++ I ResizeMove   50 98 0  0 Warp
 # Does nothing :(
 #+ I Focus
 # }
@@ -122,7 +120,7 @@ AddToFunc   FvwmMaximizeLeft
 # { FvwmMaximizeRight
 DestroyFunc FvwmMaximizeRight
 AddToFunc   FvwmMaximizeRight
-+ I ResizeMove   $[RightWidth] $[MaxHeight] $[RightWinX] 0 Warp
++ I ResizeMove   50 97 50 0 Warp
 + I Focus
 # }
 

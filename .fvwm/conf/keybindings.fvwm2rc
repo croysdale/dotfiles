@@ -16,6 +16,7 @@
 # Misc Hot Keys {
 Key r          R       A   Restart
 Key r          A       M   Restart
+Key r          A       CM   Restart
 Key semicolon  A       M   FvwmConsole
 Key L          A      SCM  Monitor1900x1080  # laptop
 Key D          A      SCM  Monitor3800x1200  # desktop
