@@ -1,0 +1,195 @@
+# Solarized Theme {
+# vim: set sw=4 ts=4 sts=4 et tw=78 foldmarker={,} foldmethod=marker spell:
+# }
+
+# Colorsets info {
+# http://fvwm-themes.sourceforge.net/doc/colorsets
+
+#fg, Fore and Foreground 
+#hi, Hilite and Hilight , 
+#sh, Shade and Shadow , 
+#fgsh sets the color used by the shadowing font effect 
+
+#Pixmap, TiledPixmap and AspectPixmap take a file name as an argument, 
+#        search the ImagePath and use it as the background pixmap. 
+#        Any transparent parts are filled with the background color. 
+
+#Transparent creates a transparent background pixmap. 
+# }
+
+# Solarized Dark colors {
+
+SetEnv S_base03        #002b36
+SetEnv S_base02        #073642
+SetEnv S_base01        #586e75
+SetEnv S_base00        #657b83
+SetEnv S_base0         #839496
+SetEnv S_base1         #93a1a1
+SetEnv S_base2         #eee8d5
+SetEnv S_base3         #fdf6e3
+
+SetEnv S_yellow        #b58900
+SetEnv S_orange        #cb4b16
+SetEnv S_red           #dc322f
+SetEnv S_magenta       #d33682
+SetEnv S_violet        #6c71c4
+SetEnv S_blue          #268bd2
+SetEnv S_cyan          #2aa198
+SetEnv S_green         #859900
+
+# Light
+
+SetEnv S_Lbase03        #fdf6e3
+SetEnv S_Lbase02        #eee8d5
+SetEnv S_Lbase01        #93a1a1
+SetEnv S_Lbase00        #839496
+SetEnv S_Lbase0         #657b83
+SetEnv S_Lbase1         #586e75
+SetEnv S_Lbase2         #073642
+SetEnv S_Lbase3         #002b36
+
+
+
+SetEnv background              $[S_base03]
+SetEnv shadow                  $[S_base02]
+SetEnv foreground              $[S_cyan]
+
+#}
+
+# Windows {
+# Windows (inactive)
+Colorset 1  fg $[S_base1], bg $[S_base02], sh $[shadow], Plain, NoShape
+# Windows (active)
+Colorset 0  fg $[S_base3], bg $[S_base01], Plain, NoShape
+#}
+
+# Pager {
+# Pager normal
+Colorset 14 fg $[S_Lbase3]       , bg $[S_Lbase01]  , sh $[S_cyan] , hi $[S_cyan] 
+# Pager highlighted
+Colorset 15 fg $[S_cyan]         , bg $[S_Lbase02]  , sh $[S_cyan] , hi $[S_cyan] 
+# Pager balloon
+Colorset 16 fg $[S_magenta]      , bg $[background] , sh $[shadow] , hi $[shadow] 
+# Pager mini windows inactive
+Colorset 40 fg $[S_cyan]         , bg $[S_base02]   , sh $[shadow] , hi $[shadow] 
+# Pager mini windows active
+Colorset 41 fg $[S_magenta]      , bg $[S_base03]   , sh $[S_base01] , hi $[S_base01]
+# }
+
+# Menu  {
+# Other menu 
+Colorset 60 fg $[foreground], bg $[background], hi $[S_base0] sh $[shadow], Plain, NoShape, fgsh $[shadow]
+# Pixmap menu
+Colorset 5  fg $[foreground], bg $[background], Plain, NoShape
+# Hilighted menu item
+Colorset 6 fg $[foreground], bg  $[background], Plain, NoShape
+# Background of IconMan
+Colorset 12 fg lightgray, bg $[background], sh lightgray, fgsh darkgray, Pixmap  $[fvwm_theme_img]/im_bg.png
+#}
+
+# Dock {
+
+# Dock main
+Colorset 50 fg $[foreground], bg $[S_base02], sh $[shadow], fgsh rgb:05/46/a0, \
+	    Pixmap  $[fvwm_theme_img]/dock.png, \
+	    Shape   $[fvwm_theme_img]/dock_shape.xpm
+
+# Dock applet on the left, upper part
+Colorset 51 fg $[foreground], bg $[background], sh $[shadow], fgsh rgb:05/46/a0, \
+	    Pixmap  $[fvwm_theme_img]/dock_scriptbgleftup.png
+
+# Dock applet on the left, upper part
+Colorset 52 fg $[foreground], bg $[background], sh $[shadow], fgsh rgb:05/46/a0, \
+	    Pixmap  $[fvwm_theme_img]/dock_scriptbgleftdown.png
+
+# Dock applet on the middle, upper part
+Colorset 53 fg $[foreground], bg $[background], sh $[shadow], fgsh rgb:05/46/a0, \
+	    Pixmap  $[fvwm_theme_img]/dock_scriptbgmidup.png
+
+# Dock applet on the middle, upper part
+Colorset 54 fg $[foreground], bg $[background], sh $[shadow], fgsh rgb:05/46/a0, \
+	    Pixmap  $[fvwm_theme_img]/dock_scriptbgmiddown.png
+
+# Dock applet on the right, hour
+Colorset 55 fg $[foreground], bg $[background], sh $[shadow], fgsh rgb:05/46/a0, \
+	    Pixmap  $[fvwm_theme_img]/dock_scriptbgrighthour.png
+
+# Dock applet on the right, minute
+Colorset 56 fg $[background], bg $[background], sh $[background], fgsh rgb:05/46/a0, \
+	    Pixmap  $[fvwm_theme_img]/dock_scriptbgrightmin.png
+
+# Dock applet on the right, AM/PM
+Colorset 57 fg rgb:05/46/a0, bg $[background], sh $[background], \
+	    Pixmap  $[fvwm_theme_img]/dock_scriptbgrightampm.png
+
+# Dock applet on the right, minute
+Colorset 58 fg rgb:05/46/a0, bg $[background], sh $[background], fgsh darkgrey, \
+	    Pixmap  $[fvwm_theme_img]/dock_scriptbgrightdate.png
+
+#}
+
+# Misc  {
+
+# Item standard of IconMan/TaskBar
+Colorset 17 fg $[foreground], bg $[background], sh lightgrey, Plain, NoShape \
+
+# Item active of IconMan/TaskBar
+Colorset 18 fg $[S_magenta], bg $[background], sh lightgrey, Plain, NoShape \
+
+# Ident
+Colorset 21 fg $[foreground], bg $[background], sh $[shadow], fgsh rgb:05/46/a0, \
+	    RootTransparent buffer, Tint rgb:05/46/a0 60
+
+# Button Bar (TopBar)
+Colorset 23 fg $[foreground], bg $[background], Shape   $[fvwm_theme_img]/topbar_shape_1280.xpm
+#}
+
+# Window decoration {
+#Style * Borderwidth 0, NoHandles
+Style * BorderWidth 4, HandleWidth 4
+Style *	Button 1, Button 2, Button 4, Button 6, GrabFocusOff
+Style *	Colorset 1, HilightColorset 0
+# +----------------------------------------------------------+
+# | .                                                _  #  X |
+# +----------------------------------------------------------+
+# | 1                                                6  4  2 |
+# |                                                          |
+#                                                            |
+#
+
+DestroyDecor	Default
+AddToDecor	    Default
++ BorderStyle	Simple -- HiddenHandles NoInset
++ TitleStyle	Centered Height 20 -- flat
+
++ AddTitleStyle Active	    MultiPixmap LeftButtons	AdjustedPixmap	$[fvwm_theme_img]/tb_leftend.png, \
+                                        LeftEnd		AdjustedPixmap	$[fvwm_theme_img]/tb_titlelefton.png, \
+                                        Main		TiledPixmap  	$[fvwm_theme_img]/tb_titlemainon.png, \
+                                        RightEnd	AdjustedPixmap	$[fvwm_theme_img]/tb_titlerighton.png
+
++ AddTitleStyle	Inactive    MultiPixmap LeftButtons	AdjustedPixmap	$[fvwm_theme_img]/tb_leftend.png, \
+                                        LeftEnd		AdjustedPixmap	$[fvwm_theme_img]/tb_titleleftoff.png, \
+                                        Main		TiledPixmap	    $[fvwm_theme_img]/tb_titlemainoff.png, \
+                                        RightEnd	AdjustedPixmap	$[fvwm_theme_img]/tb_titlerightoff.png
+
++ ButtonStyle	Reset
++ ButtonStyle	All Active (Colorset 0 -- flat ) Inactive (Colorset 1 -- flat )
+
++ AddButtonStyle    1	    AdjustedPixmap $[fvwm_theme_img]/tb_leftend.png -- flat
++ AddButtonStyle    1	    MiniIcon
+
++ AddButtonStyle    6	    AllActive	    AdjustedPixmap $[fvwm_theme_img]/tb_minon.png -- flat
++ AddButtonStyle    6	    AllInactive	    AdjustedPixmap $[fvwm_theme_img]/tb_minoff.png -- flat
+
++ ButtonStyle    4	    -  MwmDecorMax
++ AddButtonStyle 4	    Active  	    (  AdjustedPixmap $[fvwm_theme_img]/tb_maxon.png -- flat ) 
++ AddButtonStyle 4	    AllToggled    	    ( AdjustedPixmap $[fvwm_theme_img]/tb_maxon.png -- raised ) 
++ AddButtonStyle 4	    AllInactive	    ( AdjustedPixmap $[fvwm_theme_img]/tb_maxoff.png -- flat )
+
++ ButtonStyle       2	 -  Clear
++ AddButtonStyle    2	    AllActive	    ( AdjustedPixmap $[fvwm_theme_img]/tb_closeon.png -- flat )
++ AddButtonStyle    2	    AllInactive	( AdjustedPixmap $[fvwm_theme_img]/tb_closeoff.png -- flat )
+
+Style * UseDecor Default
+#}
+
