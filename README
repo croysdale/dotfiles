@@ -1,0 +1,58 @@
+Clone into new env
+
+   echo ".myconf" > .gitignore
+Setup aliases
+
+   alias dot_config='/usr/bin/git --git-dir=$PWD/.myconf/ --work-tree=$PWD'
+   alias dot_status='dot_config config status.showUntrackedFiles no'
+Clone into existing PWD directory .. could interfer with existing files
+
+   /usr/bin/git clone --bare http://github.com/croysdale/dotfiles.git $PWD/.myconf
+   dot_config checkout
+Install additional packages required for zsh
+
+   /usr/bin/git clone http://github.com/robbyrussell/oh-my-zsh $PWD/.oh-my-zsh
+   /usr/bin/git clone http://github.com/junegunn/fzf $PWD/.fzf
+   /usr/bin/git clone http://github.com/rupa/z $PWD/.zsh/z
+   /usr/bin/git clone http://github.com/zsh-users/zsh-syntax-highlighting $PWD/.oh-my-zsh/custom/plugins/zsh-syntax-highlighting
+   /usr/bin/git clone http://github.com/psprint/zsh-editing-workbench     $PWD/.oh-my-zsh/custom/plugins/zsh-editing-workbench
+   /usr/bin/git clone http://github.com/changyuheng/fz                    $PWD/.oh-my-zsh/custom/plugins/fz
+Run fzf installer
+
+   $PWD/.fzf/install
+
+Install eza
+    git clone https://github.com/eza-community/eza.git
+    cd eza
+    cargo install --path .
+
+Install bat
+https://github.com/sharkdp/bat
+
+Install ripgrep (rg)
+https://github.com/BurntSushi/ripgrep
+
+Install TMUX package manager
+
+   /usr/bin/git clone https://github.com/tmux-plugins/tpm ~/.tmux/plugins/tpm
+Install additional packages required for vim
+
+vim
+:PlugInstall
+:q
+Install additional tmux plugins
+
+~/.tmux/plugins/tpm/scripts/install_plugins.sh
+Cheatsheets
+
+Cheatsheet 1
+
+Full Tutorial credit Built following tutorial from Atlassian
+
+
+dot_config status
+dot_config add .vimrc
+dot_config commit -m "Add vimrc"
+dot_config add .bashrc
+dot_config commit -m "Add bashrc"
+dot_config push
