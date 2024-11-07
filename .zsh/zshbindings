@@ -46,7 +46,7 @@ bindkey -e
 # Default
 #export WORDCHARS='*?_[]~=&;!#$%^(){}'
 # Added . : 
-export  WORDCHARS='*?_[]~=&;!#$%^(){}.:'
+export  WORDCHARS='*?_[]~=&;!#$%^(){}.:-'
 autoload -U select-word-style
 select-word-style normal
 
@@ -125,11 +125,14 @@ select-word-style normal
 	# bindkey -M menuselect 'i' accept-and-menu-complete
 	# bindkey -M menuselect 'o' accept-and-infer-next-history
 
-    bindkey "^P" vi-up-line-or-history
-    bindkey "^N" vi-down-line-or-history
+    # bindkey "^P" vi-up-line-or-history
+    # bindkey "^N" vi-down-line-or-history
+    #
+    # bindkey "^P" up-history
+    # bindkey "^N" down-history
 
-    bindkey "^P" up-history
-    bindkey "^N" down-history
+    bindkey "^P" up-line-or-history
+    bindkey "^N" down-line-or-history
     # bindkey "^[[1~" vi-beginning-of-line   # Home
     # bindkey "^[[4~" vi-end-of-line         # End
     # bindkey '^[[2~' beep                   # Insert
@@ -186,3 +189,48 @@ select-word-style normal
     zle -N edit-command-line
     bindkey '\C-x\C-e' edit-command-line
 # }}}
+
+
+## 2021-12-18 00:27
+##   Alt-c  insert the current directory name onto command line
+function _cur_dir {
+  BUFFER="${BUFFER}$(basename $PWD)"
+  zle end-of-line
+}
+
+zle -N _cur_dir
+bindkey '^[c' _cur_dir
+
+## Full dir
+##   Alt-Shift-C  insert the current directory name onto command line
+function _full_dir {
+  BUFFER="${BUFFER}$PWD"
+  zle end-of-line
+}
+
+zle -N _full_dir
+bindkey '^[C' _full_dir
+
+function _ref_run {
+  local WORDCHARS="*?[]~=/&;!#$%^(){}<>"
+  BUFFER="${BUFFER} -ref_run ../$(basename $PWD)"
+  zle end-of-line
+  zle backward-delete-word
+  zle backward-delete-char
+  BUFFER="${BUFFER}/run_dir"
+  zle end-of-line
+}
+
+zle -N _ref_run
+bindkey '^[c^[c' _ref_run
+
+delete-backward-underscore () {
+  local WORDCHARS="*?[]~=/&;!#$%^(){}<>"
+  zle backward-delete-word
+  zle backward-delete-char
+}
+zle -N delete-backward-underscore
+bindkey '^H' delete-backward-underscore
+
+## For zsh-autosuggest
+bindkey '^[[Z' autosuggest-accept  # shift + tab  | autosuggest

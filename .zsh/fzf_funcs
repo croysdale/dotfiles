@@ -4,46 +4,45 @@
 #    fbind : Search all tmux/zsh bindings
 #    Search all docs    
 #    fzf ypcat passwd/group
-#
-# if [ -n "$TMUX_PANE" -a ${FZF_TMUX:-1} -ne 0 -a ${LINES:-40} -gt 15 ]; then
-#   _fzf-file-widget() {
-#     local height
-#     height=${FZF_TMUX_HEIGHT:-40%}
-#     if [[ $height =~ %$ ]]; then
-#       height="-p ${height%\%}"
-#     else
-#       height="-l $height"
-#     fi
-#     tmux split-window $height "zsh -c 'source ~/.fzf.zsh; tmux send-keys -t $TMUX_PANE \"\$(__fsel)\"'"
-#   }
-# else
-#   _fzf-file-widget() {
-#     LBUFFER="${LBUFFER}$(__fsel)"
-#     zle redisplay
-#   }
-# fi
-# zle     -N   _fzf-file-widget
-# bindkey '^T^T' _fzf-file-widget
 
-## Removed 2017/02/24 09:23
-# ALT-C - cd into the selected directory
-# _fzf-cd-widget() {
-#   cd "${$(set -o nonomatch; command find * -path '*/\.*' -prune \
-#           -o -type d -print 2> /dev/null | fzf):-.}"
-#   zle reset-prompt
+export FZF_DEFAULT_OPTS="--height=60% --color light --layout=reverse --info=inline --border --margin=1 --walker-skip=.git,.snapshot "
+
+## Does not seem to work
+export FZF_TMUX=1
+export FZF_TMUX_OPTS='-p100%,60% --color light --border=horizontal --padding 1,5 --margin 1,0'
+
+# Change tab-complete for directories
+#eval "$(fzf --zsh)"
+
+# export FZF_CTRL_R_OPTS="
+#   --preview 'echo {}' --preview-window up:3:hidden:wrap
+#   --bind 'ctrl-/:toggle-preview'
+#   --bind 'ctrl-y:execute-silent(echo -n {2..} | pbcopy)+abort'
+#   --color header:italic
+#   --header 'Press CTRL-Y to copy command into clipboard'"
+
+## Switch tmux session
+# Use Ctrl-space w intead 
+# fts() {
+# 	local -r fmt='#{session_id}:|#S|(#{session_attached} attached)'
+# 	{ tmux display-message -p -F "$fmt" && tmux list-sessions -F "$fmt"; } \
+# 		| awk '!seen[$1]++' \
+# 		| column -t -s'|' \
+# 		| fzf -q '$' --reverse --prompt 'switch session: ' -1 \
+# 		| cut -d':' -f1 \
+# 		| xargs tmux switch-client -t
 # }
-# zle     -N    _fzf-cd-widget
-# bindkey '\ec' _fzf-cd-widget
 
-_fzf-history-widget() {
-  # LBUFFER=$(fc -l 1 | fzf +s +m -n..,1,2.. | sed "s/ *[0-9*]* *//")
-  LBUFFER=$(fc -f -l 1 | fzf -e +s | sed "s/^ *[0-9*]* *[0-9/]* *[0-9:]* *//")
-  zle redisplay
-}
-zle     -N   _fzf-history-widget
-# bindkey '^R' fzf-history-widget
-bindkey '^r^l' _fzf-history-widget
-
+# godesk() {
+# 	local -r fmt='#{session_id}:|#S|(#{session_attached} attached)'
+# 	{ tmux display-message -p -F "$fmt" && tmux list-sessions -F "$fmt"; } \
+# 		| awk '!seen[$1]++' \
+# 		| column -t -s'|' \
+# 		| fzf -q '$' --reverse --prompt 'switch desk: ' -1 \
+#         | sed -e 's/^\$.: *//' \
+#         | sed -e 's/ .*//' \
+#         | xargs ~/bin/goto_fvwm_desk
+# }
 
 # grep all docs
 function fzf_docs() {
@@ -57,53 +56,51 @@ function fzf_alias() {
 
 # grep zsh functions
 function fzf_funcs() {
-    echo $(funlist | fzf )
+    echo $(-p funlist | fzf-tmux )
 }
 
-# Search list of RDT commands (output of ack_rdt)
-function fzf_rdt() {
-    echo $(ack_rdt --no-color "$1" | fzf -e +s)
+# echo "Use this to get body of function\n"
+# echo "whence -f <function>"
+function fzf_funlist() {
+	echo "\nList of Fuzzy functions in: $HOME/.zsh/fzf_funcs:"
+    SHELL=/grid/common/pkgs/zsh/v5.9/bin/zsh
+	grep -B 1 "^function" $HOME/.zsh/fzf_funcs | \
+	grep -v "^\-\-$" | \
+	awk '{ if(/^#/) { gsub(/^#[:space:]*/, ""); ht=$0 }; getline; gsub(/ ?\(\)/, ":"); printf(" %-20s %s\n", $2, ht); }' | column -t -s : | sort -u -k 3 | fzf-tmux -p --color light --preview "type -f {1}"
+	# awk '{ if(/^#/) { gsub(/^#[:space:]*/, ""); ht=$0 }; getline; gsub(/ ?\(\)/, ":"); printf(" %-20s %s\n", $2, ht); }' | column -t -s : | sort -u -k 3 | fzf-tmux -p --color light  
 }
 
 # Search all zsh bindkeys
 function fzf_bindkey() {
-  echo $( bindkey | sed -re 's/\^\[/<ESC>/' | sed -re 's/\^/<CTRL>/g' | fzf +s )
+  echo $( bindkey | sed -re 's/\^\[/<ESC>/' | sed -re 's/\^/<CTRL>/g' | fzf-tmux -p --color light )
 }
 
 # Search all tmux keys
 function fzf_tmuxkeys() {
-  echo $( tmux list-keys | fzf +s )
-}
-
-function fzf_uge_jobs() {
-  uge_job_id=$( uge_jobs.pl | fzf +s -m | awk '{print $6}')
-  uge_jobs -j $uge_job_id
+  echo $( tmux list-keys | fzf-tmux -p --color light  )
 }
 
 # Search cd stack
 function fzf_dirs() {
-  dir=$( dirs -p -v | sort -rn | fzf +s +m)
+  dir=$( dirs -p -v | sort -n | fzf-tmux -p100%,40% --color light)
   cd `echo $dir | awk '{print $2}'`
 }
 
-function _fzf-qdel-widget() {
-  LBUFFER=$( uge_jobs.pl | fzf -m +s | awk '{print $6}')
-  LBUFFER="qdel $LBUFFER"
-  zle redisplay
-}
-zle -N _fzf-qdel-widget
-alias fzf_qdel=_fzf-qdel-widget
-bindkey '^f^q' _fzf-qdel-widget 
-
-
 function _fzf-dirs-widget () {
   echo $ZLE_STATE
-  LBUFFER=$( dirs -p -v | sort -rn | sed -e 's/\t/:  /' | fzf +s +m | awk '{print $2}')
+## sed /org-seg-projects-komodo-austin-controlled_c04-vendor-pd-//
+  # LBUFFER=$( dirs -p -v | sed -E -e 's/org-seg-projects-(.*+)-austin-controlled_c04-vendor/:\1:/' | sort -n | sed -e 's/\t/:  /' | fzf-tmux -p100%,50% --color light | awk '{print $2}' | sed -E -e 's/:(.*+):/org-seg-projects-\1-austin-controlled_c04-vendor/')
+  LBUFFER=$( dirs -p -v | sed -E -e 's/.*org-seg-projects-borneo-austin-controlled_c04-vendor-pd-cadence(.*+)/\$site\1/' | sort -n | fzf-tmux -p100%,50% --color light ) 
+  #LBUFFER=$( dirs -p -v | sed -e 's/org-seg-projects-.*-austin-controlled_c04-vendor/:project:/' | sort -n | sed -e 's/\t/:  /' | fzf-tmux -p100%,50% --color light | awk '{print $2}' | sed -e 's/XX/org-seg-projects-komodo-austin-controlled_c04-vendor-pd-/')
+  #LBUFFER=$( dirs -p -v | sort -n | sed -e 's/\t/:  /' | fzf-tmux -p100%,50% --color light | awk '{print $2}')
   LBUFFER="cd $LBUFFER"
   zle redisplay
 }
 zle -N _fzf-dirs-widget 
 bindkey '^t' _fzf-dirs-widget 
+
+## Problem with scroll down 
+# bindkey '^f^f' fzf-file-widget
 
 # fe [FUZZY PATTERN] - Open the selected file with the default editor
 #   - Bypass fuzzy finder if there's only one match (--select-1)
@@ -114,7 +111,7 @@ function fe() {
   local file
   file=$(fzf --query="$1" --select-1 --exit-0)
   # [ -n "$file" ] && ${EDITOR:-vim} "$file"
-  [ -n "$file" ] && source ~croysdal/bin/zsh_scripts/gvim_tab "$file"
+  [ -n "$file" ] && source ~/bin/zsh_scripts/gvim_tab "$file"
 }
 
 # # Find file with fzf and edit with vim
@@ -139,7 +136,7 @@ function fe() {
   local file
   file=$(fzf --query="$1" --select-1 --exit-0)
   # [ -n "$file" ] && ${EDITOR:-vim} "$file"
-  [ -n "$file" ] && source ~croysdal/bin/zsh_scripts/gvim_tab "$file"
+  [ -n "$file" ] && source ~/bin/zsh_scripts/gvim_tab "$file"
 }
 
 # Find file with fzf and edit with vim
@@ -152,94 +149,174 @@ function fvim() {
 # cd to selected directory (fzf)
 function fd() {
   local dir
-  dir=$(find ${1:-*} -path '*/\.*' -prune \
+  dir=$(find ${1:-*} -readable -path '*/\.*' -prune \
                   -o -type d -print 2> /dev/null | fzf +m) &&
   cd "$dir"
 }
 
-v() {
-  local files
-  files=$(grep '^>' ~/.viminfo | cut -c3- |
-          while read line; do
-            [ -f "${line/\~/$HOME}" ] && echo "$line"
-          done | fzf -d -m -q "$*" -1) && source ~croysdal/bin/zsh_scripts/gvim_tab ${files//\~/$HOME}
-}
+# v() {
+#   local files
+#   files=$(grep '^>' ~/.viminfo | cut -c3- |
+#           while read line; do
+#             [ -f "${line/\~/$HOME}" ] && echo "$line"
+#           done | fzf -d -m -q "$*" -1) && source ~croysdal/bin/zsh_scripts/gvim_tab ${files//\~/$HOME}
+# }
 
 ## Disable correction for commands
 alias fe="nocorrect fe"
 
+
+export FZF_HISTORY_CMD="fzf --sort --exact"
 # repeat history
 function fzf_hist() {
-  echo $(([ -n "$ZSH_NAME" ] && fc -l 1 || history) | sed 's/.*[0-9]* *//'| fzf +s )
+  echo $(([ -n "$ZSH_NAME" ] && fc -l 1 || history) | sed 's/.*[0-9]* *//'| fzf +s -e )
 }
 
 # repeat full history from today (all shells)
 function fzf_hist_today() {
-  echo $( cat ${HOME}/.zsh_logs/*(om[1]) | sed -re 's/.* [0-9]+ //' | fzf +s )
+  echo $( cat ${HOME}/.zsh_logs/*(om[1]) | sed -re 's/.* [0-9]+ //' | fzf +s -e )
 }
 
 # repeat full history from week (all shells)
 function fzf_hist_week() {
-  echo $(([ -n "$ZSH_NAME" ] && cat ${HOME}/.zsh_logs/*(om[1,7]) ) | sed -re 's/.* [0-9]+ //'| fzf +s )
+  echo $(([ -n "$ZSH_NAME" ] && cat ${HOME}/.zsh_logs/*(om[1,7]) ) | sed -re 's/.* [0-9]+ //'| fzf-tmux -p --sort --exact)
 }
 
 # repeat full history from month (all shells)
 function fzf_hist_month() {
-  echo $(([ -n "$ZSH_NAME" ] && cat ${HOME}/.zsh_logs/*(om[1,31]) ) | sed -re 's/.* [0-9]+ //'| fzf +s )
+  echo $(([ -n "$ZSH_NAME" ] && cat ${HOME}/.zsh_logs/*(om[1,31]) ) | sed -re 's/.* [0-9]+ //'| fzf +s -e )
+}
+
+# repeat full history from month (all shells)
+function fzf_hist_year() {
+  echo $(([ -n "$ZSH_NAME" ] && cat ${HOME}/.zsh_logs/*(om[1,365]) ) | sed -re 's/.* [0-9]+ //'| fzf +s -e )
 }
 
 # repeat full history (all shells)
 function fzf_hist_full() {
-  echo $(([ -n "$ZSH_NAME" ] && cat ${HOME}/.zsh_logs/* ) | sed -re 's/.* [0-9]+ //'| fzf +s )
+  echo $(([ -n "$ZSH_NAME" ] && cat ${HOME}/.zsh_logs/* ) | sed -re 's/.* [0-9]+ //'| fzf +s -e )
 }
 
-# <CTRL>R t bindkey
-function _fzf-history-full-today-widget() {
-    echo $ZLE_STATE
-  LBUFFER=$( cat ${HOME}/.zsh_logs/*(om[1])  | sed -re 's/.* [0-9]+ //'| fzf +s +m -n..,1,2.. )
-  zle redisplay
+function fzf_hist_current_dir() {
+    echo $(([ -n "$ZSH_NAME" ] && cat ${HOME}/.zsh_logs/*(om[1,365]) ) | grep $(pwd) | sort -u | \
+               fzf -e +s +m -n..,1,2.. --height=80% --layout=reverse --info=inline --border --margin=1 --header=$'History from current directory\n\n')
 }
-zle -N _fzf-history-full-today-widget
-bindkey '^F^t' _fzf-history-full-today-widget
 
-# <CTRL>R w bindkey
+alias fhf=fzf_hist_full
+alias fhm=fzf_hist_month
+alias fhw=fzf_hist_week
+alias fht=fzf_hist_today
+alias fhc=fzf_hist_current_dir
+
+
+# <CTRL>R <CTRL>w bindkey
 function _fzf-history-full-week-widget() {
-    echo $ZLE_STATE
-  LBUFFER=$( cat ${HOME}/.zsh_logs/*(om[1,7])  | sed -re 's/.* [0-9]+ //'| fzf +s +m -n..,1,2.. )
+  echo $ZLE_STATE
+  # LBUFFER=$( cat ${HOME}/.zsh_logs/*(om[1,7])  | sed -re 's/.* [0-9]+ //'| sort -u | fzf -e +s +m -n..,1,2.. --height=60% --layout=reverse --info=inline \
+  #            --border --margin=1 --header=$'History from current week\n\n')
+  LBUFFER=$( cat ${HOME}/.zsh_logs/*(om[1,7])  | sed -re 's/.* [0-9]+ //'| sort -u | fzf-tmux -p70%,50% -e +s +m -n..,1,2.. --layout=reverse --info=inline \
+             --border --margin=1 --header=$'History from current week\n\n')
   zle redisplay
 }
 zle -N _fzf-history-full-week-widget
-bindkey '^F^w' _fzf-history-full-week-widget
+bindkey '^X^w' _fzf-history-full-week-widget
 
-# <CTRL>R m bindkey
+# <CTRL>R <CTRL>m bindkey
+function _fzf-history-full-year-widget() {
+  echo $ZLE_STATE
+  LBUFFER=$( cat ${HOME}/.zsh_logs/*(om[1,365])  | sed -re 's/.* [0-9]+ //'| grep -v "cd " | sort -u | fzf-tmux -p90%,80% -e +s +m -n..,1,2.. --layout=reverse --info=inline \
+             --border --margin=1 --header=$'History from current year\n\n')
+  zle redisplay
+}
+zle -N _fzf-history-full-year-widget
+bindkey '^X^y' _fzf-history-full-year-widget
+
+# <CTRL>R <CTRL>m bindkey
 function _fzf-history-full-month-widget() {
-    echo $ZLE_STATE
-  LBUFFER=$( cat ${HOME}/.zsh_logs/*(om[1,31])  | sed -re 's/.* [0-9]+ //'| fzf +s +m -n..,1,2.. )
+  echo $ZLE_STATE
+  LBUFFER=$( cat ${HOME}/.zsh_logs/*(om[1,31])  | sed -re 's/.* [0-9]+ //'| sort -u | fzf-tmux -p70%,50% -e +s +m -n..,1,2.. --layout=reverse --info=inline \
+             --border --margin=1 --header=$'History from current month\n\n')
   zle redisplay
 }
 zle -N _fzf-history-full-month-widget
-bindkey '^F^m' _fzf-history-full-month-widget
+bindkey '^X^m' _fzf-history-full-month-widget
+
+# <CTRL>R <CTRL>t bindkey
+function _fzf-history-full-today-widget() {
+  echo $ZLE_STATE
+  LBUFFER=$( cat ${HOME}/.zsh_logs/*(om[1,1])  | sed -re 's/.* [0-9]+ //' | sort -u | fzf-tmux -p70%,50% -e +s +m -n..,1,2.. --layout=reverse --info=inline \
+              --border --margin=1 --header=$'History from today\n\n')
+  zle redisplay
+}
+zle -N _fzf-history-full-today-widget
+bindkey '^X^t' _fzf-history-full-today-widget
+
+# <CTRL>R c bindkey
+function _fzf-history-current-dir-widget() {
+  echo $ZLE_STATE
+  LBUFFER=$( grep $(pwd) ${HOME}/.zsh_logs/*(om[1,180]) | sed -re 's/.* [0-9]+ //' | sort -u | fzf-tmux -p70%,50% -e +s +m -n..,1,2.. --layout=reverse --info=inline \
+             --border --margin=1 --header=$'History from current directory\n\n')
+  zle redisplay
+}
+zle -N _fzf-history-current-dir-widget
+bindkey '^X' _fzf-history-current-dir-widget
+bindkey '^Xc' _fzf-history-current-dir-widget
+
+
+# <CTRL>R <CTRL>d bindkey
+function _fzf-history-dir-widget() {
+  echo $ZLE_STATE
+  LBUFFER=$( cat ${HOME}/.zsh_logs/* | sed -e 's/.*\/dpc/\/dpc/' | sed -e s'/ .*//' | grep dpc | sort -u | fzf-tmux -p70%,50% -e +s +m -n..,1,2.. --layout=reverse --info=inline \
+             --border --margin=1 --header=$'History of all directories\n\n')
+  zle redisplay
+}
+zle -N _fzf-history-dir-widget
+bindkey '^X^d' _fzf-history-dir-widget
 
 # <CTRL>R f bindkey
 function _fzf-history-full-full-widget() {
-    echo $ZLE_STATE
-  LBUFFER=$( cat ${HOME}/.zsh_logs/*(om)  | sed -re 's/.* [0-9]+ //'| fzf +s +m -n..,1,2.. )
+  echo $ZLE_STATE
+  LBUFFER=$( cat ${HOME}/.zsh_logs/*(om)  | sed -re 's/.* [0-9]+ //'| sort -u | fzf-tmux -p70%,50% -e +s +m -n..,1,2.. --layout=reverse --info=inline \
+             --border --margin=1 --header=$'History from all time\n\n')
   zle redisplay
 }
 zle -N _fzf-history-full-full-widget
-bindkey '^F^h' _fzf-history-full-full-widget
+bindkey '^X^h' _fzf-history-full-full-widget
 
+function _fzf_tmux_pane_words() {
+  local expl
+  local -a w
+  if [[ -z "$TMUX_PANE" ]]; then
+    _message "not running inside tmux!"
+    return 1
+  fi
+  # capture current pane first
+  for l in $(tmux capture-pane -J -p | sed -e 's/.*//'); do
+    w+="$l\n"
+  done
+  RBUFFER=$( echo $w | sort -u | fzf-tmux --exact --no-multi -n..,1,2.. --height=60% --info=inline --border --margin=1 --header=$'TMUX words\n\n')
+  zle redisplay
+}
+zle -N _fzf_tmux_pane_words
+bindkey '^x^x' _fzf_tmux_pane_words
 
 # kill process (fzf)
-function fkill() {
-  ps -ef | sed 1d | fzf -m | awk '{print $2}' | xargs kill -${1:-9}
+function fzf_kill() {
+  ps -ef | sed 1d | fzf-tmux --exact --multi | awk '{print $2}' | xargs kill -${1:-9}
 } 
 
-# kill UGE job (fzf)
 # TODO How do I get this to require a confirm prompt?
-function fqdel() {
-    qdel $(uge_jobs.pl | fzf | sed -re 's/.* ([0-9]+)/\1/')
+function fzf_bbjobs() {
+    bbjobs --dir --idle | fzf-tmux --exact --ansi -p90%,90% 
 }
+
+# function fzf_bbkill() {
+#     local out
+#     files=$( bbjobs -dir -no_color | \
+#     fzf-tmux --exact --multi --exit-0) &&
+#     | xargs -0 "echo bkill +/$1"
+# }
+
 
 # This is a helper function that splits the current pane to start the given
 # command ($1) and sends its output back to the original pane with any number of
@@ -249,7 +326,7 @@ function fqdel() {
 #   [ -n "$TMUX_PANE" ] || return
 #   local cmd=$1
 #   shift
-#   tmux split-window -p 40 \
+#   tmux split-window -p 60 \
 #     "zsh -c \"\$(tmux send-keys -t $TMUX_PANE \"\$(source ~/.fzf.zsh; $cmd)\" $*)\""
 # }
 
@@ -266,45 +343,148 @@ function fqdel() {
 #      paste -sd" " -' Space
 # }
 
-# Switch to another tmux window tmux select-window -t 
-function fw() {
-  local window
-  window=$(tmux list-windows -F "#{window_index} #{window_name}" | \
-    fzf --query="$1" --select-1 --exit-0 | \
-    sed -re 's/ *[0-9]+ //' ) &&
-  tmux select-window -t "$window"
+# # Switch to another tmux window tmux select-window -t 
+# function fw() {
+#   local window
+#   window=$(tmux list-windows -F "#{window_index} #{window_name}" | \
+#     fzf --query="$1" --select-1 --exit-0 | \
+#     sed -re 's/ *[0-9]+ //' ) &&
+#   tmux select-window -t "$window"
+# }
+#
+# # Attach to a tmux session 
+# function fzf_tmux_attach_session() {
+#   local session
+#   session=$(tmux list-sessions | \
+#     fzf --query="$1" --select-1 --exit-0) &&
+#   tmux attach-session -t "$session"
+# }
+#
+# # Switch to another tmux session 
+# function fzf_tmux_switch_session() {
+#   local session
+#   session=$(tmux list-sessions -F "#{session_name}" | \
+#     fzf --query="$1" --select-1 --exit-0) &&
+#   tmux switch-client -t "$session"
+# }
+
+function vv() {
+    local file
+     #  Loading the preview in a pop-up is very slow
+     # fzf-tmux -p80%,80% --select-1 --exit-0   --preview 'cat {}' \
+    file=$( find . -iname "*$1*" | \
+    fzf-tmux --select-1 --exit-0   --preview 'echo ${} | cut -d: -f1 | xargs bat' \
+     --bind 'ctrl-/:change-preview-window(50%|hidden|)'                                        \
+     --color 'fg:#bbccdd,fg+:#ddeeff,bg:#334455,preview-bg:#223344,border:#778899') &&
+    vim $file
 }
 
-# Attach to a tmux session 
-function fa() {
-  local session
-  session=$(tmux list-sessions | \
-    fzf --query="$1" --select-1 --exit-0) &&
-  tmux attach-session -t "$session"
+## Search files with rg. Do not open the files.
+function frg() {
+  rg --color=always --line-number --no-heading --smart-case "${*:-}" |
+    fzf --ansi \
+        --color "hl:-1:underline,hl+:-1:underline:reverse" \
+        --delimiter : \
+        --preview 'bat --color=always {1} --highlight-line {2}' \
+        --preview-window '60%,border-bottom,+{2}+3/3,~3' 
 }
 
-# Switch to another tmux session 
-function fs() {
-  local session
-  session=$(tmux list-sessions -F "#{session_name}" | \
-    fzf --query="$1" --select-1 --exit-0) &&
-  tmux switch-client -t "$session"
+
+## Search files with rg and then open with vim
+function rgv() {
+  rg --no-messages --color=always --line-number --no-heading --smart-case "${*:-}" |
+    fzf --ansi \
+        --color "hl:-1:underline,hl+:-1:underline:reverse" \
+        --delimiter : \
+        --preview 'bat --color=always {1} --highlight-line {2}' \
+        --preview-window '60%,border-bottom,+{2}+3/3,~3' \
+        --bind 'enter:become(vim {1} +{2})'
 }
+
+function rgvm() {
+  rg --no-messages --color=always --line-number --no-heading --smart-case "${*:-}" |
+    fzf --ansi --multi \
+        --color "hl:-1:underline,hl+:-1:underline:reverse" \
+        --delimiter : \
+        --preview 'bat --color=always {1} --highlight-line {2}' \
+        --preview-window '60%,border-bottom,+{2}+3/3,~3' \
+        --bind 'enter:become(vim -o {1} +{2} {})'
+}
+
+
+## Search tcl files with rg and then open with vim
+function rgvt() {
+  rg --no-messages --type tcl --color=always --line-number --no-heading --smart-case "${*:-}" |
+    fzf --ansi \
+        --color "hl:-1:underline,hl+:-1:underline:reverse" \
+        --delimiter : \
+        --preview 'bat --color=always {1} --highlight-line {2}' \
+        --preview-window '60%,border-bottom,+{2}+3/3,~3' \
+        --bind 'enter:become(vim {1} +{2})'
+}
+
+## Search tcl files with rg and then open with vim
+function rgviflow() {
+  rg --no-messages --type tcl --color=always --line-number --no-heading --smart-case "${*:-}" scripts/*/edi |
+    fzf --ansi \
+        --color "hl:-1:underline,hl+:-1:underline:reverse" \
+        --delimiter : \
+        --preview 'bat --color=always {1} --highlight-line {2}' \
+        --preview-window '60%,border-bottom,+{2}+3/3,~3' \
+        --bind 'enter:become(vim {1} +{2})'
+}
+
+
+fman() {
+    man -k . | fzf -q "$1" --prompt='man> '  --preview $'echo {} | tr -d \'()\' | awk \'{printf "%s ", $2} {print $1}\' | xargs -r man | col -bx | bat -l man -p --color always' | tr -d '()' | awk '{printf "%s ", $2} {print $1}' | xargs -r man
+}
+# Get the colors in the opened man page itself
+# export MANPAGER="sh -c 'col -bx | bat -l man -p --paging always'"
 
 ## Don't store these in history
 alias fa " fa"
 alias fw " fw"
 alias fs " fs"
 
-unalias z 2> /dev/null
-# z History of visited directories
-function z() {
-  if [[ -z "$*" ]]; then
-    cd "$(_z -l 2>&1 | sed -n 's/^[ 0-9.,]*//p' | fzf -x)"
-  else
-    _z "$@"
-  fi
-}
+alias fzf_binding="bindkey | grep fzf"
 
+# unalias z 2> /dev/null
+# z History of visited directories
+# function z() {
+#   if [[ -z "$*" ]]; then
+#     cd "$(_z -l 2>&1 | sed -n 's/^[ 0-9.,]*//p' | fzf -x)"
+#   else
+#     _z "$@"
+#   fi
+# }
+
+# unalias z 2> /dev/null
+#
+# This breaks the z commands 2024-10-18 16:04 
+# function z() {
+#   [ $# -gt 0 ] && _zlua "$*" && return
+#   cd "$(_zlua -l 2>&1 | fzf-tmux --height 90% --nth 2.. --reverse --tac --exact \
+#       --preview 'eza -l --color always --no-filesize --time-style relative --no-permissions --group-directories-first {2}' \
+#       --preview-window '30%,border-bottom,+{2}+3/3,~3' \
+#       --query "${*##-* } " | sed 's/^[0-9,.]* *//')"
+# }
+
+function zz() {
+  #cd "$(_zlua -l -c 2>&1 | fzf-tmux -p80%,60% --nth 2.. --reverse --tac --exact \
+  # cd "$(_zlua -l -c 2>&1 | sed -E 's/.*org-seg-projects-borneo-austin-controlled_c04-vendor-pd-cadence(.*+)/\$site\1/' | fzf-tmux -p80%,60% --nth 2.. --reverse --tac --exact \
+  #     --preview 'eza -l --color always --no-filesize --time-style relative --no-permissions --group-directories-first {2}' \
+  #     --preview-window '40%,border-bottom,+{2}+3/3,~3' \
+  #     --query "${*##-* } " | sed 's/^[0-9,.]* *//')"
+  # cd "$(_zlua -l -c 2>&1 | fzf-tmux -p80%,60% --nth 2.. --reverse --tac --exact \
+  #
+  # Preview does not work because eza cannot expand $step1
+      # --preview "eza -l --color always --no-filesize --time-style relative --no-permissions --group-directories-first {2}" \
+      # --preview-window '40%,border-bottom,+{2}+3/3,~3'  \
+  dir="$(_zlua -l $* 2>&1 | sed -E 's/.site.*org-seg-projects-borneo-austin-controlled_c04-vendor-pd-cadence(.*+)/\$site\1/' | fzf-tmux -p85%,50% --nth 2.. --reverse --tac --exact \
+      | sed 's/^[0-9,.]* *//')"
+      #echo $dir
+      eval cd $dir
+      # --query "${*##-* } " | sed 's/^[0-9,.]* *//')"
+}
 # Bind CTRL-X-CTRL-D to fzf_tmux_dir
 # bindkey '"\C-x\C-d": "$(fzf_tmux_dir)\e\C-e"'

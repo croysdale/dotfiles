@@ -325,8 +325,9 @@ setopt pushdignoredups
 # The history lines are also output with timestamps ala
 # EXTENDED_HISTORY (which makes it easier to find the spot where
 # we left off reading the file after it gets re-written).
-# setopt SHARE_HISTORY # Share history between session/terminals
-# setopt APPEND_HISTORY # Don't erase history
+unsetopt SHARE_HISTORY # Share history between session/terminals
+unsetopt sharehistory # Share history between session/terminals
+setopt APPEND_HISTORY # Don't erase history
 # setopt HIST_IGNORE_SPACE # Don't preserve spaces. 
 setopt INC_APPEND_HISTORY # Add immediately
 setopt NO_HIST_BEEP # Don't beep

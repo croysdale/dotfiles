@@ -1,48 +1,19 @@
-# A nice GNU Screen fork: tscreen!
-  #[[ -x `which tscreen` ]] && alias screen="tscreen"
-
-# Wrapper for rm(1)
-# Nice but cannot remove directories :/
-#--------------------------------------------------
-#   [[ -x `which shred` ]] && alias rm='shred -u -v'
-#-------------------------------------------------- 
-
 # get top 10 shell commands:
 alias top10='print -l ? ${(o)history%% *} | uniq -c | sort -nr | head -n 10'
-
-# frontend for generic colouriser grcat(1)
-# if [[ -x `which grc` ]]; then
-# 	alias grc='grc --colour=auto'
-# 	alias ping='grc ping'
-# 	alias last='grc last'
-# 	alias netstat='grc netstat'
-# 	alias traceroute='grc traceroute'
-# 	alias diff='grc diff'
-# 	alias gcc='grc gcc'
-# 	alias configure='grc configure'
-# 	alias cvs='grc cvs'
-# fi
-
-alias mv='nocorrect mv -i'       # no spelling correction on mv
-alias cp='nocorrect cp -i'       # no spelling correction on cp
-alias mkdir='nocorrect mkdir' # no spelling correction on mkdir
-alias rm="nocorrect rm -i"
-alias run-help="nocorrect run-help"
+alias pe='printenv | grep '
+alias mv='mv -i'       # no spelling correction on mv
+alias cp='cp -i'       # no spelling correction on cp
+alias mkdir='mkdir' # no spelling correction on mkdir
+alias rm="rm -i"
+alias run-help="run-help"
 
 alias j=jobs
 alias pu=pushd
 alias po=popd
 alias d='dirs -v'
-alias h='fc -l -E -30'
+alias h='fc -l -i -30'
 alias load_hist='fc -RI'
 # alias history_long=perl -lne 'm#: (\d+):\d+;(.+)# && printf "%s :: %s\n",scalar localtime $1,$2' $HISTFILE
-alias ll='ls -l'
-alias la='ls -a'
-
-# List only file beginning with "."
-alias lsa='ls -ld .*'
-alias ls_small='ls -l *(.Lk-500)'
-
 # Glob tips
 # http://reasoniamhere.com/2014/01/11/outrageously-useful-tips-to-master-your-z-shell/
 # Small file *(.LM-10)
@@ -51,9 +22,10 @@ alias ls_small='ls -l *(.Lk-500)'
 # Remove small logs (<500kb) that have not been modified in 2 days (glob)
 alias rm_small_logs='rm -f *.log(.Lk-500md+2)'
 
-function snapshots ()  {ls -l .snapshot/**/$*}
+# Search for all copies of file in snapshot directory
+function snapshots ()  {ls -l .snapshot/*/$1}
 
-# Lits only readable files
+# List only readable files
 ls_readable() { [[ -r $REPLY ]] }
 alias lsr='ls *(+readable)'
 
@@ -71,7 +43,6 @@ alias cpr='cp -R '
 alias :{w,q,wq,qa,wqa,x}{,!}='echo "This is $SHELL:t and not Vi(m)"'
 alias vi="${EDITOR}"
 alias view="${EDITOR} -R"
-alias ex="${EDITOR} -e"
 alias pltags="${VIMRUNTIME}/tools/pltags.pl"
 alias dump_vim_maps='vim -T xterm +"set nomore" +map +qall'
 
@@ -161,18 +132,23 @@ if [[ $ZSH_VERSION == 5.<->* ]]; then
 	alias -g DN="/dev/null"
 	alias -g PI="|"
 	# Paging with less / head / tail
+    # Remove ANSIEsc codes
+	alias -g RMA="| sed 's/\x1B\[[0-9;]*m//g'"
+	alias -g L='| less '
 	alias -g LS='| less -S'
 	alias -g EL='|& less'
 	alias -g ELS='|& less -S'
 	alias -g TRIM='| cut -c 1-$COLUMNS'
+	alias -g T='| column -t'
 	alias -g TAB='| column -t'
 	alias -g H='| head'
-	alias -g HL='| head -n $(( +LINES ? LINES - 4 : 20 ))'
+	alias -g HL='| head -n $(( +LINES ? LINES - 4 : 10 ))'
 	alias -g EH='|& head'
-	alias -g EHL='|& head -n $(( +LINES ? LINES - 4 : 20 ))'
-	alias -g TL='| tail -n $(( +LINES ? LINES - 4 : 20 ))'
+	alias -g EHL='|& head -n $(( +LINES ? LINES - 4 : 10 ))'
+	alias -g TL='| tail -n $(( +LINES ? LINES - 4 : 10 ))'
 	alias -g ET='|& tail'
-	alias -g ETL='|& tail -n $(( +LINES ? LINES - 4 : 20 ))'
+	alias -g ETL='|& tail -n $(( +LINES ? LINES - 4 : 10 ))'
+	alias -g SUM='| paste -sd+ - | bc'
 	# Sorting / counting
 	alias -g C='| wc -l'
 	alias -g SS='| sort'
@@ -212,24 +188,27 @@ fi
 
 
 # grep aliases
-function grep_alias () {grep -h --color "$*" ~/.zsh/zshaliases; }
+#function grep_alias () {grep -h --color "$*" ~/.zsh/zshaliases ~/.zsh/zshlocal; }
+function grep_alias () {grep -e function -e alias  ~/.zsh/zshaliases ~/.zsh/zshlocal | grep --color "$*" }
+function ga ()         {grep -e function -e alias  ~/.zsh/zshaliases ~/.zsh/zshlocal | grep --color "$*" }
 function grep_fvwm ()  {grep -A 2 -i -h --color "$*" ~/.fvwm/conf/*bindings.fvwm2rc ~/.fvwm/conf/menu.fvwm2rc ~/.fvwm/conf/strokes.fvwm2rc }
-function grep_tmux ()  {grep -A 2 -h --color "$*" ~intel_ac/doc/TMUX.wiki  }
-function grep_zsh  ()  {grep -A 2 -h --color "$*" ~intel_ac/doc/ZSH*.wiki  }
-function grep_docs ()  {grep -A 2 -h --color "$*" ~intel_ac/doc/*wiki }
+function grep_tmux ()  {grep -A 2 -h --color "$*" ~/docs/TMUX.wiki  }
+function grep_zsh  ()  {grep -A 2 -h --color "$*" ~/docs/ZSH*.wiki  }
+function grep_docs ()  {grep -A 2 -h --color "$*" ~/docs/*wiki }
 function psg ()        {ps -aef | grep "$*" | grep -v grep}
 
-#
-alias vim_zsh='vim ~/doc/ZSH.md'
+# grep tmux 
+alias gt="tmux list-keys | grep -e prefix -e root | grep -v Mouse |  grep "
 
-#TODO
-# Per directory history    (auto generate from dir)
-# Per tmux history         (auto generate from tmux) 
-# Per tmux window history  (auto generate from tmux)
-function grep_hist_full         ()  {grep -h --color "$*" ~/.zsh_logs/* }
-function grep_hist_tmux_session ()  {grep -h -e $(tmux display-message -p '#S') ~/.zsh_logs/* | grep --color "$*" }
-function grep_hist_tmux_window  ()  {grep -h -e $(tmux display-message -p '#W')  ~/.zsh_logs/* | grep --color "$*" }
-function grep_hist_current_dir  ()  {grep -h -e $PWD  ~/.zsh_logs/* | grep --color "$*" }
+# Full history
+function grep_hist_full              ()  {grep -h --color "$*" ~/.zsh_logs/*(om) }
+# Per tmux history 
+function grep_hist_tmux_session      ()  {grep -h -e $(tmux display-message -p '#S') ~/.zsh_logs/*(om) | grep --color "$*" }
+# Per tmux window history
+function grep_hist_tmux_window       ()  {grep -h -e $(tmux display-message -p '#W')  ~/.zsh_logs/*(om) | grep --color "$*" }
+# Per directory history  
+function grep_hist_current_dir       ()  {grep -h -e $PWD  ~/.zsh_logs/*(om) | grep --color "$*" }
+function grep_hist_current_dir_cmds  ()  {grep -h -e $PWD  ~/.zsh_logs/*(om) | grep --color "$*" | sed -e 's/.* [0-9]* //' }
 alias g_history='g ~/.zsh_logs/*(om[1])'
 
 # If  you  find  that you want more control over when commands get
@@ -238,38 +217,32 @@ alias g_history='g ~/.zsh_logs/*(om[1])'
 # ever you need them using `fc -RI'.
 alias load_hist='fc -RI'
 
-# Aliases for aliases
-alias ga=' grep_alias'
+# Aliases for editing aliases
 alias ea=' vim ~/.zsh/zshaliases'
-alias sa=' source ~/.zsh/zshaliases'
-
-# Misc aliases
+alias ezl=' vim ~/.zsh/zshlocal'
+alias ezf=' vim ~/.zsh/zshfunctions'
+# Aliases for sourcing aliases
 alias sz=' source ~/.zshrc'
+alias sa=' source ~/.zsh/zshaliases'
+alias sza=' source ~/.zsh/zshaliases'
+alias szl=' source ~/.zsh/zshlocal'
+alias szf=' source ~/.zsh/zshfunctions'
+
 trap "source ~/.zshrc" USR1
 alias sz_all='pkill -usr1 -u $USER zsh'
-alias c=' clear'
+alias c=' /bin/clear'
 alias du='du --apparent-size'
 alias psg='ps -aef | grep \!* | grep -v grep'
 function theme () { source ~/.oh-my-zsh/themes/$*.zsh-theme }
-alias ktheme="source ~/.oh-my-zsh/custom/themes/kevin.zsh-theme" 
+alias stheme="source ~/.zsh/zshtheme"
+# alias ntheme="source ~/.oh-my-zsh/custom/themes/nord.zsh-theme"
 
 alias rl="rlogin"
 compdef rl=rlogin
 
-## Needs manpage plugin for vim
+# View man page in vim
 function Man () { gvim -c "ViewDocMan $*" -c "silent! only" }
-## Open in existing gvim .. needs fix
-#function gman () { gvim -c "ViewDocMan $*" -c "silent! only" --servername $gvim_server }
-function vman () { vim -c "ViewDocMan $*" -c "silent! only" }
-## Use man completion for Man, vman, and gman
-alias gman=Man
 
-if [[ `uname -s` == "Linux" ]] ; then
-    ## These fail in Solaris 
-    compdef Man=man
-    compdef vman=man
-    compdef gman=man
-fi
 
 ## Find all gpg files that have matching .tar.gz
 ## TODO : Works when pasted into shell but not as alias
@@ -282,7 +255,8 @@ alias sane=' echo -e "\\033c";tput is2;stty sane line 1'
 alias erase=" stty erase "
 
 # tmux
-alias tmux='tmux -2 -u'
+alias tmux2='tmux -2 -u'
+#unalias tmux
 alias tma='tmux -2 -u attach -d -t'
 alias tmn='tmux -2 -u  new -s $(basename $(pwd))'
 alias tml='tmux list-sessions'
@@ -291,9 +265,12 @@ alias tml='tmux list-sessions'
 alias g="source ~/bin/gvim_tab"
 alias vi="vim"
 alias g-="gvim -p "
-alias gd="source ~/.display ; gvim -name GVIMDIFF -geometry 180x55+0+0 -d "
-# function gl () { gvim `ls -1tr $*/* | tail -n 1 ` }
-#
+alias gd="source ~/.display ; gvim -d -name GVIMDIFF -geometry 180x53+0+0 "
+alias dis="source ~/.display; echo DISPLAY=\$DISPLAY"
+
+## Open last filed modified in vim/gvim
+alias vl='vim *(om[1])'
+alias gl='gvim *(om[1])'
 # VimTip 121: Using vim as a syntax-highlighting pager
 # <http://vim.sourceforge.net/tip_view.php?tip_id=>
   if [ -e ~/.vim/vimrc.more ] && [ -x $(which vim) ]; then
@@ -308,17 +285,7 @@ function gw () { vim -g `which $*` }
 alias sp=" nocorrect which -a"
 alias d256=' eval `dircolors --sh ~/.dir_colors.256`'
 
-alias PATH='echo -e ${PATH//:/\\n}'
-alias MANPATH='echo -e ${MANPATH//:/\\n}'
-
-## Requires the PATH.pl command which is disabled
-# alias man_remove='eval `MANPATH -remove \!*`'
-# alias man_fix='eval `MANPATH -fix`'
-# alias remove='eval `PATH -remove \!*`'
-# alias append='eval `PATH -append \!*`'
-# alias prepend='eval `PATH -prepend \!*`'
-# alias fix='eval `PATH -fix`'
-
+alias fix='typeset -gU path'
 alias fix_paths='typeset -gU path cdpath manpath fpath'
 
 # YP grep
@@ -327,59 +294,55 @@ function ypg () { ypcat passwd | grep $* }
 ## Perl alias
 alias pd="perl -d"
 
-#####################
-### bindkey       ###
-#####################
 
-#bindkey "^[." insert-last-word
-#bindkey "" i-search-back
-#bindkey "^xp" i-search-back
-#bindkey "^xn" i-search-fwd
-#bindkey "^v" copy-prev-word
-
-
-alias light="~/bin/colorscheme solarized_light"
-alias dark="~/bin/colorscheme solarized_dark"
-
-alias realpath="readlink -f \$PWD"
-
+## Aliases for controlling git... do not work in DPC 
 alias dot_config='/usr/bin/git --git-dir=$HOME/.myconf/ --work-tree=$HOME'
 alias dot_status='dot_config config status.showUntrackedFiles no'
 alias setup_dot='export GIT_WORK_TREE=$HOME; export GIT_DIR=$HOME/.myconf'
 
+
 ## Solarized colors
-export yellow="#b58900"
-export orange="#cb4b16"
-export red="#dc322f"
-export magenta="#d33682"
-export violet="#6c71c4"
-export blue="#268bd2"
-export cyan="#2aa198"
-export green="#859900"
-export base03="#002b36"
-export base02="#073642"
-export base01="#586e75"
-export base00="#657b83"
-export base0="#839496"
-export base1="#93a1a1"
-export base2="#eee8d5"
-export base3="#fdf6e3"
-# export   base03="#1c1c1c"
-# export   base02="#262626"
-# export   base01="#4e4e4e"
-# export   base00="#585858"
-# export   base0="#808080"
-# export   base1="#8a8a8a"
-# export   base2="#d7d7af"
-# export   base3="#ffffd7"
-# export   yellow="#af8700"
-# export   orange="#d75f00"
-# export   red="#d70000"
-# export   magenta="#af005f"
-# export   violet="#5f5faf"
-# export   blue="#0087ff"
-# export   cyan="#00afaf"
-# export   green="#5f8700"
+function solar_dark() {
+    export yellow="#b58900"
+    export orange="#cb4b16"
+    export red="#dc322f"
+    export magenta="#d33682"
+    export violet="#6c71c4"
+    export blue="#268bd2"
+    export cyan="#2aa198"
+    export green="#859900"
+    export base03="#002b36"
+    export base02="#073642"
+    export base01="#586e75"
+    export base00="#657b83"
+    export base0="#839496"
+    export base1="#93a1a1"
+    export base2="#eee8d5"
+    export base3="#fdf6e3"
+}
+
+function solar_light () {
+    export   base03="#1c1c1c"
+    export   base02="#262626"
+    export   base01="#4e4e4e"
+    export   base00="#585858"
+    export   base0="#808080"
+    export   base1="#8a8a8a"
+    export   base2="#d7d7af"
+    export   base3="#ffffd7"
+    export   yellow="#af8700"
+    export   orange="#d75f00"
+    export   red="#d70000"
+    export   magenta="#af005f"
+    export   violet="#5f5faf"
+    export   blue="#0087ff"
+    export   cyan="#00afaf"
+    export   green="#5f8700"
+}
+
+alias realpath="readlink -f \$PWD"
+
+
 
 zman() {
   PAGER="less -g -s '+/^       "$1"'" man zshall
@@ -387,9 +350,17 @@ zman() {
 
 
 # http://minimul.com/increased-developer-productivity-with-tmux-part-5.html
+# Send keys to another tmux pane
 function ts {
   args=$@
   tmux send-keys -t right "$args" C-m
 }
+
+function set_title {
+    /bin/xdotool selectwindow set_window --name $1
+    /bin/xdotool selectwindow set_window --name $1
+}
+alias rename_xterm=set_title
+alias rename_window=set_title
 
 alias unsetenv=unset

@@ -4,32 +4,35 @@
 
 # Display all function()'s with her descriptions
 function funlist() {
-	echo "List of functions in: $HOME/.zsh/zshfunctions:"
-	grep -B 1 "^function" $HOME/.zsh/zshfunctions | \
+
+    for file in $HOME/.zsh/zshfunctions $HOME/.zsh/zshlocal $HOME/.zsh/zshaliases  ; do 
+        echo -e "\033[1;35m $file\033[0m"
+        grep -B 1 "^function" $file | \
 	grep -v "^\-\-$" | \
-	awk '{ if(/^#/) { gsub(/^#[:space:]*/, ""); ht=$0 }; getline; gsub(/ ?\(\)/, ":"); printf("-> %-20s %s\n", $2, ht); }' | \
+        awk '{ if(/^#/) { gsub(/^#[:space:]*/, ""); ht=$0 }; getline; gsub(/ ?\(\)/, ":"); printf(" %-20s %s\n", $2, ht); }' | \
 	sort -u -k 3
-	echo "\nList of Fuzzy functions in: $HOME/.zsh/fzf_funcs:"
-	grep -B 1 "^function" $HOME/.zsh/fzf_funcs | \
-	grep -v "^\-\-$" | \
-	awk '{ if(/^#/) { gsub(/^#[:space:]*/, ""); ht=$0 }; getline; gsub(/ ?\(\)/, ":"); printf("-> %-20s %s\n", $2, ht); }' | \
-	sort -u -k 3
+    done
+
+
+    echo "Use this to get body of function\n"
+    echo "whence -f <function>"
 }
 
 # precmd to keep persistent shell history
 export ZSH_LOGS=${HOME}/.zsh_logs
 mkdir -p ${ZSH_LOGS}
 
+# Precmd for keeping $HOME/.zsh_logs
 function precmd() {
     if [ "$(id -u)" -ne 0 ]; then
         #  TODO  : Don't copy lines that start with space to history
         #          Can this be done?
         hist=`\history -1` 
+
         if [[ -z "$TMUX_PANE" ]]; then
             TMUX_WIN_PANE="Not in tmux"
         else
-            ## TMUX_WIN_PANE could be set by ~/bin/iheavy in a TMUX
-            if [[ -z "$TMUX_WIN_PANE" ]]; then
+            if [[ ! -z "$TMUX_WIN_PANE" ]]; then
                 TMUX_WIN_PANE=$(tmux display-message -p '#S-#W')
             fi
         fi
@@ -41,28 +44,19 @@ function precmd() {
     RPROMPT=""
 }
 
-# show directory stack and ask for a dir to switch to
-function dstack() {
-  emulate -L zsh
-  autoload -U colors
-  local color=$fg_bold[blue]
-  integer i=0
-  dirs -p | while read dir
-  do
-	  local num="${$(printf "%-4d " $i)/ /.}"
-	  printf " %s  $color%s$reset_color\n" $num $dir
-	  (( i++ ))
-  done
-  integer dir=-1
-  read -r 'dir?Jump to directory: ' || return
-  (( dir == -1 )) && return
-  if (( dir < 0 || dir >= i ))
-  then
-	  echo d: no such directory stack entry: $dir
-	  return 1
-  fi
-  cd ~$dir
-}
+# Remove string from path
+function path_remove  { eval $(${HOME}/bin/PATH -remove $1)  }
+# Prepend string to path
+function path_prepend { eval $(${HOME}/bin/PATH -prepend $1) }
+# Append string to path
+function path_append  { eval $(${HOME}/bin/PATH -append $1)  }
+# Remove invalid and duplicate entries from path
+function path_fix     { eval $(${HOME}/bin/PATH -fix )  }
+
+function manpath_remove  { eval $(${HOME}/bin/MANPATH -remove $1)  }
+function manpath_prepend { eval $(${HOME}/bin/MANPATH -prepend $1) }
+function manpath_append  { eval $(${HOME}/bin/MANPATH -append $1)  }
+function manpath_fix     { eval $(${HOME}/bin/MANPATH -append $1)  }
 
 # Capture entire tmux pane to a variable to use for command completion
 function _tmux_pane_words() {
@@ -78,10 +72,10 @@ function _tmux_pane_words() {
 }
 
 # grep(1)'ing $HISTFILE
-histgrep () { fc -fl -m "*(#i)$1*" 1 | grep -i --color $1 }
+# histgrep () { fc -fl -m "*(#i)$1*" 1 | grep -i --color $1 }
 
 # Interactive perl interpreter
-iperl () { perl -ne 'BEGIN { print ">> " }; print eval "$_"; print "\n>> "' }
+# iperl () { perl -ne 'BEGIN { print ">> " }; print eval "$_"; print "\n>> "' }
 
 # other version for "ls"
 # zls () {
@@ -110,67 +104,15 @@ function mdate()
 # PROG: Search for the argument in the system libraries
 function lcheck() { nm -go /usr/lib/lib*.a 2>/dev/null | grep ":[[:xdigit:]]\{8\} . .*$1"":[[:xdigit:]]\{8\} . .*$1" }
 
-# FIXME: It's really .. reclaimable
-# MISC: clean directory
-function purge()
-{
-	FILES=(*~(N) .*~(N) \#*\#(N) *.o(N) a.out(N) *.core(N) *.cmo(N) *.cmi(N) .*.swp(N))
-	NBFILES=${#FILES}
-	if [[ $NBFILES > 0 ]]; then
-		print $FILES
-		local ans
-		echo -n "Remove this files? [y/n] "
-		read -q ans
-		if [[ $ans == "y" ]]
-		then
-			command rm ${FILES}
-			echo ">> $PWD purged, $NBFILES files removed"
-		else
-			echo "Ok. .. than not.."
-		fi
-	fi
-}
-
 # PERL: List all locations of perl libraries
 function showINC () { perl -e 'for (@INC) { printf "%d %s\n", $i++, $_ }' }
 
 # HELP: /Quick read/ help-files of Vim
 function vimhelp () { vim -c "help $1" -c on -c "au! VimEnter *" }
 
-# Found in the mailinglistarchive from Zsh (IIRC ~1996)
-# MISC: Search in the $HISTFILE and select result to execute
-function selhist()
-{
-	emulate -L zsh
-	local TAB=$'\t';
-	(( $# < 1 )) && {
-		echo "Usage: $0 command"
-		return 1
-	};
-	cmd=(${(f)"$(grep -w $1 $HISTFILE | sort | uniq | pr -tn)"})
-	print -l $cmd | less -F
-	echo -n "enter number of desired command [1 - $(( ${#cmd[@]} - 1 ))]: "
-	local answer
-	read answer
-	print -z "${cmd[$answer]#*$TAB}"
-}
-
 # DIFF: create a diff (-udrP)
 function mdiff() { diff -udrP "$1" "$2" > diff.`date "+%Y-%m-%d"`."$1" }
 
-# PROG: aDisplay the size of all dirs at $PWD
-function dirsize()
-{
-	if [ -z $1 ]; then
-		dir="."
-	else
-		dir=$1
-	fi
-	find $dir -type d -maxdepth 1 -mindepth 1 -exec du -sh '{}' \; 2>/dev/null \
-	| perl -pe "s/\t.*\/(.*)$/\t$(echo '\033[01;32m')\1$(echo '\033[0m')/gi" 
-	echo
-	echo "Total: " $(du -sh $dir 2>/dev/null | awk '{print $1}')
-}
 
 # MISC: mkdir && cd
 function mcd()
@@ -181,10 +123,6 @@ function mcd()
 	cd -- "$1"
 }
 
-# $ ls -l =ls
-# $ -r-xr-xr-x    1 root     bin        167936 Oct  4  2002 /bin/ls
-# $ pls ls
-# $ -r-xr-xr-x    1 root     bin        167936 Oct  4  2002 /bin/ls 
 # SEARCH: A /replacement/ for `ls -l =command'
 function pls() { ls -l =$1 }
 
@@ -313,8 +251,8 @@ function refunc()
 # Note: all three functions works but the last is nicer
 # function brlinks() { for i in **/*(D@); [[ -f $i || -d $i ]] || echo $i }
 # function brlinks() { print -l **/*(@-^./=%p) }
-# SYS: Display all brokem symlinks
-# function brlinks() { print -l **/*(-@) }
+# SYS: Display all broken symlinks
+function brlinks() { print -l **/*(-@) }
 
 man() {
     env \
@@ -325,7 +263,7 @@ man() {
     LESS_TERMCAP_so=$(printf "\e[1;44;33m") \
     LESS_TERMCAP_ue=$(printf "\e[0m") \
     LESS_TERMCAP_us=$(printf "\e[1;32m") \
-    man "$@"
+    /bin/man "$@"
 }
 
 ## Potentional fix for zsh hanging on directory complete
@@ -361,3 +299,15 @@ man() {
 # }
 # zle -N restricted-expand-or-complete
 # bindkey "^I" restricted-expand-or-complete
+
+function ff() {
+    find . -readable -type f -iname "*$1*" 2> /dev/null
+}
+
+function ffbig() {
+    find . -readable -type f -size +100M -iname "*$1*" -exec du -sh {} \; 2> /dev/null
+}
+
+function ffl() {
+    find . -readable -type f -iname "*$1*" -exec ls -l {} \; 2> /dev/null
+}

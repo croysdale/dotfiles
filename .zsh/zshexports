@@ -2,10 +2,19 @@
 #  Note: Do *not* use '$PORTSDIR'! This variable is defined in 
 #        '/path/to/ports/Makefile'.
 (( ${+VISUAL} )) || export VISUAL="vim"                             # **EDIT**
-#(( ${+TERM} )) || export TERM=xterm-256color
 ## 2016/07/17 17:17 KWC Fixes fzf
 (( ${+TERM} )) || export TERM=xterm-256color
-export TERM=xterm-256color
+#export TERM=xterm-256color
+#
+# 2024-03-18 11:20 Causes command to get repeated
+# # If you are using the zsh #  shell
+#  and the TERM environment variable is set to screen-256color, you 
+#  may see the command you just issued repeated in the output. This is because zsh is trying to set the terminal title to the currently running command. However, some terminals
+#  do not support this feature, so the command is printed instead.
+#   There are a few ways to fix this issue:
+#    Set the TERM environment variable to a different value, such as xterm-256color.
+# setopt no_verbose
+# export TERM=screen-256color
 (( ${+LESSCHARSET} )) || export LESSCHARSET=utf-8
 export SHELL=zsh
 
@@ -170,11 +179,6 @@ else
   export PAGER="more"
 fi
 
-export PERL5LIB=~/share/Komodo-PerlRemoteDebugging-8.0.2-78971-linux-x86
-export PERL5DB="BEGIN { require q($PERL5LIB/perl5db.pl)}"
-export PERLDB_OPTS="RemotePort=localhost:9000"
-# export DBGP_IDEKEY="$USER"
-
 # Warn on lack of 256 color support from termcap/info.
 (test -n "$(tput Co 2>/dev/null)" \
 	&& test "$(tput Co 2>/dev/null)" -eq 256) \
@@ -185,12 +189,14 @@ export PERLDB_OPTS="RemotePort=localhost:9000"
 # Some settings for the manpages
 # set the width to 80. Its enough
 export MANWIDTH=80
-#export MANPAGER="less -iMXF"
-#[[ -d ~/.terminfo/ ]] && alias man='TERMINFO=~/.terminfo/ LESS=C TERM=mostlike PAGER=less man'
 
 export EDITOR=vim
 export VISUAL="${EDITOR}"
 #export VIMRELEASE="`print ${${$(vim --version)[5]}:gs/.//}`"
+#
+# Control the max age for z.lua
+# https://github.com/skywind3000/z.lua
+export _ZL_MAXAGE=50000
 
 ## Executed whenever a command has a non-zero exit status:
 ## ------------------------------------------------- 
@@ -205,3 +211,16 @@ export VISUAL="${EDITOR}"
 # the string which presumably needs spelling correction, and `%r' expands
 # to the proposed correction. All other prompt escapes are also allowed.
 # SPROMPT=$'%BError!%b Correct %{\e[31m%}%R%{ \e[0m%}to%{ \e[36m%}%r%{ \e[0m%}? [No/Yes/Abort/Edit]: '
+
+## Solarized colors for Perl ANSI::Color
+export ANSI_COLORS_ALIASES='\
+            base00=bright_yellow, on_base00=on_bright_yellow,\
+            base01=bright_green,  on_base01=on_bright_green, \
+            base02=black,         on_base02=on_black,        \
+            base03=bright_black,  on_base03=on_bright_black, \
+            base0=bright_blue,    on_base0=on_bright_blue,   \
+            base1=bright_cyan,    on_base1=on_bright_cyan,   \
+            base2=white,          on_base2=on_white,         \
+            base3=bright_white,   on_base3=on_bright_white,  \
+            orange=bright_red,    on_orange=on_bright_red,   \
+            violet=bright_magenta,on_violet=on_bright_magenta'
